@@ -23,6 +23,11 @@ int main(int argc,char* argv[]){
 			if (yylex() == 1){
 				printf("yay\n");
 				break;
+				switch(ntoken){
+
+				}
+				case IDENT:
+
 			}
 		}
 	}
