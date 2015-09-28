@@ -71,9 +71,15 @@ number  {num1}|{num2}
 
 %%
 
-
-{TkCreate}	return 1;
-{Tk}
+"true" return TRUE
+""
+"create"	return CREATE;
+"activate"	return create;
+{TkIdent}	return IDENT;
+{TkActivate} return ACTIVATE;
+{Tk }
+{TkDeactivate} return DEACTIVATE;
+{TkDeactivation} return DEACTIVATION;
 %%
 
 int yywrap(){
