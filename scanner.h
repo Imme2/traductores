@@ -1,10 +1,6 @@
 #define IDENT 1
 #define NUM 2
-#define NUM1 3
-#define NUM2 4
-#define NUMB 5
-#define ALPH 6
-#define COMENT 7
+#define COMENT 3
 #define COMENTLN 8
 #define TRUE 9
 #define FALSE 10
@@ -40,7 +36,7 @@
 #define ME 40
 #define SALTO 41
 #define TAB 42
-#define COMILL 43
+#define COMILLA 43
 #define DEFAULT 44
 #define COLLECT 45
 #define DROP 46
@@ -51,9 +47,8 @@
 #define READ 51
 #define AS 52
 #define RECEIV 53
-#define ADV 54
+#define ADVANCE 54
 #define ACTIVATE 55
 #define ACTIVATION 56
 #define DEACTIVATE 57
 #define DEACTIVATION 58
-#define DIG 59

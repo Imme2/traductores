@@ -6,15 +6,15 @@ string  \"[^\n"]+\"
 
 ws      [ \t]+
 dig [0-9]
-
 alpha   [A-Za-z]
+
 comment \$-([^-]|-+[^\$])*-\$
 commentln \$\$[.^\n]*\n
 TkTrue   true
 TkFalse false
-TkComa ,
-TkPunto \.
-TkDosPuntos :
+coma ,
+punto \.
+dosPuntos :
 TkParAbre \(
 TkParCierra \)
 TkSuma \+
@@ -71,15 +71,22 @@ number  {num1}|{num2}
 
 %%
 
-"true" return TRUE
-""
-"create"	return CREATE;
-"activate"	return create;
-{TkIdent}	return IDENT;
-{TkActivate} return ACTIVATE;
+"true" 			return TRUE;
+"false" 		return FALSE;
+"create"		return CREATE;
+"activate"		return ACTIVATE;
+"activation"	return ACTIVATION;
+"deactivate"	return DEACTIVATE;
+"deactivation"	return DEACTIVATION;
+"("				return PARABRE;
+")"				return PARCIERR;
+"."				return PUNTO;
+","				return COMA;
+":"
+
+{TkIdent}		return IDENT;
+{TkActivate} 	return ACTIVATE;
 {Tk }
-{TkDeactivate} return DEACTIVATE;
-{TkDeactivation} return DEACTIVATION;
 %%
 
 int yywrap(){
