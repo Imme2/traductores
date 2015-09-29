@@ -1,7 +1,7 @@
 #ifndef scanner_h
 #define scanner_h
 
-#define IDENT 1
+#define IDENT 61
 #define NUM 2
 #define CHARACTER 3
 
@@ -63,7 +63,8 @@
 #define ACTIVATION 56
 #define DEACTIVATE 57
 #define DEACTIVATION 58
+#define END 59
 
-#define ERR 59
+#define ERR 60
 
 #endif

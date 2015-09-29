@@ -8,12 +8,14 @@ caracter '([^\n\t]|\\n|\\t|'|\')'
 TkIdent [A-Za-z]([A-Za-z]|[0-9]|_)*
 Num   -?[0-9]+
 
-salto \n
-tab \t
-espacio \s
+salto $
+tab [\t]
+espacio [\s]
 cualquiera .
 
 %%
+
+{espacio}		return ESPACIO;
 
 
 "create"		return CREATE;
@@ -68,8 +70,8 @@ cualquiera .
 "="				return IGUAL;
 "/="			return DESIGUAL;
 "~"				return NEG;
-"\/"			return DISY;
-"/\"			return CONJ;
+"\\/"			return DISY;
+"/\\"			return CONJ;
 "+"				return SUMA;
 "-"				return RESTA;
 "*"				return MULT;
@@ -82,7 +84,6 @@ cualquiera .
 
 
 {salto}			return NEWLINE;
-{espacio}		return ESPACIO;
 {tab}			return TAB;
 {cualquiera}	return ERR;
 
@@ -90,6 +91,6 @@ cualquiera .
 %%
 
 int yywrap(){
-	return 0;
+	return 1;
 }
  

@@ -5,13 +5,13 @@ using namespace std;
 
 class errToken{
 
-	char content;
+	string content;
 	int posFila;
 	int posColu;
 
 public:
 
-	errToken(char c, int fila, int colu){
+	errToken(string c, int fila, int colu){
 		content = c;
 		posFila = fila;
 		posColu = colu;
@@ -27,4 +27,4 @@ public:
 		return result.str();
 	}
 
-}
+};
