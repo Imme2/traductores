@@ -1,5 +1,4 @@
 #include <string>
-#include <iostream>
 #include "scanner.h"
 #include <sstream>
 
@@ -8,7 +7,6 @@ using namespace std;
 class token{
 	string IdentValue;
 	long long NumValue;
-	char CharValue;
 	int type;
 	int posFila;
 	int posColu;
@@ -20,8 +18,8 @@ public:
 		posColu = col;
 	}
 
-	token(string identV, int fila, int col){
-		type = IDENT;
+	token(int givenType, string identV, int fila, int col){
+		type = givenType;
 		IdentValue = identV;
 		posFila = fila;
 		posColu = col;
@@ -34,13 +32,6 @@ public:
 		posColu = col;
 	}
 
-	token(char caracter, int fila, int col){
-		type = CHARACTER;
-		CharValue = caracter;
-		posFila = fila;
-		posColu = col;
-	}
-
 	string toString(){
 		ostringstream result;
 		switch(type){
@@ -49,7 +40,7 @@ public:
 			case NUM:
 				result << "TkNum(" << NumValue << ")";
 			case CHARACTER:
-				result << "TkCaracter(" << CharValue << ")";
+				result << "TkCaracter(" << IdentValue << ")";
 			case CREATE:
 				result << "TkCreate";
 			case TRU:
@@ -66,8 +57,6 @@ public:
 				result << "TkDeactivation";
 			case ADVANCE:
 				result << "TkAdvance";
-			case EXECUTE:
-				result << "TkExecute";
 			case DEFAULT:
 				result << "TkDefault";
 			case COLLECT:
@@ -78,6 +67,8 @@ public:
 				result << "TkConjuncion";
 			case PUNTO:
 				result << "TkPunto";
+			case COMA:
+				result << "TkComa";
 			case DOSPUNT:
 				result << "TkDosPuntos";
 			case PARABRE:
@@ -110,7 +101,44 @@ public:
 				result << "TkDesigual";
 			case WHILE:
 				result << "TkWhile";
-			case
+			case BOOL:
+				result << "TkBool";
+			case INT:
+				result << "TkInt";
+			case CHAR:
+				result << "TkChar";
+			case IF:
+				result << "TkIf";
+			case ELSE:
+				result << "TkElse";
+			case SEND:
+				result << "TkSend";
+			case EXECUTE:
+				result << "TkExecute";
+			case ON:
+				result << "TkOn";
+			case STORE:
+				result << "TkStore";
+			case BOT:
+				result << "TkBot";
+			case ME:
+				result << "TkMe";
+			case DROP:
+				result << "TkDrop";
+			case UP:
+				result << "TkUp";
+			case DOWN:
+				result << "TkDown";
+			case RIGHT:
+				result << "TkRight";
+			case LEFT:
+				result << "TkLeft";
+			case READ:
+				result << "TkRead";
+			case AS:
+				result << "TkAs";
+			case RECEIVE:
+				result << "TkReceive";
 		}
 
 		result << " " << posFila << " " << posColu;

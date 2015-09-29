@@ -64,5 +64,6 @@
 #define DEACTIVATE 57
 #define DEACTIVATION 58
 
+#define ERR 59
 
 #endif
