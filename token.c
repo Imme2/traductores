@@ -72,7 +72,45 @@ public:
 				result << "TkDefault";
 			case COLLECT:
 				result << "TkCollect";
-			case 
+			case DISY:
+				result << "TkDisyuncion";
+			case CONJ:
+				result << "TkConjuncion";
+			case PUNTO:
+				result << "TkPunto";
+			case DOSPUNT:
+				result << "TkDosPuntos";
+			case PARABRE:
+				result << "TkParAbre";
+			case PARCIERR:
+				result << "TkParCierra";
+			case SUMA:
+				result << "TkSuma";
+			case RESTA:
+				result << "TkResta";
+			case MULT:
+				result << "TkMult";
+			case DIV:
+				result << "TkDiv";
+			case MOD:
+				result << "TkMod";
+			case NEG:
+				result << "TkNegacion";
+			case MENOR:
+				result << "TkMenor";
+			case MENORIG:
+				result << "TkMenorIgual";
+			case MAYOR:
+				result << "TkMayor";
+			case MAYORIG:
+				result << "TkMayorIgual";
+			case IGUAL:
+				result << "TkIgual";
+			case DESIGUAL:
+				result << "TkDesigual";
+			case WHILE:
+				result << "TkWhile";
+			case
 		}
 
 		result << " " << posFila << " " << posColu;
