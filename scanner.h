@@ -5,9 +5,9 @@
 #define NUM 2
 #define CHARACTER 3
 
-#define COMENTOPEN 4
+#define COMMENTOPEN 4
 #define COMMENTCLOSE 5
-#define COMENTLN 6
+#define COMMENTLN 6
 
 #define NEWLINE 7
 #define TAB 8

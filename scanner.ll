@@ -78,6 +78,8 @@ cualquiera .
 
 "$-"			return COMMENTOPEN;
 "-$"			return COMMENTCLOSE;
+{commentln}		return COMMENTLN;
+
 
 {salto}			return NEWLINE;
 {espacio}		return ESPACIO;

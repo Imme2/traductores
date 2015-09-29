@@ -1,8 +1,10 @@
+#include <stdlib.h>
 #include <cstdio>
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <sstream>
+#include <string>
 #include "scanner.h"
 #include "token.c"
 #include "errtoken.c"
@@ -57,27 +59,36 @@ bool tokenizeFile(char* nombreArchivo){
 			}
 			else{
 				switch(tipo){
-
 					case IDENT:
-
+						tokens.push_back(token(tipo,str(yytext()),
+												nroFila+1,nroCol+1));
+						nroCol += yyleng();
 					case CHARACTER:
-
+						tokens.push_back(token(tipo,str(yytext()),
+												nroFila+1,nroCol+1));
+						nroCol += yyleng();
 					case NUM:
-
+						tokens.push_back(token(tipo,atoi(yytext()),
+												nroFila+1,nroCol+1))``;
+						nroCol += yyleng();
 					case TAB:
-
+						nroCol += 4;
 					case NEWLINE:
-
+						nroFila += 1;
+						nroCol = 0;
 					case ESPACIO:
-
+						nroCol += 1;
 					case ERR:
-						nroCol += yyleng
-						errores.push_back(errtoken(yychar()))
-
+						errores.push_back(errtoken(yychar(),nroFila+1,nroCol+1));
+						nroCol += yyleng();
+					case COMMENTOPEN:
+						nroCol += yyleng();
+						comment = true;
+					case COMMENTLN:
+						nroFila += 1;
 					default:
-						tokens.push_back(token(tipo,
-										nroFila+1,nroCol+1)) 
-						nroCol += yyleng()
+						tokens.push_back(token(tipo,nroFila+1,nroCol+1));
+						nroCol += yyleng();
 				}
 			}
 		}
