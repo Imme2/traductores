@@ -2,6 +2,10 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <sstream>
+#include "scanner.h"
+#include "token.c"
+
 using namespace std;
 
 extern int yylex();
@@ -16,16 +20,15 @@ int main(int argc,char* argv[]){
 	vector<int> errores;
 	ifstream archivo;
 	archivo.open(argv[1]);
-	int token = yylex();
+	int token = yylex(archivo);
 	if (archivo.good()){
-		int c = 0;
-		while (token){
-			if (yylex() == 1){
-				printf("yay\n");
-				break;
-				switch(ntoken){
+		int c;
+		bool comment;
+		int nroFila;
+		while ((c = yylex()) != 0) {
 
-				}
+			switch(ntoken){
+
 				case IDENT:
 
 			}
@@ -35,3 +38,7 @@ int main(int argc,char* argv[]){
 		printf("El archivo %s no parece existir\n",argv[1]);
 	}
 }
+
+
+
+

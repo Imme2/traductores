@@ -1,95 +1,93 @@
 %{
-#include <scanner.h>	
+#include "scanner.h"	
 %}
-
-string  \"[^\n"]+\"
-
-ws      [ \t]+
-dig [0-9]
-alpha   [A-Za-z]
 
 comment \$-([^-]|-+[^\$])*-\$
 commentln \$\$[.^\n]*\n
-TkTrue   true
-TkFalse false
-coma ,
-punto \.
-dosPuntos :
-TkParAbre \(
-TkParCierra \)
-TkSuma \+
-TkResta -
-TkMult \*
-TkDiv /
-TkMod %
-TkConjuncion /\\
-TkDisyuncion \\/
-TkNegacion ~
-TkMenorIgual <=
-TkMayorIgual >=
-TkMenor <
-TkMayor >
-TkIgual =
-TkCreate create
-TkWhile while
-TkBool bool
-TkInt int
-TkChar char
-TkIf if
-TkElse else
-TkEnd end
-TkSend send
-TkExecute execute
-TkOn on
-TkStore store
-TkBot bot
-TkMe me
-TkSalto \\n
-TkTabulador \\t
-TkComilla \'
-TkDefault default
-TkCollect collect
-TkDrop drop
-TkLeft left
-TkRight right
-TkUp up
-TkDown down
-TkRead read
-TkAs as
-TkReceive receive
-TKAdvance advance
-TkActivate activate
-TkActivation activation
-TkDeactivate deactivate
-TkDeactivation deactivation
-TkIdent [A-Z]({alpha}|{dig}|_)*
-TkNum   [0-9]+
-name    ({alpha}|{dig}|\$)({alpha}|{dig}|[_.\-/$])*
-num1    [-+]?{dig}+\.?([eE][-+]?{dig}+)?
-num2    [-+]?{dig}*\.{dig}+([eE][-+]?{dig}+)?
-number  {num1}|{num2}
+caracter '([^\n\t]|\\n|\\t|'|\')'
+TkIdent [A-Za-z]([A-Za-z]|[0-9]|_)*
+Num   -?[0-9]+
+
+salto \n
+tab \t
+espacio \s
+cualquiera .
 
 %%
 
-"true" 			return TRUE;
-"false" 		return FALSE;
+
 "create"		return CREATE;
 "activate"		return ACTIVATE;
 "activation"	return ACTIVATION;
 "deactivate"	return DEACTIVATE;
 "deactivation"	return DEACTIVATION;
+"advance"		return ADVANCE;
+"execute"		return EXECUTE;
+"default"		return DEFAULT;
+"collect"		return COLLECT;
+"receive"		return RECEIVE;
+"drop"			return DROP;
+"on"			return ON;
+"send"			return SEND;
+"store"			return STORE;
+"bot"			return BOT;
+"me"			return ME;
+"up"			return UP;
+"down"			return DOWN;
+"right"			return RIGHT;
+"left"			return LEFT;
+"read"			return READ;
+"as"			return AS;
+"end"			return END;
+
+
+"bool"			return BOOL;
+"int"			return INT;
+"char"			return CHAR;
+
+"while"			return WHILE;
+"if"			return IF;
+"else"			return ELSE;
+
+"true" 			return TRU;
+"false" 		return FAL;
+
+{TkIdent}		return IDENT;
+{Num}			return NUM;
+{caracter}		return CHARACTER;
+
 "("				return PARABRE;
 ")"				return PARCIERR;
 "."				return PUNTO;
 ","				return COMA;
-":"
+":"				return DOSPUNT;
+"<"				return MENOR;
+">"				return MAYOR;
+"<="			return MENORIG;
+">="			return MAYORIG;
+"="				return IGUAL;
+"/="			return DESIGUAL;
+"~"				return NEG;
+"\/"			return DISY;
+"/\"			return CONJ;
+"+"				return SUMA;
+"-"				return RESTA;
+"*"				return MULT;
+"/"				return DIV;
+"%"				return MOD;
 
-{TkIdent}		return IDENT;
-{TkActivate} 	return ACTIVATE;
-{Tk }
+"$-"			return COMMENTOPEN;
+"-$"			return COMMENTCLOSE;
+
+{salto}			return NEWLINE;
+{espacio}		return ESPACIO;
+{tab}			return TAB;
+{cualquiera}	return ERR;
+
+
 %%
 
 int yywrap(){
-	return 1;
+	return 0;
 }
  
