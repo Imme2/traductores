@@ -32,11 +32,17 @@ bool tokenizeFile(char* nombreArchivo){
 					case NEWLINE:
 						nroFila++;
 						nroCol = 0;
+						break;
 					case COMMENTCLOSE:
 						comment = false;
 						nroCol += yyleng;
+						break;
+					case TAB:
+						nroCol += 4;
+						break;
 					default:
 						nroCol += yyleng;
+						break;
 				}
 			}
 			else{
@@ -45,32 +51,42 @@ bool tokenizeFile(char* nombreArchivo){
 						tokens.push_back(token(tipo,string(yytext),
 												nroFila+1,nroCol+1));
 						nroCol += yyleng;
+						break;
 					case CHARACTER:
 						tokens.push_back(token(tipo,string(yytext),
 												nroFila+1,nroCol+1));
 						nroCol += yyleng;
+						break;
 					case NUM:
 						tokens.push_back(token(tipo,atoi(yytext),
 												nroFila+1,nroCol+1));
 						nroCol += yyleng;
+						break;
 					case TAB:
 						nroCol += 4;
+						break;
 					case NEWLINE:
-						nroFila += 1;
+						nroFila++;
 						nroCol = 0;
+						break;
 					case ESPACIO:
 						nroCol += 1;
+						break;
 					case ERR:
 						errores.push_back(errToken(string(yytext),nroFila+1,nroCol+1));
 						nroCol += yyleng;
+						break;
 					case COMMENTOPEN:
 						nroCol += yyleng;
 						comment = true;
+						break;
 					case COMMENTLN:
 						nroFila += 1;
+						break;
 					default:
 						tokens.push_back(token(tipo,nroFila+1,nroCol+1));
 						nroCol += yyleng;
+						break;
 				}
 			}
 		}
@@ -90,11 +106,11 @@ void printTokens(){
 		}
 	}
 	else{
-		cout << tokens.size() << endl;
 		cout << tokens[0].toString();
-		for (int i = 0; i < tokens.size(); i++){
+		for (int i = 1; i < tokens.size(); i++){
 			cout << ", " <<tokens[i].toString();
 		}
+		cout << endl;
 	}
 
 }

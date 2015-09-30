@@ -1,5 +1,5 @@
 %{
-#include "scanner.h"	
+#include "scanner.h"    
 %}
 
 comment \$-([^-]|-+[^\$])*-\$
@@ -8,84 +8,86 @@ caracter '([^\n\t]|\\n|\\t|'|\')'
 TkIdent [A-Za-z]([A-Za-z]|[0-9]|_)*
 Num   -?[0-9]+
 
-salto $
-tab [\t]
-espacio [\s]
+commentOpen \$-
+commentClose -\$
+
+salto [ \n]
+tab [ \t]
+espacio [ \r]
 cualquiera .
 
 %%
 
-{espacio}		return ESPACIO;
 
 
-"create"		return CREATE;
-"activate"		return ACTIVATE;
-"activation"	return ACTIVATION;
-"deactivate"	return DEACTIVATE;
-"deactivation"	return DEACTIVATION;
-"advance"		return ADVANCE;
-"execute"		return EXECUTE;
-"default"		return DEFAULT;
-"collect"		return COLLECT;
-"receive"		return RECEIVE;
-"drop"			return DROP;
-"on"			return ON;
-"send"			return SEND;
-"store"			return STORE;
-"bot"			return BOT;
-"me"			return ME;
-"up"			return UP;
-"down"			return DOWN;
-"right"			return RIGHT;
-"left"			return LEFT;
-"read"			return READ;
-"as"			return AS;
-"end"			return END;
+"create"        return CREATE;
+"activate"      return ACTIVATE;
+"activation"    return ACTIVATION;
+"deactivate"    return DEACTIVATE;
+"deactivation"  return DEACTIVATION;
+"advance"       return ADVANCE;
+"execute"       return EXECUTE;
+"default"       return DEFAULT;
+"collect"       return COLLECT;
+"receive"       return RECEIVE;
+"drop"          return DROP;
+"on"            return ON;
+"send"          return SEND;
+"store"         return STORE;
+"bot"           return BOT;
+"me"            return ME;
+"up"            return UP;
+"down"          return DOWN;
+"right"         return RIGHT;
+"left"          return LEFT;
+"read"          return READ;
+"as"            return AS;
+"end"           return END;
 
 
-"bool"			return BOOL;
-"int"			return INT;
-"char"			return CHAR;
+"bool"          return BOOL;
+"int"           return INT;
+"char"          return CHAR;
 
-"while"			return WHILE;
-"if"			return IF;
-"else"			return ELSE;
+"while"         return WHILE;
+"if"            return IF;
+"else"          return ELSE;
 
-"true" 			return TRU;
-"false" 		return FAL;
+"true"          return TRU;
+"false"         return FAL;
 
-{TkIdent}		return IDENT;
-{Num}			return NUM;
-{caracter}		return CHARACTER;
+{TkIdent}       return IDENT;
+{Num}           return NUM;
+{caracter}      return CHARACTER;
 
-"("				return PARABRE;
-")"				return PARCIERR;
-"."				return PUNTO;
-","				return COMA;
-":"				return DOSPUNT;
-"<"				return MENOR;
-">"				return MAYOR;
-"<="			return MENORIG;
-">="			return MAYORIG;
-"="				return IGUAL;
-"/="			return DESIGUAL;
-"~"				return NEG;
-"\\/"			return DISY;
-"/\\"			return CONJ;
-"+"				return SUMA;
-"-"				return RESTA;
-"*"				return MULT;
-"/"				return DIV;
-"%"				return MOD;
+"("             return PARABRE;
+")"             return PARCIERR;
+"."             return PUNTO;
+","             return COMA;
+":"             return DOSPUNT;
+"<"             return MENOR;
+">"             return MAYOR;
+"<="            return MENORIG;
+">="            return MAYORIG;
+"="             return IGUAL;
+"/="            return DESIGUAL;
+"~"             return NEG;
+"\\/"           return DISY;
+"/\\"           return CONJ;
+"+"             return SUMA;
+"-"             return RESTA;
+"*"             return MULT;
+"/"             return DIV;
+"%"             return MOD;
 
-"$-"			return COMMENTOPEN;
-"-$"			return COMMENTCLOSE;
-{commentln}		return COMMENTLN;
+{commentOpen}   return COMMENTOPEN;
+{commentClose}  return COMMENTCLOSE;
+{commentln}     return COMMENTLN;
 
-
-{salto}			return NEWLINE;
-{tab}			return TAB;
-{cualquiera}	return ERR;
+{espacio}       return ESPACIO;
+{salto}         return NEWLINE;
+{tab}           return TAB;
+{cualquiera}    return ERR;
 
 
 %%
