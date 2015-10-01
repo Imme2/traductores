@@ -5,33 +5,47 @@
 #include <vector>
 #include <sstream>
 #include <string>
-#include "scanner.h"
-#include "token.c"
+#include "scanner.h"	//Se incluyen aqui el header, que contiene las definiciones
+#include "token.c"		// de los tipos, y las clases token y errtoken
 #include "errtoken.c"
 
 using namespace std;
 
+#define TABVALOR 4		//por default se dice que una tabulacion tiene valor 4.		
+
 extern int yylex();
 extern int yylineno;
-extern char* yytext;
-extern FILE* yyin;
+extern char* yytext;		// Se usa extern para traer desde lex.yy.c estos valores
+extern FILE* yyin;			// y la funcion yylex
 extern int yyleng;
 
-vector<token> tokens;
-vector<errToken> errores;
+vector<token> tokens;		// Se declaran las listas de tokens y errores como globales para evitar
+vector<errToken> errores;	// retornar un par de vectores y dado que todas las funciones.
+							// usan estas variables
+
+// Esta funcion recibe el nombre del archivo a tokenizar y 
+// llama al lexer para encontrar cada token.
+// Al encontrar un token este se agrega a la lista de tokens
+// o de ser un error, a la lista de errores
+
 
 bool tokenizeFile(char* nombreArchivo){
-	if ((yyin = fopen(nombreArchivo,"r")) != NULL){
-		int tipo;
-		bool comment = false;
-		int nroFila = 0;
+	if ((yyin = fopen(nombreArchivo,"r")) != NULL){ //Se modifica el sitio de lectura
+		int tipo;									//si el archivo es invalido, esto
+		bool comment = false;						//retornara null, por lo que probamos
+		int nroFila = 0;							// por esto
 		int nroCol = 0;
-		while ((tipo = yylex()) != 0) {
+		while ((tipo = yylex()) != 0) {		// Mientras no se halla terminado el archivo
 			if (comment == true){
-				switch(tipo){
-					case NEWLINE:
-						nroFila++;
-						nroCol = 0;
+				// Se verifica si se esta en un comentario multi linea
+				// en tal caso no se deben crear tokens pero todavia
+				// se deben manejar los numeros de linea y los numeros
+				// de columna, por lo que todavia debemos leer
+				// hasta llegar al simbolo de cerrar commentario
+				switch(tipo){		
+					case NEWLINE:	
+						nroFila++;	
+						nroCol = 0;	
 						break;
 					case COMMENTCLOSE:
 						comment = false;
@@ -46,6 +60,11 @@ bool tokenizeFile(char* nombreArchivo){
 				}
 			}
 			else{
+				// Si no se esta en comentario, se deben crear tokens para
+				// cada match encontrado y se debe manejar igual el numero
+				// de columna y fila.
+				// En caso de encontrar un token, se agrega el mismo a la
+				// lista de tokens con su numero de fila y columna.
 				switch(tipo){
 					case IDENT:
 						tokens.push_back(token(tipo,string(yytext),
@@ -63,7 +82,7 @@ bool tokenizeFile(char* nombreArchivo){
 						nroCol += yyleng;
 						break;
 					case TAB:
-						nroCol += 4;
+						nroCol += TABVALOR; // Se le da a cada TAB un valor de 4 por default
 						break;
 					case NEWLINE:
 						nroFila++;
@@ -82,6 +101,7 @@ bool tokenizeFile(char* nombreArchivo){
 						break;
 					case COMMENTLN:
 						nroFila += 1;
+						nroCol = 0;
 						break;
 					default:
 						tokens.push_back(token(tipo,nroFila+1,nroCol+1));
@@ -98,6 +118,10 @@ bool tokenizeFile(char* nombreArchivo){
 	}
 }
 
+
+// Esta funcion imprime los tokens o errores,
+// en caso de que la lista de errores tenga elementos
+// en ella.
 
 void printTokens(){
 	if (errores.size() != 0){
@@ -116,7 +140,10 @@ void printTokens(){
 }
 
 
-
+// Esta es la funcion principal, aqui se chequean el numero de
+// argumentos y se imprimen por la salida estandar los errores
+// en caso de que el archivo no se pueda leer o no se le hayan dado
+// suficientes argumentos.
 
 int main(int argc,char* argv[]){
 	if (argc != 2){

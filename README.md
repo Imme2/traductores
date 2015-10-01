@@ -1,2 +1,0 @@
-# traductores
-Proyecto Traductores

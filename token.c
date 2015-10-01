@@ -4,6 +4,12 @@
 
 using namespace std;
 
+// Esta es la clase de tokens
+// en ella se contiene el tipo de token
+// y el numero, identificador o caracter que
+// este adentro en caso de ser de alguno de estos tipos
+// ademas se encuentra la fila y columna del token.
+
 class token{
 	string IdentValue;
 	long long NumValue;
@@ -11,6 +17,9 @@ class token{
 	int posFila;
 	int posColu;
 public:
+
+	// Se usan varias funciones constructoras para aprovechar el overload
+	// en caso de ser un tipo que necesita un numero o string.
 
 	token(int givenType, int fila, int col){
 		type = givenType;
@@ -31,6 +40,13 @@ public:
 		posFila = fila;
 		posColu = col;
 	}
+
+
+	// Una gran funcion que retorna un string, se usa un switch
+	// bastante grande para ensamblar en un stringstream el
+	// string correcto.
+	// Al final de esto se le agrega al string la posicion
+	// del token. 
 
 	string toString(){
 		ostringstream result;

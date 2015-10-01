@@ -6,7 +6,7 @@ comment \$-([^-]|-+[^\$])*-\$
 commentln \$\$[.^\n]*\n
 caracter '([^\n\t]|\\n|\\t|'|\')'
 TkIdent [A-Za-z]([A-Za-z]|[0-9]|_)*
-Num   -?[0-9]+
+Num   [0-9]+
 
 commentOpen \$-
 commentClose -\$
