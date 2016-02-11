@@ -1,6 +1,10 @@
 %{
-#include "scanner.h"    
+#include "scanner.h"
+#include "parser.h"
 %}
+
+
+%option bison-bridge
 
 comment \$-([^-]|-+[^\$])*-\$
 commentln \$\$[.^\n]*\n
@@ -20,79 +24,79 @@ cualquiera .
 
 
 
-"create"        return CREATE;
-"activate"      return ACTIVATE;
-"activation"    return ACTIVATION;
-"deactivate"    return DEACTIVATE;
-"deactivation"  return DEACTIVATION;
-"advance"       return ADVANCE;
-"execute"       return EXECUTE;
-"default"       return DEFAULT;
-"collect"       return COLLECT;
-"receive"       return RECEIVE;
-"drop"          return DROP;
-"on"            return ON;
-"send"          return SEND;
-"store"         return STORE;
-"bot"           return BOT;
-"me"            return ME;
-"up"            return UP;
-"down"          return DOWN;
-"right"         return RIGHT;
-"left"          return LEFT;
-"read"          return READ;
-"as"            return AS;
-"end"           return END;
+"create"        return TOKEN_CREATE;
+"activate"      return TOKEN_ACTIVATE;
+"activation"    return TOKEN_ACTIVATION;
+"deactivate"    return TOKEN_DEACTIVATE;
+"deactivation"  return TOKEN_DEACTIVATION;
+"advance"       return TOKEN_ADVANCE;
+"execute"       return TOKEN_EXECUTE;
+"default"       return TOKEN_DEFAULT;
+"collect"       return TOKEN_COLLECT;
+"receive"       return TOKEN_RECEIVE;
+"drop"          return TOKEN_DROP;
+"on"            return TOKEN_ON;
+"send"          return TOKEN_SEND;
+"store"         return TOKEN_STORE;
+"bot"           return TOKEN_BOT;
+"me"            return TOKEN_ME;
+"up"            return TOKEN_UP;
+"down"          return TOKEN_DOWN;
+"right"         return TOKEN_RIGHT;
+"left"          return TOKEN_LEFT;
+"read"          return TOKEN_READ;
+"as"            return TOKEN_AS;
+"end"           return TOKEN_END;
 
 
-"bool"          return BOOL;
-"int"           return INT;
-"char"          return CHAR;
+"bool"          return TOKEN_BOOL;
+"int"           return TOKEN_INT;
+"char"          return TOKEN_CHAR;
 
-"while"         return WHILE;
-"if"            return IF;
-"else"          return ELSE;
+"while"         return TOKEN_WHILE;
+"if"            return TOKEN_IF;
+"else"          return TOKEN_ELSE;
 
-"true"          return TRU;
-"false"         return FAL;
+"true"          return TOKEN_TRU;
+"false"         return TOKEN_FAL;
 
-{TkIdent}       return IDENT;
-{Num}           return NUM;
-{caracter}      return CHARACTER;
+{TkIdent}       {yylval.str = string(yytext); return TOKEN_IDENT;}
+{Num}           {yylval.num = atoi(yytext); return TOKEN_NUM;}
+{caracter}      {yylval.carac = yytext[1]; return TOKEN_CHARACTER;}
 
-"("             return PARABRE;
-")"             return PARCIERR;
-"."             return PUNTO;
-","             return COMA;
-":"             return DOSPUNT;
-"<"             return MENOR;
-">"             return MAYOR;
-"<="            return MENORIG;
-">="            return MAYORIG;
-"="             return IGUAL;
-"/="            return DESIGUAL;
-"~"             return NEG;
-"\\/"           return DISY;
-"/\\"           return CONJ;
-"+"             return SUMA;
-"-"             return RESTA;
-"*"             return MULT;
-"/"             return DIV;
-"%"             return MOD;
+"("             return TOKEN_PARABRE;
+")"             return TOKEN_PARCIERR;
+"."             return TOKEN_PUNTO;
+","             return TOKEN_COMA;
+":"             return TOKEN_DOSPUNT;
+"<"             return TOKEN_MENOR;
+">"             return TOKEN_MAYOR;
+"<="            return TOKEN_MENORIG;
+">="            return TOKEN_MAYORIG;
+"="             return TOKEN_IGUAL;
+"/="            return TOKEN_DESIGUAL;
+"~"             return TOKEN_NEG;
+"\\/"           return TOKEN_DISY;
+"/\\"           return TOKEN_CONJ;
+"+"             return TOKEN_SUMA;
+"-"             return TOKEN_RESTA;
+"*"             return TOKEN_MULT;
+"/"             return TOKEN_DIV;
+"%"             return TOKEN_MOD;
 
-{commentOpen}   return COMMENTOPEN;
-{commentClose}  return COMMENTCLOSE;
-{commentln}     return COMMENTLN;
+{commentOpen}   return TOKEN_COMMENTOPEN;
+{commentClose}  return TOKEN_COMMENTCLOSE;
+{commentln}     return TOKEN_COMMENTLN;
 
-{espacio}       return ESPACIO;
-{salto}         return NEWLINE;
-{tab}           return TAB;
-{cualquiera}    return ERR;
+{espacio}       return TOKEN_ESPACIO;
+{salto}         return TOKEN_NEWLINE;
+{tab}           return TOKEN_TAB;
+{cualquiera}    return TOKEN_ERR;
 
 
 %%
 
 int yywrap(){
-	return 1;
+	return TOKEN_1;
 }
  

@@ -2,27 +2,53 @@
 
 class arbolSintactico{
 
+	secuenciaDeclaraciones *left;
+	secuenciaInstrucciones *right;
 
+	arbolSintactico(secuenciaDeclaraciones *l, secuenciaInstrucciones *r)left(l),right(r){};
 
-	arbolSintactico();
+	toString(){
 
-	print()
+	}
 
-	virtual arbolSintactico * clone() = 0;
+};
+
+class instruccion{
 
 };
 
-class arbol
-
-class secuenciacion{
-
-	secuenciacion* left;
-	secuenciacion* right;
+class secuenciaInstrucciones, public instruccion{
 
 
-	virtual toprint(){}
+	instruccion *left
+	secuenciaInstrucciones* right;
+
+	secuenciaInstrucciones(instruccion *l, secuenciaInstrucciones* r)left(l), right(r){}
+
+	secuenciaInstrucciones(instruccion *l)left(l){
+		right = NULL;
+	}
+
+	toString(){
+
+	}
 
 };
+
+class operBin, public instruccion{
+
+};
+
+class operUnaria, public instruccion{
+	
+}
+
+class asignacion, public instruccion{
+
+};
+
+
+
 
 
 class suma:public secuenciacion{
