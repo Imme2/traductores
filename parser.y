@@ -1,7 +1,8 @@
 %{
 #include <cstdio>
 #include <iostream>
-
+#include <vector>
+#include "errtoken.c"
 using namespace std;
 
 extern "C" int yylex();
@@ -12,6 +13,8 @@ extern int line_num;
 void yyerror(const char *s);
 
 arbolSintactico *root;
+
+vector<errToken> errores;
 
 %}
 
@@ -49,14 +52,21 @@ CREATE: DECLARATION
 	;
 
 EXECUTE: INSTRUCCION { $$ = $1 }
-	| INSTRUCCION INSTRUCCION {$$ = Secuenciacion($1,$2)}
+	| INSTRUCCION INSTRUCCION {$$ = Secuenciacion($1,$2);}
 	;
 
-INSTRUCCIONES: INSTRUCCION
-	| INSTRUCCION INSTRUCCIONES {$$ = Secuenciacion($1,$2) }
+INSTRUCCIONES: INSTRUCCION {$$ = secuenciaInstrucciones($1);}
+	| INSTRUCCION INSTRUCCIONES {$$ = secuenciaInstrucciones($1,$2);}
 	;
 
-INSTRUCCION: 
+INSTRUCCION: LOOP
+	| ASIGNACION
+	| CONDICIONAL
+	| ADVANCE
+	|
+
+LOOP:
+
 
 DECLARATION: TIPO BOT IDENTIFICADOR
 
