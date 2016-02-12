@@ -8,7 +8,7 @@ vector<errToken> errores;
 int commentLine = 0;
 int insideComment = 0;
 
-int colNo
+int colNo = 0;
 
 %define YY_USER_ACTION yyloc.first_line = yyloc.last_line = yylineno; \
 	yyloc.first_column = colNum; yyloc.last_column = colNo + yyleng - 1; \
@@ -78,7 +78,7 @@ cualquiera .
 {Num}           {yylval.num = atoi(yytext); if (insideComment == 0) return TOKEN__NUM;}
 {caracter}      {yylval.carac = yytext[1]; if (insideComment == 0) return TOKEN__CHARACTER;}
 
-"("             {if (insideComment == 0) return TOKEN__PARABRE;}
+"("             {if (insideComment == 0 && commentLine == 0) return TOKEN__PARABRE;}
 ")"             {if (insideComment == 0) return TOKEN__PARCIERR;}
 "."             {if (insideComment == 0) return TOKEN__PUNTO;}
 ","             {if (insideComment == 0) return TOKEN__COMA;}
@@ -98,12 +98,12 @@ cualquiera .
 "/"             {if (insideComment == 0) return TOKEN__DIV;}
 "%"             {if (insideComment == 0) return TOKEN__MOD;}
 
-{commentOpen}   {if (insideComment == 0) return TOKEN__COMMENTOPEN;}
-{commentClose}  {if (insideComment == 0) return TOKEN__COMMENTCLOSE;}
-{commentln}     {if (insideComment == 0) return TOKEN__COMMENTLN;}
+{commentOpen}   {if (commentLine == 0) insideComment = 1;}
+{commentClose}  {if (commentLine == 0) insideComment = 0;}
+{commentln}     {if (insideComment == 0) commentLine = 1;}
 
 {espacio}       {colNo;} hacer contar columna aqui
-{salto}         {lineno++; insideComment = 1;{if (insideComment == 0) return TOKEN__NEWLINE;}
+{salto}         {lineno++; commentLine = 0;{if (insideComment == 0) return TOKEN__NEWLINE;}
 {tab}           {;} hacer contar columna aqui
 {cualquiera}    {;} error aqui
 

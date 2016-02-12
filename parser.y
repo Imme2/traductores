@@ -26,6 +26,8 @@ vector<errToken> errores;
 %output  "parser.c"
 %defines "parser.h"
 
+%locations
+
 %token <num> NUM
 %token <str> ID
 %token <carac> CARACTER
@@ -133,16 +135,6 @@ NUMVALUE: NUM
 	| ID
 	;
 
-
-LOOP:
-
-
-DECLARATION: TIPO BOT IDENTIFICADOR
-
-INSTRUCCION: 
-
-IDENT: IDENT IDENT
-	:	
 
 %%
 
