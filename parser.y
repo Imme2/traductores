@@ -12,8 +12,7 @@ extern int line_num;
  
 void yyerror(const char *s);
 
-arbolSintactico *root;
-
+arbolSintactico *raiz;
 vector<errToken> errores;
 
 %}
@@ -40,8 +39,6 @@ vector<errToken> errores;
 %left	TOKEN_SUMA TOKEN_RESTA
 %left	TOKEN_MULT TOKEN_DIV TOKEN_MOD
 %left	TOKEN_DISY TOKEN_CONJ
-%left	TOKEN_PARCIERRA //REVISAR
-%right	TOKEN_PARABRE   //REVISAR
 %right	TOKEN_NEG	
 
 
@@ -54,24 +51,41 @@ vector<errToken> errores;
 PROGRAMA: CREATE EXECUTE {root = arbolSintactico($1,$2)}
 		| CREATE
 		| EXECUTE
+		| ERROR
 		;
 
 CREATE: DECLARATION
 	;
 
-EXECUTE: INSTRUCCION { $$ = $1 }
-	| INSTRUCCION INSTRUCCION {$$ = Secuenciacion($1,$2);}
-	;
+EXECUTE: SECUENCIA_INSTRUC { $$ = $1 }
 
-INSTRUCCIONES: INSTRUCCION {$$ = secuenciaInstrucciones($1);}
-	| INSTRUCCION INSTRUCCIONES {$$ = secuenciaInstrucciones($1,$2);}
+SECUENCIA_INSTRUC: INSTRUCCION {$$ = secuenciaInstrucciones($1);}
+	| SECUENCIA_INSTRUC INSTRUCCIONES {$$ = secuenciaInstrucciones($1,$2);}
 	;
 
 INSTRUCCION: LOOP
 	| ASIGNACION
 	| CONDICIONAL
 	| ADVANCE
-	|
+	| ACTIVATE
+	| DEACTIVATE
+	;
+
+ACTIVATE: TOKEN_ACTIVATE LISTA_IDS
+	;
+
+ADVANCE: TOKEN_ADVANCE LISTA_IDS
+	;
+
+DEACTIVATE: TOKEN_DEACTIVATE LISTA_IDS
+	;
+
+LISTA_IDS: ID
+	| LISTA_IDS ID
+	;
+
+
+
 
 LOOP:
 

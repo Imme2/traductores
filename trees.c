@@ -36,12 +36,12 @@ class secuenciaInstrucciones, public instruccion{
 };
 
 class operBin, public instruccion{
-
+	
 };
 
 class operUnaria, public instruccion{
 	
-}
+};
 
 class asignacion, public instruccion{
 
