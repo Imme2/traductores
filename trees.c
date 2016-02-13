@@ -14,24 +14,53 @@ class arbolSintactico{
 };
 
 class instruccion{
+public:
+
+	virtual instruccion
+
+	virtual toString(){}
 
 };
 
 class secuenciaInstrucciones, public instruccion{
+public:
 
+	instruccion *right
+	secuenciaInstrucciones *left;
 
-	instruccion *left
-	secuenciaInstrucciones* right;
+	secuenciaInstrucciones(secuenciaInstrucciones* r,instruccion *l)left(l), right(r){}
 
-	secuenciaInstrucciones(instruccion *l, secuenciaInstrucciones* r)left(l), right(r){}
-
-	secuenciaInstrucciones(instruccion *l)left(l){
-		right = NULL;
+	secuenciaInstrucciones(instruccion *r)right(r){
+		left = NULL;
 	}
 
 	toString(){
 
 	}
+
+};
+
+class advanceinst, public instruction{
+public:
+
+	listaIDs *ids;
+	advanceinst(listaIDs id) ids(id){}
+
+	toString(){
+
+	}
+
+};
+
+class listaIDs {
+public:
+
+	listaIDs *left;
+	string right;
+
+	listaIDs(listaIDs l, string r) left(l), right(r){}
+
+	listaIDs(string r) right(r){}
 
 };
 

@@ -9,7 +9,7 @@ extern "C" int yylex();
 extern "C" int yyparse();
 extern "C" FILE *yyin;
 extern int line_num;
- 
+
 void yyerror(const char *s);
 
 arbolSintactico *raiz;
@@ -46,20 +46,16 @@ vector<errToken> errores;
 %right	TOKEN_NEG	
 
 
-
 %%
 
-PROGRAMA: CREATE EXECUTE {root = arbolSintactico($1,$2)}
-	| CREATE
-	| EXECUTE
-	| ERROR
+PROGRAMA: CREATE EXECUTE {root = arbolSintactico($1,$2);}
 	;
 
-CREATE: TOKEN_CREATE SECUENCIA_DECLAR
+CREATE: TOKEN_CREATE SECUENCIA_DECLAR { $$ = $2;}
 	;
 
-SECUENCIA_DECLAR: SECUENCIA_DECLAR DECLARATION
-	| DECLARATION 
+SECUENCIA_DECLAR: SECUENCIA_DECLAR DECLARATION {$$ = secuenciaDeclaraciones($1,$2);}
+	| DECLARATION  {$$ = secuenciaDeclaraciones($1);}
 	;
 
 DECLARATION: TYPE TOKEN_BOT LISTA_IDS SECUENCIA_COMPORT DEFAULTCOMP TOKEN_END
@@ -96,39 +92,59 @@ ROBOTINSTR: STORE TOKEN_PUNTO
 	| COLLECT TOKEN_PUNTO
 	| DROP TOKEN_PUNTO
 	| MOVE TOKEN_PUNTO
-	| LECTURA TOKEN_PUNTO
+	| READ TOKEN_PUNTO
+	| SEND TOKEN_PUNTO
 	;
 
-
-STORE: TOKEN_STORE BOOLEXPRESSION
-	| TOKEN_STORE ALGEXPRESSION
-	| TOKEN_STORE CARACTER
+STORE: TOKEN_STORE EXPRESSION
 	;
 
-COLLECT: TOKEN_COLLECT
+COLLECT: TOKEN_COLLECT 
+	| TOKEN_COLLECT TOKEN_AS ID
+	;
 
-EXECUTE: TOKEN_EXECUTE SECUENCIA_INSTRUC { $$ = $1 }
+DROP: TOKEN_DROP EXPRESSION
+	;
+
+MOVE: DIRECTION ALGEXPRESSION
+	;
+
+READ: TOKEN_READ
+	| TOKEN_READ TOKEN_AS ID
+	;
+
+SEND: TOKEN_SEND
+	;
+
+DIRECTION: TOKEN_UP
+	| TOKEN_DOWN
+	| TOKEN_LEFT
+	| TOKEN_RIGHT
+	;
+
+EXECUTE: TOKEN_EXECUTE SECUENCIA_INSTRUC { $$ = $1;}
 	;
 
 SECUENCIA_INSTRUC: INSTRUCCION {$$ = secuenciaInstrucciones($1);}
 	| SECUENCIA_INSTRUC TOKEN_COMA INSTRUCCION {$$ = secuenciaInstrucciones($1,$2);}
 	;
 
-INSTRUCCION: ADVANCE
-	| ACTIVATE
-	| DEACTIVATE
-	| CONDICIONAL
-	| LOOP
-	| INCORPALCANCE
+INSTRUCCION: ADVANCE {}
+	| ACTIVATE {}
+	| DEACTIVATE {}
+	| CONDICIONAL {}
+	| LOOP {}
+	| INCORPALCANCE {}
 	;
 
 CONDICIONAL: TOKEN_IF BOOLEXPRESSION TOKEN_DOSPUNT  SECUENCIA_INSTRUC ELSE TOKEN_END
 	| TOKEN_IF BOOLEXPRESSION TOKEN_DOSPUNT ELSE TOKEN_END
 	;
 
-ELSE: TOKEN_ELSE TOKEN_DOSPUNT SECUENCIA_INSTRUC
-	| /* Lambda */
+ELSE: TOKEN_ELSE TOKEN_DOSPUNT SECUENCIA_INSTRUC {$$ =  }
+	| /* Lambda */	{$$ = NULL}
 	;
+
 
 ACTIVATE: TOKEN_ACTIVATE LISTA_IDS TOKEN_PUNTO
 	;
@@ -147,6 +163,11 @@ INCORPALCANCE: CREATE EXECUTE
 
 LISTA_IDS: ID
 	| LISTA_IDS TOKEN_COMA ID
+	;
+
+EXPRESSION: ALGEXPRESSION
+	| BOOLEXPRESSION
+	| CARACTER
 	;
 
 BOOLEXPRESSION: TOKEN_PARABRE BOOLEXPRESSION TOKEN_PARCIERRA
@@ -193,16 +214,13 @@ NUMVALUE: NUM
 
 %%
 
-int yyerror(string s){
+int yyerror(char* s){
+	string s1 = string(s);
 	extern int yylineno;	// defined and maintained in lex.c
 	extern char *yytext;	// defined and maintained in lex.c
 
-	cerr << "ERROR: " << s << " at symbol \"" << yytext;
-	cerr << "\" on line " << yylineno << endl;
+	cout << "ERROR: " << s << " at symbol \"" << yytext;
+	cout << "\" on line " << yylloc.first_line;
+	cout << " on column " << yylloc.first_column << endl;
 	exit(1);
-}
-
-int yyerror(char *s){
-	printf("Error: %s",s);
-	return 0;
 }
