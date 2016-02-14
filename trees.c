@@ -4,13 +4,13 @@
 class instruccion{
 public:
 
-	virtual instruccion
+	virtual ~instruccion(){}
 
-	virtual toString(){}
+	virtual void toString(){}
 
 };
 
-class arbolSintactico, public instruccion{
+class arbolSintactico: public instruccion{
 public:
 
 	secuenciaDeclaraciones *left;
@@ -18,13 +18,13 @@ public:
 
 	arbolSintactico(secuenciaDeclaraciones *l, secuenciaInstrucciones *r)left(l),right(r){};
 
-	toString(){
+	void toString(){
 
 	}
 
 };
 
-class secuenciaInstrucciones, public instruccion{
+class secuenciaInstrucciones: public instruccion{
 public:
 
 	instruccion *right
@@ -36,22 +36,90 @@ public:
 		left = NULL;
 	}
 
-	toString(){
+	void toString(){
 
 	}
 
 };
 
-class advanceinst, public instruction{
+class advanceInst: public instruccion{
 public:
 
 	listaIDs *ids;
-	advanceinst(listaIDs id) ids(id){}
+	advanceInst(listaIDs id) ids(id){}
 
-	toString(){
+	void toString(){
 
 	}
 
+};
+
+class activateInst: public instruccion{
+public:
+
+	listaIDs *ids;
+	activateInst(listaIDs id) ids(id){}
+
+	vooid toString(){
+
+	}
+
+};
+
+class deactivateInst: public instruccion{
+public:
+
+	listaIDs *ids;
+	deactivateInst(listaIDs id) ids(id){}
+
+	void toString(){
+
+	}
+
+};
+
+class conditionalInst: public instruccion{
+
+	secuenciaInstrucciones* success;
+	secuenciaInstrucciones* failure;
+	boolExpression* guardia;
+
+	conditionalInst(boolExpression *g,secuenciaInstrucciones* s,secuenciaInstrucciones* f) guardia(g),success(s){
+		if (f == NULL){
+			failure == NULL;
+		}
+		else{
+			failure = f;
+		}
+	}
+
+	void toString(){
+
+	}
+
+
+};
+
+class loopInstr: public instruccion{
+
+
+	secuenciaInstrucciones success;
+	boolExpression* guardia
+
+	loopInstr(boolExpression* g, secuenciaInstrucciones* s) guardia(g), success(s){}
+
+};
+
+class Expression{
+
+	virtual ~Expression(){}
+
+	virtual void toString(){};
+
+};
+
+class boolExpression: Expression{
+	
 };
 
 class listaIDs {
@@ -67,17 +135,6 @@ public:
 	}
 };
 
-class operBin, public instruccion{
-	
-};
-
-class operUnaria, public instruccion{
-	
-};
-
-class asignacion, public instruccion{
-
-};
 
 
 
