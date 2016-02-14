@@ -111,16 +111,54 @@ class loopInstr: public instruccion{
 };
 
 class Expression{
-
+public:
 	virtual ~Expression(){}
 
 	virtual void toString(){};
 
 };
 
-class boolExpression: Expression{
+class algExpression: public Expression{
+
+	string operador;
+	algExpression *left;
+	string rId;
+	int rInt;
+
+	algExpression(string op, algExpression *l, )left(l){
+
+	}
+};
+
+class boolExpression: public Expression{
+public:
+	string operador;
+	boolExpression *lBool;
+	bool boolvalue;
+	string idvalue
+
+	algExpression *rAlg;
+	algExpression *lAlg;	
+
+	boolExpression(string op, boolExpression *l, bool r)lBool(l), operador(op){
+		boolvalue = r;
+		idvalue = NULL;
+		rAlg = NULL;
+		lAlg = NULL;
+	}
+
+	boolExpression(string op, boolExpression *l, string id)lBool(l),operador(op), idvalue(id){
+		rAlg = NULL;
+		lAlg = NULL;
+	}
+
+	boolExpression(string op, algExpression *l, algExpression *r) rAlg(r), lAlg(l), operador(op){
+		lBool = NULL;
+	}
 
 };
+
+
 
 class listaIDs {
 public:
