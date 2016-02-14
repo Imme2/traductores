@@ -1,6 +1,17 @@
 
 
-class arbolSintactico{
+
+class instruccion{
+public:
+
+	virtual instruccion
+
+	virtual toString(){}
+
+};
+
+class arbolSintactico, public instruccion{
+public:
 
 	secuenciaDeclaraciones *left;
 	secuenciaInstrucciones *right;
@@ -10,15 +21,6 @@ class arbolSintactico{
 	toString(){
 
 	}
-
-};
-
-class instruccion{
-public:
-
-	virtual instruccion
-
-	virtual toString(){}
 
 };
 
@@ -60,8 +62,9 @@ public:
 
 	listaIDs(listaIDs l, string r) left(l), right(r){}
 
-	listaIDs(string r) right(r){}
-
+	listaIDs(string r) right(r){
+		left = NULL;
+	}
 };
 
 class operBin, public instruccion{

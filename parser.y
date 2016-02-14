@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <iostream>
 #include <vector>
+#include <string>
 #include "errtoken.c"
 using namespace std;
 
@@ -18,8 +19,8 @@ vector<errToken> errores;
 %}
 
 %union{
-	int num;
-	string str;
+	int value;
+	string name;
 	char carac;
 }
 
@@ -122,19 +123,19 @@ DIRECTION: TOKEN_UP
 	| TOKEN_RIGHT
 	;
 
-EXECUTE: TOKEN_EXECUTE SECUENCIA_INSTRUC { $$ = $1;}
+EXECUTE: TOKEN_EXECUTE SECUENCIA_INSTRUC { $$ = $2;}
 	;
 
 SECUENCIA_INSTRUC: INSTRUCCION {$$ = secuenciaInstrucciones($1);}
-	| SECUENCIA_INSTRUC TOKEN_COMA INSTRUCCION {$$ = secuenciaInstrucciones($1,$2);}
+	| SECUENCIA_INSTRUC TOKEN_COMA INSTRUCCION {$$ = secuenciaInstrucciones($1,$3);}
 	;
 
-INSTRUCCION: ADVANCE {}
-	| ACTIVATE {}
-	| DEACTIVATE {}
-	| CONDICIONAL {}
-	| LOOP {}
-	| INCORPALCANCE {}
+INSTRUCCION: ADVANCE {$$ = $1}
+	| ACTIVATE { $$ = $1}
+	| DEACTIVATE { $$ = $1}
+	| CONDICIONAL { $$ = $1}
+	| LOOP { $$ = $1}
+	| INCORPALCANCE { $$ = $1}
 	;
 
 CONDICIONAL: TOKEN_IF BOOLEXPRESSION TOKEN_DOSPUNT  SECUENCIA_INSTRUC ELSE TOKEN_END
@@ -145,11 +146,10 @@ ELSE: TOKEN_ELSE TOKEN_DOSPUNT SECUENCIA_INSTRUC {$$ =  }
 	| /* Lambda */	{$$ = NULL}
 	;
 
-
-ACTIVATE: TOKEN_ACTIVATE LISTA_IDS TOKEN_PUNTO
+ACTIVATE: TOKEN_ACTIVATE LISTA_IDS TOKEN_PUNTO {}
 	;
 
-ADVANCE: TOKEN_ADVANCE LISTA_IDS TOKEN_PUNTO
+ADVANCE: TOKEN_ADVANCE LISTA_IDS TOKEN_PUNTO {$$ = advanceinst($2)}
 	;
 
 DEACTIVATE: TOKEN_DEACTIVATE LISTA_IDS TOKEN_PUNTO
@@ -161,8 +161,8 @@ LOOP: TOKEN_WHILE BOOLEXPRESSION TOKEN_DOSPUNT SECUENCIA_INSTRUC TOKEN_END
 INCORPALCANCE: CREATE EXECUTE
 	;
 
-LISTA_IDS: ID
-	| LISTA_IDS TOKEN_COMA ID
+LISTA_IDS: ID {$$ = listaIDs($1->name)}
+	| LISTA_IDS TOKEN_COMA ID {$$ = listaIDs($1,$3->name)}
 	;
 
 EXPRESSION: ALGEXPRESSION
@@ -215,12 +215,12 @@ NUMVALUE: NUM
 %%
 
 int yyerror(char* s){
+	extern char *yytext;
 	string s1 = string(s);
-	extern int yylineno;	// defined and maintained in lex.c
-	extern char *yytext;	// defined and maintained in lex.c
+
 
 	cout << "ERROR: " << s << " at symbol \"" << yytext;
 	cout << "\" on line " << yylloc.first_line;
 	cout << " on column " << yylloc.first_column << endl;
-	exit(1);
+	exit(0);
 }
