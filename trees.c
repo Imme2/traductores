@@ -1,3 +1,4 @@
+#include <string>
 
 
 
@@ -10,29 +11,16 @@ public:
 
 };
 
-class arbolSintactico: public instruccion{
-public:
-
-	secuenciaDeclaraciones *left;
-	secuenciaInstrucciones *right;
-
-	arbolSintactico(secuenciaDeclaraciones *l, secuenciaInstrucciones *r)left(l),right(r){};
-
-	void toString(){
-
-	}
-
-};
 
 class secuenciaInstrucciones: public instruccion{
 public:
 
-	instruccion *right
+	instruccion *right;
 	secuenciaInstrucciones *left;
 
-	secuenciaInstrucciones(secuenciaInstrucciones* r,instruccion *l)left(l), right(r){}
+	secuenciaInstrucciones(secuenciaInstrucciones* r,instruccion *l): left(l), right(r){}
 
-	secuenciaInstrucciones(instruccion *r)right(r){
+	secuenciaInstrucciones(instruccion *r): right(r){
 		left = NULL;
 	}
 
@@ -46,7 +34,7 @@ class advanceInst: public instruccion{
 public:
 
 	listaIDs *ids;
-	advanceInst(listaIDs id) ids(id){}
+	advanceInst(listaIDs id): ids(id){}
 
 	void toString(){
 
@@ -58,9 +46,9 @@ class activateInst: public instruccion{
 public:
 
 	listaIDs *ids;
-	activateInst(listaIDs id) ids(id){}
+	activateInst(listaIDs id): ids(id){}
 
-	vooid toString(){
+	void toString(){
 
 	}
 
@@ -70,7 +58,7 @@ class deactivateInst: public instruccion{
 public:
 
 	listaIDs *ids;
-	deactivateInst(listaIDs id) ids(id){}
+	deactivateInst(listaIDs id): ids(id){}
 
 	void toString(){
 
@@ -84,7 +72,7 @@ class conditionalInst: public instruccion{
 	secuenciaInstrucciones* failure;
 	boolExpression* guardia;
 
-	conditionalInst(boolExpression *g,secuenciaInstrucciones* s,secuenciaInstrucciones* f) guardia(g),success(s){
+	conditionalInst(boolExpression *g,secuenciaInstrucciones* s,secuenciaInstrucciones* f): guardia(g),success(s){
 		if (f == NULL){
 			failure == NULL;
 		}
@@ -106,7 +94,7 @@ class loopInstr: public instruccion{
 	secuenciaInstrucciones success;
 	boolExpression* guardia;
 
-	loopInstr(boolExpression* g, secuenciaInstrucciones* s) guardia(g), success(s){}
+	loopInstr(boolExpression* g, secuenciaInstrucciones* s): guardia(g), success(s){}
 
 };
 
@@ -120,18 +108,38 @@ public:
 
 class algExpression: public Expression{
 
+
+	bool unary = true;
 	string operador;
 	algExpression *left;
 	string rId;
 	int rInt;
 
-	algExpression(string op, algExpression *l, )left(l){
+	algExpression(string op, algExpression *l,int r): left(l), operador(op){
+		rInt = r;
+	}
 
+	algExpression(string op, algExpression *l,int r): left(l), operador(op), rId(r){}
+
+	algExpression(int v){
+		left = NULL;
+		operador = NULL;
+		rInt = v;
+	}
+
+	algExpression(string id):rId(id){
+		left = NULL;
+		operador = NULL;
+	}
+
+	algExpression(string op, algExpression *l):eft(l),operador(op){
+		unary = true;
 	}
 };
 
 class boolExpression: public Expression{
 public:
+	bool unary = false;
 	string operador;
 	boolExpression *lBool;
 	bool boolvalue;
@@ -156,6 +164,25 @@ public:
 		lBool = NULL;
 	}
 
+	boolExpression(string op, boolExpression *l)operador(op), lBool(l){
+		unary = true;
+	}
+
+	boolExpression(bool r){
+		lBool = NULL;
+		rAlg = NULL;
+		lAlg = NULL;
+		idvalue = NULL;
+		boolvalue = r;
+	}
+
+	boolExpression(string r)idvalue(r){
+		lBool = NULL;
+		rAlg = NULL;
+		lAlg = NULL;
+
+	}
+
 };
 
 
@@ -173,71 +200,30 @@ public:
 	}
 };
 
+class arbolSintactico: public instruccion{
+public:
 
+	secuenciaDeclaraciones *left;
+	secuenciaInstrucciones *right;
 
+	arbolSintactico(secuenciaDeclaraciones *l, secuenciaInstrucciones *r)left(l),right(r){};
 
+	void toString(){
 
-
-class suma:public secuenciacion{
-
-};
-
-class expresion: public arbolSintactico{
-
-
-	int value;
-	expresion *left;
-	expresion *right;
-	char* operador;
-
-	expresion(arbolSintactico* l,arbolSintactico* r, char* op){
-		left = new arbolSintactico(l);
-		right = new arbolSintactico(r);
-		operador = m
 	}
-};
-
-class numero: public expresion{
-	
-	public:
-		int valor;
-
-		numero(int v) valor(v){}
 
 };
 
-class identificador: public expresion{
-	public:
-		string id;
+class incorpAlcance: public instruccion{
+public:
 
-		identificador(string v) id(v){}; // Magia negra.
+	secuenciaDeclaraciones *left;
+	secuenciaInstrucciones *right;
+
+	arbolSintactico(secuenciaDeclaraciones *l, secuenciaInstrucciones *r)left(l),right(r){};
+
+	void toString(){
+
+	}
+
 };
-
-class suma: public expresion{
-	public:
-
-		nodo *izq;
-		nodo *der;
-
-		suma(nodo *I, nodo *D): izq(I), der(D){}
-};
-
-class mult: public expresion{
-	public:
-
-		nodo *izq;
-		nodo *der;
-
-		mult(nodo *I, nodo *D): izq(I), der(D){}
-};
-
-class div: public arbolSintactico{
-	public:
-
-		nodo *izq;
-		nodo *der;
-
-		div(nodo *I, nodo *D): izq(I), der(D){}
-};
-
-class

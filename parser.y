@@ -200,13 +200,13 @@ UNARYOPERATION: TOKEN_RESTA
 	;
 
 BOOLVALUE: TOKEN_TRUE {$$ = TRUE}
-	| TOKEN_FALSE {$$ = FALSE}
-	| ID {$$ = $1->name}
+	| TOKEN_FALSE {$$ = FALSE;}
+	| ID {$$ = $1->name;}
 	;
 
 
-NUMVALUE: NUM {$$ = $1->value}
-	| ID {$$ = $1->name}
+NUMVALUE: NUM {$$ = $1->value;}
+	| ID {$$ = $1->name;}
 	;
 
 
