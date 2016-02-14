@@ -104,7 +104,7 @@ class loopInstr: public instruccion{
 
 
 	secuenciaInstrucciones success;
-	boolExpression* guardia
+	boolExpression* guardia;
 
 	loopInstr(boolExpression* g, secuenciaInstrucciones* s) guardia(g), success(s){}
 
@@ -119,7 +119,7 @@ class Expression{
 };
 
 class boolExpression: Expression{
-	
+
 };
 
 class listaIDs {
