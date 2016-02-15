@@ -2,26 +2,39 @@
 #include <cstdio>
 #include <iostream>
 #include <vector>
+#include <string.h>
+#include "trees.c"
 #include <string>
-#include "errtoken.c"
+
 using namespace std;
 
-extern "C" int yylex();
-extern "C" int yyparse();
-extern "C" FILE *yyin;
+
+extern int yylex();
+
+extern int yyparse();
+
+void yyerror(const char*);
+
+extern FILE *yyin;
 extern int line_num;
 
-void yyerror(const char *s);
+//Declaracion de yyerror
+;
 
 arbolSintactico *raiz;
-vector<errToken> errores;
 
 %}
 
 %union{
 	int value;
-	string name;
+	char name[200];
 	char carac;
+	algExpression *algExp;
+	boolExpression *boolExp;
+	Expression *exp;
+	instruccion *inst;
+	declaracion *decl;
+	listaIDs *idl;
 }
 
 %output  "parser.c"
@@ -29,10 +42,18 @@ vector<errToken> errores;
 
 %locations
 
+%type <idl> LISTA_IDS
+%type <inst> EXECUTE SECUENCIA_INSTRUC CONDICIONAL INSTRUCCION INCORPALCANCE DEACTIVATE ACTIVATE ADVANCE ELSE LOOP
+%type <decl> CREATE SECUENCIA_DECLAR DECLARATION 
+%type <exp>   EXPRESSION;
+%type <algExp> ALGEXPRESSION;
+%type <boolExp> BOOLEXPRESSION;
+
 %token <value> NUM
-%token <string> ID
+%token <name> ID
 %token <carac> CARACTER
 
+%token TOKEN_TRUE TOKEN_FALSE TOKEN_PUNTO TOKEN_DOSPUNT TOKEN_PARABRE TOKEN_PARCIERRA TOKEN_SUMA TOKEN_RESTA TOKEN_MULT TOKEN_DIV TOKEN_MOD TOKEN_CONJ TOKEN_DISY TOKEN_NEG TOKEN_MENOR TOKEN_MAYOR TOKEN_MENORIG TOKEN_MAYORIG TOKEN_CREATE TOKEN_WHILE TOKEN_BOOL TOKEN_INT TOKEN_CHAR TOKEN_IF TOKEN_ELSE TOKEN_SEND TOKEN_EXECUTE TOKEN_ON TOKEN_STORE TOKEN_BOT TOKEN_ME TOKEN_DESIGUAL TOKEN_IGUAL TOKEN_COMA TOKEN_DEFAULT TOKEN_COLLECT TOKEN_DROP TOKEN_UP TOKEN_DOWN TOKEN_RIGHT TOKEN_LEFT TOKEN_READ TOKEN_AS TOKEN_RECEIVE TOKEN_ADVANCE TOKEN_ACTIVATE TOKEN_ACTIVATION TOKEN_DEACTIVATE TOKEN_DEACTIVATION TOKEN_END 
 
 
 
@@ -48,28 +69,27 @@ vector<errToken> errores;
 
 %%
 
-PROGRAMA: CREATE EXECUTE {root = arbolSintactico($1,$2);}
+PROGRAMA: CREATE EXECUTE {raiz = new arbolSintactico($1,$2);}
 	;
 
 CREATE: TOKEN_CREATE SECUENCIA_DECLAR { $$ = $2;}
 	;
 
-SECUENCIA_DECLAR: SECUENCIA_DECLAR DECLARATION {$$ = secuenciaDeclaraciones($1,$2);}
-	| DECLARATION  {$$ = secuenciaDeclaraciones($1);}
+SECUENCIA_DECLAR: SECUENCIA_DECLAR DECLARATION {$$ = NULL;}
+	| DECLARATION  {$$ = NULL;}
 	;
 
-DECLARATION: TYPE TOKEN_BOT LISTA_IDS SECUENCIA_COMPORT DEFAULTCOMP TOKEN_END
-	| TYPE TOKEN_BOT LISTA_IDS TOKEN_END
+DECLARATION: TIPO TOKEN_BOT LISTA_IDS SECUENCIA_COMPORT DEFAULTCOMP TOKEN_END {$$ = NULL;}
+	| TIPO TOKEN_BOT LISTA_IDS TOKEN_END {$$ =NULL;}
 	;
 
-TYPE: TOKEN_BOOL
+TIPO: TOKEN_BOOL
 	| TOKEN_CHAR
 	| TOKEN_INT
 	;
 
 SECUENCIA_COMPORT: SECUENCIA_COMPORT COMPORTAMIENTO
 	| COMPORTAMIENTO
-	| /* Lambda */
 	;
 
 COMPORTAMIENTO: TOKEN_ON CONDITION TOKEN_DOSPUNT SECUENCIA_ROBOTINSTR TOKEN_END
@@ -97,6 +117,7 @@ ROBOTINSTR: STORE TOKEN_PUNTO
 	;
 
 STORE: TOKEN_STORE EXPRESSION
+	| TOKEN_STORE CARACTER
 	;
 
 COLLECT: TOKEN_COLLECT 
@@ -104,6 +125,7 @@ COLLECT: TOKEN_COLLECT
 	;
 
 DROP: TOKEN_DROP EXPRESSION
+	| TOKEN_DROP CARACTER
 	;
 
 MOVE: DIRECTION ALGEXPRESSION
@@ -125,8 +147,8 @@ DIRECTION: TOKEN_UP
 EXECUTE: TOKEN_EXECUTE SECUENCIA_INSTRUC { $$ = $2;}
 	;
 
-SECUENCIA_INSTRUC: INSTRUCCION {$$ = secuenciaInstrucciones($1);}
-	| SECUENCIA_INSTRUC TOKEN_COMA INSTRUCCION {$$ = secuenciaInstrucciones($1,$3);}
+SECUENCIA_INSTRUC: INSTRUCCION {$$ = new secuenciaInstrucciones($1);}
+	| SECUENCIA_INSTRUC TOKEN_COMA INSTRUCCION {$$ = new secuenciaInstrucciones($1,$3);}
 	;
 
 INSTRUCCION: ADVANCE {$$ = $1;}
@@ -135,90 +157,81 @@ INSTRUCCION: ADVANCE {$$ = $1;}
 	| CONDICIONAL { $$ = $1;}
 	| LOOP { $$ = $1;}
 	| INCORPALCANCE { $$ = $1;}
+	| error {$$ = NULL;}
 	;
 
-CONDICIONAL: TOKEN_IF BOOLEXPRESSION TOKEN_DOSPUNT  SECUENCIA_INSTRUC ELSE TOKEN_END { $$ = conditionalInstruction($2,$4,$5)}
+CONDICIONAL: TOKEN_IF BOOLEXPRESSION TOKEN_DOSPUNT  SECUENCIA_INSTRUC ELSE TOKEN_END { $$ = new condicional($2,$4,$5);}
 	;
 
-ELSE: TOKEN_ELSE TOKEN_DOSPUNT SECUENCIA_INSTRUC {$$ = $3 }
+ELSE: TOKEN_ELSE TOKEN_DOSPUNT SECUENCIA_INSTRUC {$$ = $3;}
 	| /* Lambda */	{$$ = NULL;}
 	;
 
-ACTIVATE: TOKEN_ACTIVATE LISTA_IDS TOKEN_PUNTO { $$ = activateInstr($2);}
+ACTIVATE: TOKEN_ACTIVATE LISTA_IDS TOKEN_PUNTO { $$ = new activateInst($2);}
 	;
 
-ADVANCE: TOKEN_ADVANCE LISTA_IDS TOKEN_PUNTO {$$ = advanceInst($2);}
+ADVANCE: TOKEN_ADVANCE LISTA_IDS TOKEN_PUNTO {$$ = new advanceInst($2);}
 	;
 
-DEACTIVATE: TOKEN_DEACTIVATE LISTA_IDS TOKEN_PUNTO {$$ = deactivateInstr($2);}
-	;
-
-LOOP: TOKEN_WHILE BOOLEXPRESSION TOKEN_DOSPUNT SECUENCIA_INSTRUC TOKEN_END {}
-	;
-
-INCORPALCANCE: CREATE EXECUTE { $$ = arbolSintactico($1,$2);}
-	;
-
-LISTA_IDS: ID {$$ = listaIDs($1->name)}
-	| LISTA_IDS TOKEN_COMA ID {$$ = listaIDs($1,$3->name)}
-	;
-
-EXPRESSION: ALGEXPRESSION
-	| BOOLEXPRESSION
-	| CARACTER
-	;
-
-BOOLEXPRESSION: TOKEN_PARABRE BOOLEXPRESSION TOKEN_PARCIERRA
-	| TOKEN_NEG BOOLEXPRESSION
-	| BOOLEXPRESSION TOKEN_CONJ BOOLVALUE
-	| BOOLEXPRESSION TOKEN_DISY BOOLVALUE
-	| BOOLEXPRESSION TOKEN_IGUAL BOOLVALUE
-	| BOOLEXPRESSION TOKEN_DESIGUAL BOOLVALUE
-	| ALGEXPRESSION TOKEN_MENOR ALGEXPRESSION
-	| ALGEXPRESSION TOKEN_MAYOR ALGEXPRESSION
-	| ALGEXPRESSION TOKEN_MENORIG ALGEXPRESSION
-	| ALGEXPRESSION TOKEN_MAYORIG ALGEXPRESSION
-	| ALGEXPRESSION TOKEN_IGUAL ALGEXPRESSION
-	| ALGEXPRESSION TOKEN_DESIGUAL ALGEXPRESSION
-	| BOOLVALUE
-	;
-
-ALGEXPRESSION: ALGEXPRESSION BINARYOPERATION NUMVALUE
-	| UNARYOPERATION ALGEXPRESSION
-	| TOKEN_PARABRE ALGEXPRESSION TOKEN_PARCIERRA
-	| NUMVALUE
-	;
-
-BINARYOPERATION: TOKEN_MULT
-	| TOKEN_SUMA
-	| TOKEN_RESTA
-	| TOKEN_DIV
-	| TOKEN_MOD
-	;
-
-UNARYOPERATION: TOKEN_RESTA
-	;
-
-BOOLVALUE: TOKEN_TRUE {$$ = TRUE}
-	| TOKEN_FALSE {$$ = FALSE;}
-	| ID {$$ = $1->name;}
+DEACTIVATE: TOKEN_DEACTIVATE LISTA_IDS TOKEN_PUNTO {$$ = new deactivateInst($2);}
 	;
 
 
-NUMVALUE: NUM {$$ = $1->value;}
-	| ID {$$ = $1->name;}
+LOOP: TOKEN_WHILE BOOLEXPRESSION TOKEN_DOSPUNT SECUENCIA_INSTRUC TOKEN_END { $$ = new loopInst($2,$4);}
+	;
+
+INCORPALCANCE: CREATE EXECUTE { $$ = new incorpAlcance($1,$2);}
+	;
+
+LISTA_IDS: ID {$$ = new listaIDs($1);}
+	| LISTA_IDS TOKEN_COMA ID {$$ = new listaIDs($1,$3);}
+	;
+
+EXPRESSION: ALGEXPRESSION {$$ = $1;}
+	| BOOLEXPRESSION {$$ = $1;}
+	;
+
+BOOLEXPRESSION: TOKEN_PARABRE BOOLEXPRESSION TOKEN_PARCIERRA {$$ = $2;}
+	| TOKEN_NEG BOOLEXPRESSION { $$ = new boolExpression("NEG",$2);}
+	| BOOLEXPRESSION TOKEN_CONJ BOOLEXPRESSION {$$ = new boolExpression("CONJ",$1,$3);}
+	| BOOLEXPRESSION TOKEN_DISY BOOLEXPRESSION {$$ = new boolExpression("DISY",$1,$3);}
+	| BOOLEXPRESSION TOKEN_IGUAL BOOLEXPRESSION {$$ = new boolExpression("IGUAL",$1,$3);}
+	| BOOLEXPRESSION TOKEN_DESIGUAL BOOLEXPRESSION {$$ = new boolExpression("DESIGUAL",$1,$3);}
+	| ALGEXPRESSION TOKEN_MENOR ALGEXPRESSION {$$ = new boolExpression("MENOR",$1,$3);}
+	| ALGEXPRESSION TOKEN_MAYOR ALGEXPRESSION {$$ = new boolExpression("MAYOR",$1,$3);}
+	| ALGEXPRESSION TOKEN_MENORIG ALGEXPRESSION {$$ = new boolExpression("MENORIG",$1,$3);}
+	| ALGEXPRESSION TOKEN_MAYORIG ALGEXPRESSION {$$ = new boolExpression("MAYORIG",$1,$3);}
+	| ALGEXPRESSION TOKEN_IGUAL ALGEXPRESSION {$$ = new boolExpression("IGUAL",$1,$3);}
+	| ALGEXPRESSION TOKEN_DESIGUAL ALGEXPRESSION {$$ = new boolExpression("DESIGUAL",$1,$3);}
+	| TOKEN_TRUE {$$ = new boolExpression(true);}
+	| TOKEN_FALSE {$$ = new boolExpression(false);}
+	| ID {$$ = new boolExpression($1);}
+	;
+
+ALGEXPRESSION: ALGEXPRESSION TOKEN_SUMA ALGEXPRESSION {$$ = new algExpression("SUMA",$1,$3);}
+	| ALGEXPRESSION TOKEN_MULT ALGEXPRESSION {$$ = new algExpression("MULT",$1,$3);}
+	| ALGEXPRESSION TOKEN_RESTA ALGEXPRESSION {$$ = new algExpression("RESTA",$1,$3);}
+	| ALGEXPRESSION TOKEN_DIV ALGEXPRESSION {$$ = new algExpression("DIV",$1,$3);}
+	| ALGEXPRESSION TOKEN_MOD ALGEXPRESSION {$$ = new algExpression("MOD",$1,$3);}
+	| TOKEN_RESTA ALGEXPRESSION {$$ = new algExpression("RESTA",$2);}
+	| TOKEN_PARABRE ALGEXPRESSION TOKEN_PARCIERRA {$$ = $2;}
+	| ID {$$ = new algExpression($1);}
+	| NUM {$$ = new algExpression($1);}
 	;
 
 
 %%
 
-int yyerror(char* s){
+
+void yyerror(char const* s){
 	extern char *yytext;
-	string s1 = string(s);
+	extern int nroErrores;
 
+	if (nroErrores == 0){
+		string s1 = string(s);
 
-	cout << "ERROR: " << s << " at symbol \"" << yytext;
-	cout << "\" on line " << yylloc.first_line;
-	cout << " on column " << yylloc.first_column << endl;
-	exit(0);
+		cout << "ERROR: " << s << " at symbol \"" << yytext;
+		cout << "\" on line " << yylloc.first_line;
+		cout << " on column " << yylloc.first_column << endl;
+	}
 }

@@ -1,4 +1,5 @@
 #include <string>
+#include "expresion.c"
 
 using namespace std;
 
@@ -15,6 +16,33 @@ public:
 	}
 };
 
+class declaracion{
+public:
+
+	virtual ~declaracion(){}
+
+	virtual void toString(){}
+
+};
+
+class secuenciaDeclaraciones: public declaracion{
+public:
+
+	declaracion *right;
+	declaracion *left;
+
+	secuenciaDeclaraciones(declaracion* l,declaracion *r): right(r), left(l){} 
+
+	secuenciaDeclaraciones(declaracion *r): right(r){
+		left = NULL;
+	}
+
+	void toString(){
+
+	}
+
+};
+
 
 class instruccion{
 public:
@@ -29,11 +57,11 @@ class secuenciaInstrucciones: public instruccion{
 public:
 
 	instruccion *right;
-	secuenciaInstrucciones *left;
+	instruccion *left;
 
 					//Nota, en el siguiente constructor el compilador me dijo que cambiara
 					// el orden al que esta ahora, ni idea porque.
-	secuenciaInstrucciones(secuenciaInstrucciones* l,instruccion *r): right(r), left(l){} 
+	secuenciaInstrucciones(instruccion* l,instruccion *r): right(r), left(l){} 
 
 	secuenciaInstrucciones(instruccion *r): right(r){
 		left = NULL;
@@ -83,15 +111,15 @@ public:
 
 
 
-class conditionalInst: public instruccion{
-
-	secuenciaInstrucciones* success;
-	secuenciaInstrucciones* failure;
+class condicional: public instruccion{
+public:
+	instruccion* success;
+	instruccion* failure;
 	boolExpression* guardia;
 
-	conditionalInst(boolExpression *g,secuenciaInstrucciones* s,secuenciaInstrucciones* f): guardia(g),success(s){
+	condicional(boolExpression *g,instruccion* s,instruccion* f): success(s),guardia(g){
 		if (f == NULL){
-			failure == NULL;
+			failure = NULL;
 		}
 		else{
 			failure = f;
@@ -105,13 +133,13 @@ class conditionalInst: public instruccion{
 
 };
 
-class loopInstr: public instruccion{
+class loopInst: public instruccion{
+public:
 
+	instruccion *success;
+	boolExpression *guardia;
 
-	secuenciaInstrucciones success;
-	boolExpression* guardia;
-
-	loopInstr(boolExpression* g, secuenciaInstrucciones* s): guardia(g), success(s){}
+	loopInst(boolExpression* g, instruccion* s): success(s),guardia(g){}
 
 };
 
@@ -123,10 +151,10 @@ class loopInstr: public instruccion{
 class arbolSintactico: public instruccion{
 public:
 
-	secuenciaDeclaraciones *left;
-	secuenciaInstrucciones *right;
+	declaracion *left;
+	instruccion *right;
 
-	arbolSintactico(secuenciaDeclaraciones *l, secuenciaInstrucciones *r): left(l),right(r){};
+	arbolSintactico(declaracion *l, instruccion *r): left(l),right(r){};
 
 	void toString(){
 
@@ -137,10 +165,10 @@ public:
 class incorpAlcance: public instruccion{
 public:
 
-	secuenciaDeclaraciones *left;
-	secuenciaInstrucciones *right;
+	declaracion *left;
+	instruccion *right;
 
-	arbolSintactico(secuenciaDeclaraciones *l, secuenciaInstrucciones *r): left(l),right(r){};
+	incorpAlcance(declaracion *l, instruccion *r): left(l),right(r){};
 
 	void toString(){
 

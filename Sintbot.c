@@ -1,12 +1,19 @@
-#include 
-
-
+#include <cstdio>
+#include <iostream>
+#include <vector>
+#include "trees.c"
 using namespace std;
 
-extern arbolSintactico* raiz;
+//extern arbolSintactico* raiz;
+//extern int yylex();
 extern int yyparse();
-extern vector<errToken> errores;
 
+/*
+extern char* errores[];
+extern int columnError[];
+extern int rowError[];
+extern int nroErrores;
+*/
 
 int main(int argc, char *argv[]){
 	if (argc != 2){
@@ -17,7 +24,7 @@ int main(int argc, char *argv[]){
 	bool listo;
 	listo = yyparse();
 	if (listo){
-		arbolSintactico.print();
+		//arbolSintactico.print();
 	}
 	else{
 		printf("El archivo %s no parece existir o no se puede leer\n",argv[1]);

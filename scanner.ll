@@ -1,24 +1,38 @@
 %{
-#include "scanner.h"
-#include "parser.h"
-#include "errtoken.c"
-#include <vector>
 
-vector<errToken> errores;
+
+#include "trees.c"
+#include "parser.h"
+#include <string.h>
+
+#define MAXERRORES 2000
+
+extern int yylex();
+
+
+char* errores[MAXERRORES];
+int columnError[MAXERRORES];
+int rowError[MAXERRORES];
+
+int nroErrores = 0;
+
 int commentLine = 0;
 int insideComment = 0;
-
+int lineNo = 0;
 int colNo = 0;
 
-%define YY_USER_ACTION yyloc.first_line = yyloc.last_line = yylineno; \
-	yyloc.first_column = colNo; yyloc.last_column = colNo + yyleng - 1; \
-	colNo += yyleng;
+#define YY_USER_ACTION yylloc->first_line = yylloc->last_line = lineNo;\
+						yylloc->first_column = colNo;\
+						yylloc->last_column = colNo + yyleng - 1;\
+						colNo += yyleng;
 
 
 %}
 
 
-%option bison-bridge bison-locations
+
+%option bison-locations
+%option bison-bridge
 
 comment \$-([^-]|-+[^\$])*-\$
 commentln \$\$[.^\n]*\n
@@ -70,15 +84,15 @@ cualquiera .
 "if"            {if (insideComment == 0 && commentLine == 0) return TOKEN_IF;}
 "else"          {if (insideComment == 0 && commentLine == 0) return TOKEN_ELSE;}
 
-"true"          {if (insideComment == 0 && commentLine == 0) return TOKEN_TRU;}
-"false"         {if (insideComment == 0 && commentLine == 0) return TOKEN_FAL;}
+"true"          {if (insideComment == 0 && commentLine == 0) return TOKEN_TRUE;}
+"false"         {if (insideComment == 0 && commentLine == 0) return TOKEN_FALSE;}
 
-{TkIdent}       {yylval.str = string(yytext); if (insideComment == 0 && commentLine == 0) return TOKEN_IDENT;}
-{Num}           {yylval.num = atoi(yytext); if (insideComment == 0 && commentLine == 0) return TOKEN_NUM;}
-{caracter}      {yylval.carac = yytext[1]; if (insideComment == 0 && commentLine == 0) return TOKEN_CHARACTER;}
+{TkIdent}       {strcpy(yylval->name,yytext); if (insideComment == 0 && commentLine == 0) return ID;}
+{Num}           {yylval->value = atoi(yytext); if (insideComment == 0 && commentLine == 0) return NUM;}
+{caracter}      {yylval->carac = yytext[1]; if (insideComment == 0 && commentLine == 0) return CARACTER;}
 
 "("             {if (insideComment == 0 && commentLine == 0) return TOKEN_PARABRE;}
-")"             {if (insideComment == 0 && commentLine == 0) return TOKEN_PARCIERR;}
+")"             {if (insideComment == 0 && commentLine == 0) return TOKEN_PARCIERRA;}
 "."             {if (insideComment == 0 && commentLine == 0) return TOKEN_PUNTO;}
 ","             {if (insideComment == 0 && commentLine == 0) return TOKEN_COMA;}
 ":"             {if (insideComment == 0 && commentLine == 0) return TOKEN_DOSPUNT;}
@@ -102,12 +116,13 @@ cualquiera .
 {commentln}     {if (insideComment == 0) commentLine = 1;}
 
 {espacio}      	{;}
-{salto}         {lineno++; commentLine = 0;{if (insideComment == 0 && commentLine == 0) return TOKEN_NEWLINE;}
-{tab}           {colNo += 3;} hacer contar columna aqui
-{cualquiera}    {;} ERROR AQUI
+{salto}         {lineNo++; commentLine = 0;}
+{tab}           {colNo += 3;}
+{cualquiera}    {errores[nroErrores] = (char*)malloc(yyleng); strcpy(errores[nroErrores],yytext); rowError[nroErrores] = lineNo; columnError[nroErrores] = colNo-yyleng; nroErrores++;}
 
 
 %%
+
 
 int yywrap(){
 	return 1;
