@@ -1,6 +1,6 @@
 #include <string>
 #include "expresion.c"
-
+#include <iostream>
 using namespace std;
 
 class listaIDs {
@@ -13,6 +13,16 @@ public:
 
 	listaIDs(string r): right(r){
 		left = NULL;
+	}
+
+	void toString(){
+		if (left != NULL){
+			left->toString();
+			cout << ", " << right; 
+		}
+		else{
+			cout << right;
+		}
 	}
 };
 
@@ -38,7 +48,7 @@ public:
 	}
 
 	void toString(){
-
+		;
 	}
 
 };
@@ -68,7 +78,13 @@ public:
 	}
 
 	void toString(){
-
+		cout << "SECUENCIACION: " << endl;
+		cout << "	";
+		left->toString();
+		cout << endl;
+		cout << "	";
+		right->toString();
+		cout << endl;
 	}
 
 };
@@ -80,7 +96,10 @@ public:
 	advanceInst(listaIDs *listid): ids(listid){}
 
 	void toString(){
-
+		cout << "AVANCE:" << endl;
+		cout << "	- var: ";
+		ids->toString();
+		cout << endl;
 	}
 
 };
@@ -92,7 +111,10 @@ public:
 	activateInst(listaIDs *listid): ids(listid){}
 
 	void toString(){
-
+		cout << "ACTIVACION: "<< endl;
+		cout << "	- var:";
+		ids->toString();
+		cout << endl;
 	}
 
 };
@@ -104,7 +126,9 @@ public:
 	deactivateInst(listaIDs *listid): ids(listid){}
 
 	void toString(){
-
+		cout << "DESACTIVACION: " << endl;
+		cout << "	- var:";
+		cout << endl;
 	}
 
 };
@@ -127,7 +151,19 @@ public:
 	}
 
 	void toString(){
+		cout << "CONDICIONAL:" << endl;
+		cout << "	-guardia: ";
+		guardia.toString();
 
+		cout << "	-exito: ";
+		success.toString();
+		cout << endl;
+
+		if (failure !=  NULL){
+			cout << "	-fracaso";
+			failure.toString();
+			cout << endl;
+		}
 	}
 
 
@@ -140,6 +176,18 @@ public:
 	boolExpression *guardia;
 
 	loopInst(boolExpression* g, instruccion* s): success(s),guardia(g){}
+
+	void toString(){
+		cout << "LOOP:" << endl;
+		cout << "	-guardia: ";
+		guardia.toString();
+		cout << endl;
+
+
+		cout << "	-exito: ";
+		success.toString();
+		cout << endl;
+	}
 
 };
 
@@ -157,7 +205,7 @@ public:
 	arbolSintactico(declaracion *l, instruccion *r): left(l),right(r){};
 
 	void toString(){
-
+		right->toString();
 	}
 
 };

@@ -1,27 +1,23 @@
+%error-verbose
+
 %{
+
+
+
 #include <cstdio>
 #include <iostream>
-#include <vector>
-#include <string.h>
 #include "trees.c"
-#include <string>
 
 using namespace std;
 
 
-extern int yylex();
 
-extern int yyparse();
-
-void yyerror(const char*);
-
-extern FILE *yyin;
+extern int yylex(void);
 extern int line_num;
 
-//Declaracion de yyerror
-;
-
 arbolSintactico *raiz;
+
+void yyerror(char const*);
 
 %}
 
@@ -37,10 +33,9 @@ arbolSintactico *raiz;
 	listaIDs *idl;
 }
 
-%output  "parser.c"
-%defines "parser.h"
 
 %locations
+%start PROGRAMA
 
 %type <idl> LISTA_IDS
 %type <inst> EXECUTE SECUENCIA_INSTRUC CONDICIONAL INSTRUCCION INCORPALCANCE DEACTIVATE ACTIVATE ADVANCE ELSE LOOP
@@ -53,7 +48,7 @@ arbolSintactico *raiz;
 %token <name> ID
 %token <carac> CARACTER
 
-%token TOKEN_TRUE TOKEN_FALSE TOKEN_PUNTO TOKEN_DOSPUNT TOKEN_PARABRE TOKEN_PARCIERRA TOKEN_SUMA TOKEN_RESTA TOKEN_MULT TOKEN_DIV TOKEN_MOD TOKEN_CONJ TOKEN_DISY TOKEN_NEG TOKEN_MENOR TOKEN_MAYOR TOKEN_MENORIG TOKEN_MAYORIG TOKEN_CREATE TOKEN_WHILE TOKEN_BOOL TOKEN_INT TOKEN_CHAR TOKEN_IF TOKEN_ELSE TOKEN_SEND TOKEN_EXECUTE TOKEN_ON TOKEN_STORE TOKEN_BOT TOKEN_ME TOKEN_DESIGUAL TOKEN_IGUAL TOKEN_COMA TOKEN_DEFAULT TOKEN_COLLECT TOKEN_DROP TOKEN_UP TOKEN_DOWN TOKEN_RIGHT TOKEN_LEFT TOKEN_READ TOKEN_AS TOKEN_RECEIVE TOKEN_ADVANCE TOKEN_ACTIVATE TOKEN_ACTIVATION TOKEN_DEACTIVATE TOKEN_DEACTIVATION TOKEN_END 
+%token TOKEN_TRUE TOKEN_FALSE TOKEN_PUNTO TOKEN_DOSPUNT TOKEN_PARABRE TOKEN_PARCIERRA TOKEN_SUMA TOKEN_RESTA TOKEN_MULT TOKEN_DIV TOKEN_MOD TOKEN_CONJ TOKEN_DISY TOKEN_NEG TOKEN_MENOR TOKEN_MAYOR TOKEN_MENORIG TOKEN_MAYORIG TOKEN_CREATE TOKEN_WHILE TOKEN_BOOL TOKEN_INT TOKEN_CHAR TOKEN_IF TOKEN_ELSE TOKEN_SEND TOKEN_EXECUTE TOKEN_ON TOKEN_STORE TOKEN_BOT TOKEN_DESIGUAL TOKEN_IGUAL TOKEN_COMA TOKEN_DEFAULT TOKEN_COLLECT TOKEN_DROP TOKEN_UP TOKEN_DOWN TOKEN_RIGHT TOKEN_LEFT TOKEN_READ TOKEN_AS TOKEN_RECEIVE TOKEN_ADVANCE TOKEN_ACTIVATE TOKEN_ACTIVATION TOKEN_DEACTIVATE TOKEN_DEACTIVATION TOKEN_END 
 
 
 
@@ -144,7 +139,7 @@ DIRECTION: TOKEN_UP
 	| TOKEN_RIGHT
 	;
 
-EXECUTE: TOKEN_EXECUTE SECUENCIA_INSTRUC { $$ = $2;}
+EXECUTE: TOKEN_EXECUTE SECUENCIA_INSTRUC TOKEN_END{ $$ = $2;}
 	;
 
 SECUENCIA_INSTRUC: INSTRUCCION {$$ = new secuenciaInstrucciones($1);}
@@ -224,14 +219,8 @@ ALGEXPRESSION: ALGEXPRESSION TOKEN_SUMA ALGEXPRESSION {$$ = new algExpression("S
 
 
 void yyerror(char const* s){
-	extern char *yytext;
-	extern int nroErrores;
-
-	if (nroErrores == 0){
-		string s1 = string(s);
-
-		cout << "ERROR: " << s << " at symbol \"" << yytext;
-		cout << "\" on line " << yylloc.first_line;
-		cout << " on column " << yylloc.first_column << endl;
-	}
+	
+	cout << "fila: " <<  yylloc.first_line;
+	cout << " col: " << yylloc.first_column << endl;
+	cout << s << endl;
 }

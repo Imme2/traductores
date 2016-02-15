@@ -1,5 +1,5 @@
 create
-    int bot identific_ar contador
+    int bot identific_ar, contador
         on activation:
             store -35.
         end
