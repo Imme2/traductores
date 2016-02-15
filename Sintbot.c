@@ -28,8 +28,8 @@ int main(int argc, char *argv[]){
 
 	bool listo;
 	listo = yyparse();
-	if (listo){
-		//arbolSintactico.print();
+	if (listo == 0){
+		raiz->toString(0);
 	}
 	else{
 		printf("wat wat in th ebutt\n");

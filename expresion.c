@@ -10,7 +10,7 @@ class Expression{
 public:
 	virtual ~Expression(){}
 
-	virtual void toString(){};
+	virtual void toString(int){};
 
 };
 
@@ -50,6 +50,10 @@ public:
 	algExpression(string op, algExpression *l):operador(op),left(l){
 		unary = true;
 		usesID = false;
+	}
+
+	void toString(int i){
+		;
 	}
 };
 
@@ -100,6 +104,10 @@ public:
 		lAlg = NULL;
 		usesID = true;
 		unary = false;
+	}
+
+	void toString(int i){
+		;
 	}
 
 };

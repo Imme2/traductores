@@ -31,7 +31,7 @@ public:
 
 	virtual ~declaracion(){}
 
-	virtual void toString(){}
+	virtual void toString(int){}
 
 };
 
@@ -47,7 +47,7 @@ public:
 		left = NULL;
 	}
 
-	void toString(){
+	void toString(int i){
 		;
 	}
 
@@ -59,7 +59,7 @@ public:
 
 	virtual ~instruccion(){}
 
-	virtual void toString(){}
+	virtual void toString(int){}
 
 };
 
@@ -77,13 +77,20 @@ public:
 		left = NULL;
 	}
 
-	void toString(){
-		cout << "SECUENCIACION: " << endl;
-		cout << "	";
-		left->toString();
-		cout << endl;
-		cout << "	";
-		right->toString();
+	void toString(int i){
+
+		if (left != NULL){
+			for (int j = 0; j < i;j++){
+				cout <<"	";
+			}
+			cout << "SECUENCIACION: " << endl;
+			left->toString(i+1);
+			cout << endl;
+			right->toString(i+1);
+			cout << endl;
+			return;
+		}
+		right->toString(i);
 		cout << endl;
 	}
 
@@ -95,9 +102,15 @@ public:
 	listaIDs *ids;
 	advanceInst(listaIDs *listid): ids(listid){}
 
-	void toString(){
+	void toString(int i){
+		for (int j = 0; j < i;j++){
+			cout <<"	";
+		}
 		cout << "AVANCE:" << endl;
-		cout << "	- var: ";
+		for (int j = 0; j < i+1;j++){
+			cout <<"	";
+		}
+		cout << "- var: ";
 		ids->toString();
 		cout << endl;
 	}
@@ -110,8 +123,14 @@ public:
 	listaIDs *ids;
 	activateInst(listaIDs *listid): ids(listid){}
 
-	void toString(){
+	void toString(int i){
+		for (int j = 0; j < i;j++){
+			cout <<"	";
+		}
 		cout << "ACTIVACION: "<< endl;
+		for (int j = 0; j < i+1;j++){
+			cout <<"	";
+		}
 		cout << "	- var:";
 		ids->toString();
 		cout << endl;
@@ -125,9 +144,16 @@ public:
 	listaIDs *ids;
 	deactivateInst(listaIDs *listid): ids(listid){}
 
-	void toString(){
+	void toString(int i){
+		for (int j = 0; j < i;j++){
+			cout <<"	";
+		}
 		cout << "DESACTIVACION: " << endl;
-		cout << "	- var:";
+		for (int j = 0; j < i+1;j++){
+			cout <<"	";
+		}
+		cout << "- var:";
+		ids->toString();
 		cout << endl;
 	}
 
@@ -150,19 +176,33 @@ public:
 		}
 	}
 
-	void toString(){
+	void toString(int i){
+		for (int j = 0; j < i;j++){
+			cout <<"	";
+		}		
 		cout << "CONDICIONAL:" << endl;
-		cout << "	-guardia: ";
-		guardia.toString();
 
-		cout << "	-exito: ";
-		success.toString();
+		for (int j = 0; j < i+1;j++){
+			cout <<"	";
+		}
+		cout << "-guardia: ";
+		guardia->toString(i+2);
 		cout << endl;
 
+		for (int j = 0; j < i+1;j++){
+			cout <<"	";
+		}		
+		cout << "-exito: ";
+		cout << endl;
+		success->toString(i+2);
+
 		if (failure !=  NULL){
-			cout << "	-fracaso";
-			failure.toString();
+			for (int j = 0; j < i+1;j++){
+				cout <<"	";
+			}		
+			cout << "-fracaso";
 			cout << endl;
+			failure->toString(i+2);
 		}
 	}
 
@@ -177,15 +217,24 @@ public:
 
 	loopInst(boolExpression* g, instruccion* s): success(s),guardia(g){}
 
-	void toString(){
+	void toString(int i){
+		for (int j = 0; j < i;j++){
+			cout <<"	";
+		}		
 		cout << "LOOP:" << endl;
-		cout << "	-guardia: ";
-		guardia.toString();
+
+		for (int j = 0; j < i+1;j++){
+			cout <<"	";
+		}		
+		cout << "-guardia: ";
+		guardia->toString(i+2);
 		cout << endl;
 
-
-		cout << "	-exito: ";
-		success.toString();
+		for (int j = 0; j < i+1;j++){
+			cout <<"	";
+		}
+		cout << "-exito: ";
+		success->toString(i+2);
 		cout << endl;
 	}
 
@@ -204,8 +253,8 @@ public:
 
 	arbolSintactico(declaracion *l, instruccion *r): left(l),right(r){};
 
-	void toString(){
-		right->toString();
+	void toString(int i){
+		right->toString(i);
 	}
 
 };
@@ -218,8 +267,12 @@ public:
 
 	incorpAlcance(declaracion *l, instruccion *r): left(l),right(r){};
 
-	void toString(){
-
+	void toString(int i){
+		for (int j = 0; j < i;j++){
+			cout <<"	";
+		}
+		cout << "INCORPALCANCE:";
+		right->toString(i+1);
 	}
 
 };
