@@ -13,7 +13,7 @@ execute
 	activate contador.
 	$- Asignar al contador
 	el valor 35, si bar > 2 -$
-	if bar + 5 - 2 * 3 > 2 + 5 - bar:
+	if hola = hola1 /\ hola2:
 		advance contador.
 	end
 end

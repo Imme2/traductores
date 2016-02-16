@@ -162,9 +162,9 @@ class condicional: public instruccion{
 public:
 	instruccion* success;
 	instruccion* failure;
-	boolExpression* guardia;
+	Expression* guardia;
 
-	condicional(boolExpression *g,instruccion* s,instruccion* f): success(s),guardia(g){
+	condicional(Expression *g,instruccion* s,instruccion* f): success(s),guardia(g){
 		if (f == NULL){
 			failure = NULL;
 		}
@@ -209,9 +209,9 @@ class loopInst: public instruccion{
 public:
 
 	instruccion *success;
-	boolExpression *guardia;
+	Expression *guardia;
 
-	loopInst(boolExpression* g, instruccion* s): success(s),guardia(g){}
+	loopInst(Expression* g, instruccion* s): success(s),guardia(g){}
 
 	void toString(int i){
 		for (int j = 0; j < i;j++){
@@ -228,7 +228,7 @@ public:
 		for (int j = 0; j < i+1;j++){
 			cout <<"	";
 		}
-		cout << "-exito: ";
+		cout << "-exito: " << endl;
 		success->toString(i+2);
 		cout << endl;
 	}

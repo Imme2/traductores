@@ -1,0 +1,18 @@
+	| BOOLEXPRESSION TOKEN_CONJ TOKEN_TRUE {$$ = new boolExpression("CONJUNCION",$1,true);}
+	| BOOLEXPRESSION TOKEN_DISY TOKEN_TRUE {$$ = new boolExpression("DISYUNCION",$1,true);}
+	| BOOLEXPRESSION TOKEN_IGUAL TOKEN_TRUE {$$ = new boolExpression("IGUAL",$1,true);}
+	| BOOLEXPRESSION TOKEN_DESIGUAL TOKEN_TRUE {$$ = new boolExpression("DESIGUAL",$1,true);}
+	| BOOLEXPRESSION TOKEN_CONJ TOKEN_FALSE {$$ = new boolExpression("CONJUNCION",$1,false);}
+	| BOOLEXPRESSION TOKEN_DISY TOKEN_FALSE {$$ = new boolExpression("DISYUNCION",$1,false);}
+	| BOOLEXPRESSION TOKEN_IGUAL TOKEN_FALSE {$$ = new boolExpression("IGUAL",$1,false);}
+	| BOOLEXPRESSION TOKEN_DESIGUAL TOKEN_FALSE {$$ = new boolExpression("DESIGUAL",$1,false);}	
+	| BOOLEXPRESSION TOKEN_CONJ ID {$$ = new boolExpression("CONJUNCION",$1,string($3));}
+	| BOOLEXPRESSION TOKEN_DISY ID {$$ = new boolExpression("DISYUNCION",$1,string($3));}
+	| BOOLEXPRESSION TOKEN_IGUAL ID {$$ = new boolExpression("IGUAL",$1,string($3));}
+	| BOOLEXPRESSION TOKEN_DESIGUAL ID {$$ = new boolExpression("DESIGUAL",$1,string($3));}	
+
+
+	| BOOLEXPRESSION TOKEN_CONJ BOOLEXPRESSION {$$ = new boolExpression("CONJUNCION",$1,$3);}
+	| BOOLEXPRESSION TOKEN_DISY BOOLEXPRESSION {$$ = new boolExpression("DISYUNCION",$1,$3);}
+	| BOOLEXPRESSION TOKEN_IGUAL BOOLEXPRESSION {$$ = new boolExpression("IGUAL",$1,$3);}
+	| BOOLEXPRESSION TOKEN_DESIGUAL BOOLEXPRESSION {$$ = new boolExpression("DESIGUAL",$1,$3);}

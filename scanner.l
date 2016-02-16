@@ -19,7 +19,7 @@ int nroErrores = 0;
 int commentLine = 0;
 int insideComment = 0;
 int lineNo = 1;
-int colNo = 0;
+int colNo = 1;
 
 #define YY_USER_ACTION yylloc.first_line = yylloc.last_line = lineNo;\
 						yylloc.first_column = colNo;\
@@ -86,7 +86,7 @@ cualquiera .
 
 {TkIdent}       {strcpy(yylval.name,yytext); if (insideComment == 0 ) return ID;}
 {Num}           {yylval.value = atoi(yytext); if (insideComment == 0 ) return NUM;}
-{caracter}      {yylval.carac = yytext[1]; if (insideComment == 0 ) return CARACTER;}
+{caracter}      {strcpy(yylval.name,yytext); if (insideComment == 0 ) return CARACTER;}
 
 "("             {if (insideComment == 0 ) return TOKEN_PARABRE;}
 ")"             {if (insideComment == 0 ) return TOKEN_PARCIERRA;}
@@ -110,10 +110,10 @@ cualquiera .
 
 {commentOpen}   {insideComment = 1;}
 {commentClose}  {insideComment = 0;}
-{commentln}     {lineNo++; colNo = 0;}
+{commentln}     {lineNo++; colNo = 1;}
 
 {espacio}      	{;}
-{salto}         {lineNo++; colNo = 0;}
+{salto}         {lineNo++; colNo = 1;}
 {tab}           {colNo += 3;}
 {cualquiera}    {if (insideComment == 0 ) errores[nroErrores] = (char*)malloc(yyleng); strcpy(errores[nroErrores],yytext); rowError[nroErrores] = lineNo; columnError[nroErrores] = colNo-yyleng; nroErrores++;}
 

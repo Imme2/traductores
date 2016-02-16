@@ -9,4 +9,4 @@ execute
     $- Asignar al contador
     el valor 35 -$
     activate contador.
-end
+end	

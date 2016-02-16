@@ -1,0 +1,54 @@
+create
+	int bot bar
+		on activation:
+			store 3.
+		end
+	end
+	int bot contador
+		on default:
+			store 35.
+		end
+	end
+execute
+	activate bombona.
+	activate bombona, bombonita.
+	if bar > 2:
+		advance contador.
+		if bar > 3:
+			if bar > 4:
+				deactivate bombonita.
+				while bar < 100:
+					deactivate bombonita.
+				end
+			else:
+				activate bombona.
+			end
+		else :
+			activate perritos.
+		end
+	else:
+		advance bolitero.
+		while i < n:
+			while j < i:
+				activate lol.
+			end
+		end
+	end
+	while i < n:
+		if i = a :
+			activate everything.
+			while i < 50:
+				activate things.
+			end
+		else:
+			deactivate unodostres.
+		end
+		while j < i:
+			while j < k:
+				while true:
+					activate holacomoestas.
+				end
+			end
+		end
+	end
+end

@@ -8,68 +8,81 @@ using namespace std;
 
 class Expression{
 public:
-	virtual ~Expression(){}
-
-	virtual void toString(int){};
-
-};
-
-class algExpression: public Expression{
-public:
-
+	int tipo;
 	bool unary;
 	string operador;
 	string id;
-	algExpression *right;
-	algExpression *left;
 	int val;
-	bool usesID;
+	bool bval;
+	string caracter;
 
-	algExpression(string op, algExpression *l,algExpression *r): operador(op), left(l),right(r){
-		usesID = false;
+	Expression *right;
+	Expression *left;
+
+	Expression(string op, Expression *l, Expression *r): operador(op),left(l),right(r){
 		unary = false;
+		tipo = -1;
 	}
 
-	algExpression(int v){
-		left = NULL;
-		right = NULL;
-		operador = "NULL";
+	Expression(string a,int t){
+		unary = false;
+		tipo = t;
+		if (t == 2){
+			caracter = string(a);
+		}
+		if (t == 1){
+			id = string(a);
+		}
+	}
+
+	Expression(bool v, int t){
+		unary = false;
+		bval = v;
+		tipo = t;
+	}
+
+	Expression(int v, int t){
+		unary = false;
+		tipo = t;
 		val = v;
-		usesID= false;
-		unary = false;
 	}
 
-	algExpression(string s):id(s){
-		left = NULL;
-		right = NULL;
-		operador = "NULL";
-		usesID = true;
-		unary = false;
-	}
-
-	algExpression(string op, algExpression *l):operador(op),left(l){
+	Expression(string op, Expression* l):operador(op),left(l){
+		tipo = -1;
 		unary = true;
-		usesID = false;
 	}
 
 	void toString(int i){
-		if (operador == "NULL"){
-			if (usesID){
-				cout << id << endl;
-			}
-			else{
-				cout << val << endl;
+		if (tipo != -1){
+			switch(tipo){
+				case 0: 
+					cout << val << endl;
+					break;
+				case 1:
+					cout << id << endl;
+					break;
+				case 2:
+					cout << caracter << endl;
+					break;
+				case 3:
+					if (bval){
+						cout << "true";
+					}
+					else{
+						cout << "false";
+					}
+					cout << endl;
+					break;
 			}
 			return;
 		}
 		if (unary){
-		
-			cout << "Tipo: Unaria Algebraica." << endl;
+			cout << "Tipo: Unaria" << endl;
 
 			for (int j = 0; j < i;j++){
 				cout <<"	";
 			}	
-			cout << "operacion: Resta." << endl;
+			cout << "operacion: " << operador << "." << endl;
 
 			for (int j = 0; j < i;j++){
 				cout <<"	";
@@ -78,11 +91,13 @@ public:
 			left->toString(i+1);
 		}
 		else{
-			cout << "Tipo: Binaria Algebraica." << endl;
+			cout << "Tipo: Binaria." << endl;
+
 			for (int j = 0; j < i;j++){
 				cout <<"	";
 			}
 			cout << "operacion: " << operador << endl;
+
 			for (int j = 0; j < i;j++){
 				cout <<"	";
 			}
@@ -96,127 +111,8 @@ public:
 			right->toString(i+1);
 		}
 	}
-};
-
-class boolExpression: public Expression{
-public:
-	bool unary;
-	string operador;
-	boolExpression *lBool;
-	boolExpression *rBool;
-	bool val;
-	string id;
-	bool usesID;
-
-	algExpression *rAlg;
-	algExpression *lAlg;	
-
-	boolExpression(string op, boolExpression *l, boolExpression *r):operador(op),lBool(l),rBool(l){
-		usesID = false;
-		rAlg = NULL;
-		lAlg = NULL;
-		unary = false;
-	}
-
-	boolExpression(string op, algExpression *l, algExpression *r): operador(op), rAlg(r), lAlg(l){
-		lBool = NULL;
-		usesID = false;
-		unary = false;
-	}
-
-	boolExpression(string op, boolExpression *l):operador(op), lBool(l){
-		unary = true;
-		usesID = false;
-	}
-
-	boolExpression(bool r){
-		lBool = NULL;
-		rAlg = NULL;
-		lAlg = NULL;
-		usesID = false;
-		val = r;
-		unary = false;
-		operador = "NULL";
-	}
-
-	boolExpression(string r): id(r){
-		lBool = NULL;
-		rAlg = NULL;
-		lAlg = NULL;
-		usesID = true;
-		unary = false;
-		operador = "NULL";
-	}
-
-	void toString(int i){
-		if (operador == "NULL"){
-			if (usesID){
-				cout << id <<endl;
-			}
-			else{
-				cout << val <<endl;
-			}
-			return;
-		}
-		if (unary){
-		
-			cout << "Tipo: Unaria Booleana." << endl;
-
-			for (int j = 0; j < i;j++){
-				cout <<"	";
-			}	
-			cout << "operacion: Negacion." << endl;
-
-			for (int j = 0; j < i;j++){
-				cout <<"	";
-			}
-			cout << "operador unico: ";
-			lBool->toString(i+1);
-		}
-		else{
-
-			if (lBool != NULL){
-				cout << "Tipo: Binaria Booleana." << endl;
-
-				for (int j = 0; j < i;j++){
-					cout <<"	";
-				}
-				cout << "operacion: " << operador << endl;
-
-				for (int j = 0; j < i;j++){
-					cout <<"	";
-				}
-				cout << "operador izquierdo: ";
-				lBool->toString(i+1);
-
-				for (int j = 0; j < i;j++){
-					cout <<"	";
-				}
-				cout << "operador Derecho: ";
-				rBool->toString(i+1);
-			}
-			else{
-				cout << "Tipo: Binaria Relacional." << endl;
-				for (int j = 0; j < i;j++){
-					cout <<"	";
-				}
-				cout << "operacion: " << operador << endl;
-				for (int j = 0; j < i;j++){
-					cout <<"	";
-				}
-				cout << "operador izquierdo: ";
-				lAlg->toString(i+1);
-
-				for (int j = 0; j < i;j++){
-					cout <<"	";
-				}
-				cout << "operador Derecho: ";
-				rAlg->toString(i+1);
-
-			}
-		}
-	}
 
 };
 
+	
 #endif
