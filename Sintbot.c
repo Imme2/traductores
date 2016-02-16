@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include "trees.c"
+#include <stdlib.h>
 using namespace std;
 
 extern arbolSintactico* raiz;
@@ -13,6 +14,7 @@ extern int rowError[];
 extern int nroErrores;
 extern FILE* yyin;
 
+void printErrores();
 
 int main(int argc, char *argv[]){
 	if (argc != 2){
@@ -28,12 +30,26 @@ int main(int argc, char *argv[]){
 
 	bool listo;
 	listo = yyparse();
-	if (listo == 0){
+
+
+	if (listo == 0 and nroErrores == 0){
 		raiz->toString(0);
 	}
 	else{
-		printf("wat wat in th ebutt\n");
+		printf("Error al realizar el analisis sintactico\n");
 	}
+	if(nroErrores != 0){
+		printErrores();
+	}
+	
 	return 0;
 
+}
+
+void printErrores(){
+	printf("Se han encontrado caracteres inesperados:\n");
+	for (int i = 0 ; i < nroErrores;i++){
+		printf("Error: Caracter Inesperado \"%s\" en la fila %d, columna %d.\n",errores[i],rowError[i],columnError[i]);
+		free(errores[i]);
+	}
 }

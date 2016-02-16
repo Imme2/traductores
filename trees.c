@@ -230,7 +230,6 @@ public:
 		}
 		cout << "-exito: " << endl;
 		success->toString(i+2);
-		cout << endl;
 	}
 
 };

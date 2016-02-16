@@ -201,8 +201,5 @@ EXPRESSION: TOKEN_PARABRE EXPRESSION TOKEN_PARCIERRA {$$ = $2;}
 
 
 void yyerror(char const* s){
-	
-	cout << "fila: " <<  yylloc.first_line;
-	cout << " col: " << yylloc.first_column << endl;
-	cout << s << endl;
+	cout << s << " en fila:" << yylloc.first_line << ", columna" << yylloc.first_column << endl;
 }
