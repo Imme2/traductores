@@ -85,13 +85,10 @@ public:
 			}
 			cout << "SECUENCIACION: " << endl;
 			left->toString(i+1);
-			cout << endl;
 			right->toString(i+1);
-			cout << endl;
 			return;
 		}
 		right->toString(i);
-		cout << endl;
 	}
 
 };
@@ -131,7 +128,7 @@ public:
 		for (int j = 0; j < i+1;j++){
 			cout <<"	";
 		}
-		cout << "	- var:";
+		cout << "- var:";
 		ids->toString();
 		cout << endl;
 	}
@@ -187,7 +184,6 @@ public:
 		}
 		cout << "-guardia: ";
 		guardia->toString(i+2);
-		cout << endl;
 
 		for (int j = 0; j < i+1;j++){
 			cout <<"	";
@@ -228,7 +224,6 @@ public:
 		}		
 		cout << "-guardia: ";
 		guardia->toString(i+2);
-		cout << endl;
 
 		for (int j = 0; j < i+1;j++){
 			cout <<"	";

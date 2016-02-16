@@ -11,4 +11,4 @@ trees.o:
 	g++ -c trees.c
 
 clean:
-	rm parser.h Sintbot lex.yy.c parser.c
+	rm parser.tab.h Sintbot lex.yy.c parser.tab.c trees.o

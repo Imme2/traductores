@@ -2,9 +2,9 @@
 #define expression_h
 
 #include <string>
+#include <iostream>
 
 using namespace std;
-
 
 class Expression{
 public:
@@ -53,7 +53,48 @@ public:
 	}
 
 	void toString(int i){
-		;
+		if (operador == "NULL"){
+			if (usesID){
+				cout << id << endl;
+			}
+			else{
+				cout << val << endl;
+			}
+			return;
+		}
+		if (unary){
+		
+			cout << "Tipo: Unaria Algebraica." << endl;
+
+			for (int j = 0; j < i;j++){
+				cout <<"	";
+			}	
+			cout << "operacion: Resta." << endl;
+
+			for (int j = 0; j < i;j++){
+				cout <<"	";
+			}
+			cout << "operador unico: ";
+			left->toString(i+1);
+		}
+		else{
+			cout << "Tipo: Binaria Algebraica." << endl;
+			for (int j = 0; j < i;j++){
+				cout <<"	";
+			}
+			cout << "operacion: " << operador << endl;
+			for (int j = 0; j < i;j++){
+				cout <<"	";
+			}
+			cout << "operador izquierdo: ";
+			left->toString(i+1);
+
+			for (int j = 0; j < i;j++){
+				cout <<"	";
+			}
+			cout << "operador Derecho: ";
+			right->toString(i+1);
+		}
 	}
 };
 
@@ -63,15 +104,14 @@ public:
 	string operador;
 	boolExpression *lBool;
 	boolExpression *rBool;
-	bool boolvalue;
-	string idvalue;
+	bool val;
+	string id;
 	bool usesID;
 
 	algExpression *rAlg;
 	algExpression *lAlg;	
 
 	boolExpression(string op, boolExpression *l, boolExpression *r):operador(op),lBool(l),rBool(l){
-		boolvalue = r;
 		usesID = false;
 		rAlg = NULL;
 		lAlg = NULL;
@@ -94,20 +134,87 @@ public:
 		rAlg = NULL;
 		lAlg = NULL;
 		usesID = false;
-		boolvalue = r;
+		val = r;
 		unary = false;
+		operador = "NULL";
 	}
 
-	boolExpression(string r): idvalue(r){
+	boolExpression(string r): id(r){
 		lBool = NULL;
 		rAlg = NULL;
 		lAlg = NULL;
 		usesID = true;
 		unary = false;
+		operador = "NULL";
 	}
 
 	void toString(int i){
-		;
+		if (operador == "NULL"){
+			if (usesID){
+				cout << id <<endl;
+			}
+			else{
+				cout << val <<endl;
+			}
+			return;
+		}
+		if (unary){
+		
+			cout << "Tipo: Unaria Booleana." << endl;
+
+			for (int j = 0; j < i;j++){
+				cout <<"	";
+			}	
+			cout << "operacion: Negacion." << endl;
+
+			for (int j = 0; j < i;j++){
+				cout <<"	";
+			}
+			cout << "operador unico: ";
+			lBool->toString(i+1);
+		}
+		else{
+
+			if (lBool != NULL){
+				cout << "Tipo: Binaria Booleana." << endl;
+
+				for (int j = 0; j < i;j++){
+					cout <<"	";
+				}
+				cout << "operacion: " << operador << endl;
+
+				for (int j = 0; j < i;j++){
+					cout <<"	";
+				}
+				cout << "operador izquierdo: ";
+				lBool->toString(i+1);
+
+				for (int j = 0; j < i;j++){
+					cout <<"	";
+				}
+				cout << "operador Derecho: ";
+				rBool->toString(i+1);
+			}
+			else{
+				cout << "Tipo: Binaria Relacional." << endl;
+				for (int j = 0; j < i;j++){
+					cout <<"	";
+				}
+				cout << "operacion: " << operador << endl;
+				for (int j = 0; j < i;j++){
+					cout <<"	";
+				}
+				cout << "operador izquierdo: ";
+				lAlg->toString(i+1);
+
+				for (int j = 0; j < i;j++){
+					cout <<"	";
+				}
+				cout << "operador Derecho: ";
+				rAlg->toString(i+1);
+
+			}
+		}
 	}
 
 };
