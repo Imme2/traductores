@@ -1,5 +1,5 @@
 Sintbot: flex.o parser.o trees.o
-	g++ -o Sintbot Sintbot.c lex.yy.c parser.tab.c
+	g++ -o SintBot Sintbot.c lex.yy.c parser.tab.c
 
 parser.o: flex.o trees.o
 	bison -d parser.y
