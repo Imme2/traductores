@@ -6,9 +6,14 @@
 
 using namespace std;
 
+
+//Clase expresion, diferentes constructores para usar el polimorfismo efectivamente
+
 class Expression{
 public:
-	int tipo;
+	int tipo; 	// tipo del 0 al 4, indicando si es booleano
+				// un id, un caracter o un numero
+				// tipo = -1 indica que es una expresion compuesta
 	bool unary;
 	string operador;
 	string id;
@@ -19,10 +24,16 @@ public:
 	Expression *right;
 	Expression *left;
 
+	//Recibe dos expresiones y un operador, crea una expresion compuesta
+
 	Expression(string op, Expression *l, Expression *r): operador(op),left(l),right(r){
 		unary = false;
 		tipo = -1;
 	}
+
+	//A continuacion 3 constructores que hacen los tipos basicos
+	// para simplificar problemas por caracteres como \n y \t
+	// se usa un string para representar a un caracter
 
 	Expression(string a,int t){
 		unary = false;
@@ -47,24 +58,30 @@ public:
 		val = v;
 	}
 
+	// Constructor para las operaciones unarias
+
 	Expression(string op, Expression* l):operador(op),left(l){
 		tipo = -1;
 		unary = true;
 	}
 
+	// Gran funcion que imprime el arbol de expresiones
+	//  usa el tipo y si es unario o no para
+	// 	saber que imprimir
+	// Argumento i que nos dice el numero de tabulaciones necesarias.
 	void toString(int i){
 		if (tipo != -1){
 			switch(tipo){
-				case 0: 
+				case 0: // caso numero
 					cout << val << endl;
 					break;
-				case 1:
+				case 1: // caso id
 					cout << id << endl;
 					break;
-				case 2:
+				case 2: // caso caracter
 					cout << caracter << endl;
 					break;
-				case 3:
+				case 3: // caso booleano
 					if (bval){
 						cout << "true";
 					}
@@ -79,9 +96,9 @@ public:
 		if (unary){
 			cout << "Tipo: Unaria" << endl;
 
-			for (int j = 0; j < i;j++){
-				cout <<"	";
-			}	
+			for (int j = 0; j < i;j++){ //Estas tabulaciones son para mantenernos al
+				cout <<"	";			// mismo nivel que el resto del arbol
+			}							// en la salida estandar
 			cout << "operacion: " << operador << "." << endl;
 
 			for (int j = 0; j < i;j++){

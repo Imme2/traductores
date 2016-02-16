@@ -3,18 +3,26 @@
 #include <iostream>
 using namespace std;
 
+// Una simple clase que hace una lista de Ids en forma de arbol
+
 class listaIDs {
 public:
 
 	listaIDs *left;
 	string right;
 
+	//Caso recursivo
+
 	listaIDs(listaIDs *l, string r): left(l), right(r){}
+
+	//Caso base
 
 	listaIDs(string r): right(r){
 		left = NULL;
 	}
 
+
+	//Toma ventaja de la estructura de arbol para imprimir
 	void toString(){
 		if (left != NULL){
 			left->toString();
@@ -26,6 +34,8 @@ public:
 	}
 };
 
+// clase virtual declaracion para futuras entregas.
+
 class declaracion{
 public:
 
@@ -34,6 +44,8 @@ public:
 	virtual void toString(int){}
 
 };
+
+//Secuencia de declaraciones para futuras entregas.
 
 class secuenciaDeclaraciones: public declaracion{
 public:
@@ -53,6 +65,7 @@ public:
 
 };
 
+// clase virtual instruccion, padre de la mayoria de las otras clases
 
 class instruccion{
 public:
@@ -63,19 +76,27 @@ public:
 
 };
 
+//Secuencia de instrucciones, toma ventaja de la estructura de arbol nuevamente para 
+// hacer una lista.
+
 class secuenciaInstrucciones: public instruccion{
 public:
 
 	instruccion *right;
 	instruccion *left;
 
-					//Nota, en el siguiente constructor el compilador me dijo que cambiara
-					// el orden al que esta ahora, ni idea porque.
+	//Se usa de nuevo el polimorfismo para hacer una lista de instrucciones en forma
+	// de arbol
+
 	secuenciaInstrucciones(instruccion* l,instruccion *r): right(r), left(l){} 
 
 	secuenciaInstrucciones(instruccion *r): right(r){
 		left = NULL;
 	}
+
+	//funcion que imprime la version del arbol de la secuencia de instrucciones,
+	// lleva un argumento que nos dice cuantas tabulaciones debemos usar para
+	// estar al nivel correcto en la salida estandar
 
 	void toString(int i){
 
@@ -92,6 +113,11 @@ public:
 	}
 
 };
+
+// A continuacion las definiciones de clases de varias instrucciones
+// las unicas diferencias radican en lo necesario para cada instruccion
+// se sigue usando el toString(i) para imprimir con i siendo el numero
+// de tabulaciones (o la profundidad) del paso en que se encuentra.
 
 class advanceInst: public instruccion{
 public:
@@ -237,7 +263,7 @@ public:
 
 
 
-
+// Funcion principal del programa, que comienza el arbol
 
 class arbolSintactico: public instruccion{
 public:
@@ -252,6 +278,8 @@ public:
 	}
 
 };
+
+//Casi igual a la instruccion arbolSintactico, pero se diferencia por claridad
 
 class incorpAlcance: public instruccion{
 public:

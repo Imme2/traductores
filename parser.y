@@ -1,5 +1,4 @@
 %error-verbose
-
 %{
 
 
@@ -144,6 +143,7 @@ INSTRUCCION: ADVANCE {$$ = $1;}
 	| CONDICIONAL { $$ = $1;}
 	| LOOP { $$ = $1;}
 	| INCORPALCANCE { $$ = $1;}
+	| error {}
 	;
 
 CONDICIONAL: TOKEN_IF EXPRESSION TOKEN_DOSPUNT  SECUENCIA_INSTRUC ELSE TOKEN_END { $$ = new condicional($2,$4,$5);}
@@ -201,5 +201,6 @@ EXPRESSION: TOKEN_PARABRE EXPRESSION TOKEN_PARCIERRA {$$ = $2;}
 
 
 void yyerror(char const* s){
-	cout << s << " en fila:" << yylloc.first_line << ", columna" << yylloc.first_column << endl;
+	cout <<"En la fila:" << yylloc.first_line << ", columna" << yylloc.first_column;
+	cout <<"ocurrio: " << s << endl;
 }
