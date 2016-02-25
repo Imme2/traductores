@@ -67,8 +67,8 @@ public:
 
 	Almacenamiento(Expression* e):exp(e){}
 
-	Tipo getType(){
-		return exp.getType();
+	Tipo CalcularTipo(){
+		return exp.CalcularTipo();
 	};
 };
 
@@ -162,8 +162,17 @@ public:
 class DeclaracionRobot: public Declaracion{
 public:
 
-	
+	int tipo;
+	ListaIDs* ids;
+	SecuenciaRoboInstruccion* comportamiento;
 
+	DeclaracionRobot(int t,ListaIDs* l,SecuenciaRoboInstruccion* comps): ids(l), comportamiento(comps){
+		tipo = t;
+	}
+
+	bool verificarTipo(){
+		;
+	}
 };
 
 
@@ -239,7 +248,6 @@ public:
 		ids->toString();
 		cout << endl;
 	}
-
 };
 
 class ActivateInst: public Instruccion{
@@ -260,7 +268,6 @@ public:
 		ids->toString();
 		cout << endl;
 	}
-
 };
 
 class DeactivateInst: public Instruccion{

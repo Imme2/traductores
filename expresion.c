@@ -14,6 +14,9 @@ public:
 	int tipo; 	// tipo del 0 al 4, indicando si es booleano
 				// un id, un caracter o un numero
 				// tipo = -1 indica que es una expresion compuesta
+				// tipo = 1;
+				// tipo = 2;
+				// tipo = 3;
 	bool unary;
 	string operador;
 	string id;
@@ -63,6 +66,15 @@ public:
 	Expression(string op, Expression* l):operador(op),left(l){
 		tipo = -1;
 		unary = true;
+	}
+
+	int CalcularTipo(){
+		int aux,aux2;
+		if (tipo != -1){
+			return tipo;
+		}
+
+
 	}
 
 	// Gran funcion que imprime el arbol de expresiones
