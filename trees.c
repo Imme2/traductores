@@ -128,6 +128,39 @@ public:
 };
 
 
+class Comportamiento{
+
+	int tipoCondicion; 	// 0 al 3
+						// 0 => Expression
+						// 1 => activacion
+						// 2 => desactivacion
+						// 3 => default
+	Expression* exp;
+	SecuenciaRoboInstruccion secRoboInst;
+	
+	Comportamiento(int t,Expression* e, SecuenciaRoboInstruccion* secinst): exp(e), secRoboInst(sec){
+		tipoCondicion = t;
+	}
+};
+
+class SecuenciaComportamiento{
+public:
+
+	Comportamiento *right;
+	Comportamiento *left;
+
+	SecuenciaComportamiento(Comportamiento* l,Comportamiento* r): right(r), left(l){} 
+
+	SecuenciaComportamiento(Comportamiento* r): right(r){
+		left = NULL;
+	}
+
+	void toString(int i){
+		;
+	}
+
+};
+
 // clase virtual Declaracion para futuras entregas.
 
 class Declaracion{
@@ -164,9 +197,9 @@ public:
 
 	int tipo;
 	ListaIDs* ids;
-	SecuenciaRoboInstruccion* comportamiento;
+	SecuenciaComportamiento* comportamiento;
 
-	DeclaracionRobot(int t,ListaIDs* l,SecuenciaRoboInstruccion* comps): ids(l), comportamiento(comps){
+	DeclaracionRobot(int t,ListaIDs* l,SecuenciaComportamiento* comps): ids(l), comportamiento(comps){
 		tipo = t;
 	}
 

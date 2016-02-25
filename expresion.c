@@ -11,12 +11,13 @@ using namespace std;
 
 class Expression{
 public:
-	int tipo; 	// tipo del 0 al 4, indicando si es booleano
+	int tipo; 	// tipo del 0 al 3, indicando si es booleano
 				// un id, un caracter o un numero
 				// tipo = -1 indica que es una expresion compuesta
-				// tipo = 1;
-				// tipo = 2;
-				// tipo = 3;
+				// tipo == 0 -> es un numero
+				// tipo == 1 -> es un ID
+				// tipo == 2 -> es un caracter
+				// tipo == 3 -> es un booleano
 	bool unary;
 	string operador;
 	string id;
