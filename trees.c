@@ -34,28 +34,23 @@ public:
 	}
 };
 
-// clase virtual Declaracion para futuras entregas.
 
-class Declaracion{
-public:
+// 
 
-	virtual ~Declaracion(){}
+class InstruccionRobot{
+	virtual ~InstruccionRobot(){}
 
 	virtual void toString(int){}
-
 };
 
-//Secuencia de Declaraciones para futuras entregas.
-
-class SecuenciaDeclaraciones: public Declaracion{
+class SecuenciaRoboInstruccion: InstruccionRobot{
 public:
+	InstruccionRobot *right;
+	InstruccionRobot *left;
 
-	Declaracion *right;
-	Declaracion *left;
+	SecuenciaDeclaraciones(InstruccionRobot* l,InstruccionRobot* r): right(r), left(l){} 
 
-	SecuenciaDeclaraciones(Declaracion* l,Declaracion* r): right(r), left(l){} 
-
-	SecuenciaDeclaraciones(Declaracion* r): right(r){
+	SecuenciaDeclaraciones(InstruccionRobot* r): right(r){
 		left = NULL;
 	}
 
@@ -63,12 +58,6 @@ public:
 		;
 	}
 
-};
-
-class InstruccionRobot{
-	virtual ~InstruccionRobot(){}
-
-	virtual void toString(int){}
 };
 
 class Almacenamiento: public InstruccionRobot{
@@ -105,7 +94,77 @@ public:
 	Soltado(Expression* e): exp(e){}
 };
 
-class
+class Movimiento: public InstruccionRobot{
+public:
+
+	int direccion;
+	Expression* exp;
+
+	Movimiento(int d, Expression* e): exp(e){
+		direccion = d;
+	}
+};
+
+class Leer: public InstruccionRobot{
+public:
+
+	string identificador;
+	bool tieneId;
+
+	Leer(string id):identificador(id){
+		tieneId = true;
+	}
+
+	Leer(){
+		tieneId = false;
+	}
+};
+
+class Escribir: public InstruccionRobot{
+public:
+
+	Escribir(){}
+
+};
+
+
+// clase virtual Declaracion para futuras entregas.
+
+class Declaracion{
+public:
+
+	virtual ~Declaracion(){}
+
+	virtual void toString(int){}
+
+};
+
+//Secuencia de Declaraciones para futuras entregas.
+
+class SecuenciaDeclaraciones: public Declaracion{
+public:
+
+	Declaracion *right;
+	Declaracion *left;
+
+	SecuenciaDeclaraciones(Declaracion* l,Declaracion* r): right(r), left(l){} 
+
+	SecuenciaDeclaraciones(Declaracion* r): right(r){
+		left = NULL;
+	}
+
+	void toString(int i){
+		;
+	}
+
+};
+
+class DeclaracionRobot: public Declaracion{
+public:
+
+	
+
+};
 
 
 // clase virtual Instruccion, padre de la mayoria de las otras clases
