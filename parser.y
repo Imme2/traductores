@@ -58,30 +58,37 @@ void yyerror(char const*);
 %%
 
 PROGRAMA: CREATE EXECUTE {raiz = new ArbolSintactico($1,$2);}
+	| error {$$ = NULL;}
 	;
 
 CREATE: TOKEN_CREATE SECUENCIA_DECLAR { $$ = $2;}
+	| error {$$ = NULL;}
 	;
 
 SECUENCIA_DECLAR: SECUENCIA_DECLAR DECLARATION {$$ = NULL;}
 	| DECLARATION  {$$ = NULL;}
+	| error {$$ = NULL;}
 	;
 
 DECLARATION: TIPO TOKEN_BOT LISTA_IDS SECUENCIA_COMPORT TOKEN_END {$$ = NULL;}
 	| TIPO TOKEN_BOT LISTA_IDS TOKEN_END {$$ =NULL;}
+	| error {$$ = NULL;}
 	;
 
 TIPO: TOKEN_BOOL
 	| TOKEN_CHAR
 	| TOKEN_INT
+	| error {$$ = NULL;}
 	;
 
 SECUENCIA_COMPORT: SECUENCIA_COMPORT COMPORTAMIENTO
 	| COMPORTAMIENTO
+	| error {$$ = NULL;}
 	;
 
 COMPORTAMIENTO: TOKEN_ON CONDITION TOKEN_DOSPUNT SECUENCIA_ROBOTINSTR TOKEN_END
 	| DEFAULTCOMP
+	| error {$$ = NULL;}
 	;
 
 DEFAULTCOMP: TOKEN_ON TOKEN_DEFAULT TOKEN_DOSPUNT SECUENCIA_ROBOTINSTR TOKEN_END
@@ -90,10 +97,12 @@ DEFAULTCOMP: TOKEN_ON TOKEN_DEFAULT TOKEN_DOSPUNT SECUENCIA_ROBOTINSTR TOKEN_END
 CONDITION: TOKEN_ACTIVATION
 	| TOKEN_DEACTIVATION
 	| EXPRESSION
+	| error {$$ = NULL;}
 	;
 
 SECUENCIA_ROBOTINSTR: SECUENCIA_ROBOTINSTR ROBOTINSTR
 	| ROBOTINSTR 
+	| error {$$ = NULL;}
 	;
 
 ROBOTINSTR: STORE TOKEN_PUNTO
@@ -102,39 +111,49 @@ ROBOTINSTR: STORE TOKEN_PUNTO
 	| MOVE TOKEN_PUNTO
 	| READ TOKEN_PUNTO
 	| SEND TOKEN_PUNTO
+	| error {$$ = NULL;}
 	;
 
 STORE: TOKEN_STORE EXPRESSION
+	| error {$$ = NULL;}
 	;
 
 COLLECT: TOKEN_COLLECT 
 	| TOKEN_COLLECT TOKEN_AS ID
+	| error {$$ = NULL;}
 	;
 
 DROP: TOKEN_DROP EXPRESSION
+	| error {$$ = NULL;}
 	;
 
 MOVE: DIRECTION EXPRESSION
+	| error {$$ = NULL;}
 	;
 
 READ: TOKEN_READ
 	| TOKEN_READ TOKEN_AS ID
+	| error {$$ = NULL;}
 	;
 
 SEND: TOKEN_SEND
+	| error {$$ = NULL;}
 	;
 
 DIRECTION: TOKEN_UP
 	| TOKEN_DOWN
 	| TOKEN_LEFT
 	| TOKEN_RIGHT
+	| error {$$ = NULL;}
 	;
 
 EXECUTE: TOKEN_EXECUTE SECUENCIA_INSTRUC TOKEN_END{ $$ = $2;}
+	| error {$$ = NULL;}
 	;
 
 SECUENCIA_INSTRUC: INSTRUCCION {$$ = new SecuenciaInstrucciones($1);}
 	| SECUENCIA_INSTRUC INSTRUCCION {$$ = new SecuenciaInstrucciones($1,$2);}
+	| error {$$ = NULL;}
 	;
 
 INSTRUCCION: ADVANCE {$$ = $1;}
@@ -147,30 +166,38 @@ INSTRUCCION: ADVANCE {$$ = $1;}
 	;
 
 CONDICIONAL: TOKEN_IF EXPRESSION TOKEN_DOSPUNT  SECUENCIA_INSTRUC ELSE TOKEN_END { $$ = new Condicional($2,$4,$5);}
+	| error {$$ = NULL;}
 	;
 
 ELSE: TOKEN_ELSE TOKEN_DOSPUNT SECUENCIA_INSTRUC {$$ = $3;}
 	| /* Lambda */	{$$ = NULL;}
+	| error {$$ = NULL;}
 	;
 
 ACTIVATE: TOKEN_ACTIVATE LISTA_IDS TOKEN_PUNTO { $$ = new ActivateInst($2);}
+	| error {$$ = NULL;}
 	;
 
 ADVANCE: TOKEN_ADVANCE LISTA_IDS TOKEN_PUNTO {$$ = new AdvanceInst($2);}
+	| error {$$ = NULL;}
 	;
 
 DEACTIVATE: TOKEN_DEACTIVATE LISTA_IDS TOKEN_PUNTO {$$ = new DeactivateInst($2);}
+	| error {$$ = NULL;}
 	;
 
 
 LOOP: TOKEN_WHILE EXPRESSION TOKEN_DOSPUNT SECUENCIA_INSTRUC TOKEN_END { $$ = new LoopInst($2,$4);}
+	| error {$$ = NULL;}
 	;
 
 INCORPALCANCE: CREATE EXECUTE { $$ = new IncorpAlcance($1,$2);}
+	| error {$$ = NULL;}
 	;
 
 LISTA_IDS: ID {$$ = new ListaIDs(string($1));}
 	| LISTA_IDS TOKEN_COMA ID {$$ = new ListaIDs($1,string($3));}
+	| error {$$ = NULL;}
 	;
 
 EXPRESSION: TOKEN_PARABRE EXPRESSION TOKEN_PARCIERRA {$$ = $2;}
@@ -194,6 +221,7 @@ EXPRESSION: TOKEN_PARABRE EXPRESSION TOKEN_PARCIERRA {$$ = $2;}
 	| TOKEN_FALSE {$$ = new Expression(false,3);}
 	| ID {$$ = new Expression(string($1),1);}
 	| CARACTER {$$ = new Expression(string($1),2);}
+	| error {$$ = NULL;}
 	;
 
 
