@@ -13,7 +13,7 @@ using namespace std;
 
 extern int yylex(void);
 
-arbolSintactico *raiz;
+ArbolSintactico *raiz;
 
 void yyerror(char const*);
 
@@ -23,9 +23,9 @@ void yyerror(char const*);
 	int value;
 	char name[200];
 	Expression *exp;
-	instruccion *inst;
-	declaracion *decl;
-	listaIDs *idl;
+	Instruccion *inst;
+	Declaracion *decl;
+	ListaIDs *idl;
 }
 
 
@@ -57,7 +57,7 @@ void yyerror(char const*);
 
 %%
 
-PROGRAMA: CREATE EXECUTE {raiz = new arbolSintactico($1,$2);}
+PROGRAMA: CREATE EXECUTE {raiz = new ArbolSintactico($1,$2);}
 	;
 
 CREATE: TOKEN_CREATE SECUENCIA_DECLAR { $$ = $2;}
@@ -133,8 +133,8 @@ DIRECTION: TOKEN_UP
 EXECUTE: TOKEN_EXECUTE SECUENCIA_INSTRUC TOKEN_END{ $$ = $2;}
 	;
 
-SECUENCIA_INSTRUC: INSTRUCCION {$$ = new secuenciaInstrucciones($1);}
-	| SECUENCIA_INSTRUC INSTRUCCION {$$ = new secuenciaInstrucciones($1,$2);}
+SECUENCIA_INSTRUC: INSTRUCCION {$$ = new SecuenciaInstrucciones($1);}
+	| SECUENCIA_INSTRUC INSTRUCCION {$$ = new SecuenciaInstrucciones($1,$2);}
 	;
 
 INSTRUCCION: ADVANCE {$$ = $1;}
@@ -146,31 +146,31 @@ INSTRUCCION: ADVANCE {$$ = $1;}
 	| error {$$ = NULL;}
 	;
 
-CONDICIONAL: TOKEN_IF EXPRESSION TOKEN_DOSPUNT  SECUENCIA_INSTRUC ELSE TOKEN_END { $$ = new condicional($2,$4,$5);}
+CONDICIONAL: TOKEN_IF EXPRESSION TOKEN_DOSPUNT  SECUENCIA_INSTRUC ELSE TOKEN_END { $$ = new Condicional($2,$4,$5);}
 	;
 
 ELSE: TOKEN_ELSE TOKEN_DOSPUNT SECUENCIA_INSTRUC {$$ = $3;}
 	| /* Lambda */	{$$ = NULL;}
 	;
 
-ACTIVATE: TOKEN_ACTIVATE LISTA_IDS TOKEN_PUNTO { $$ = new activateInst($2);}
+ACTIVATE: TOKEN_ACTIVATE LISTA_IDS TOKEN_PUNTO { $$ = new ActivateInst($2);}
 	;
 
-ADVANCE: TOKEN_ADVANCE LISTA_IDS TOKEN_PUNTO {$$ = new advanceInst($2);}
+ADVANCE: TOKEN_ADVANCE LISTA_IDS TOKEN_PUNTO {$$ = new AdvanceInst($2);}
 	;
 
-DEACTIVATE: TOKEN_DEACTIVATE LISTA_IDS TOKEN_PUNTO {$$ = new deactivateInst($2);}
+DEACTIVATE: TOKEN_DEACTIVATE LISTA_IDS TOKEN_PUNTO {$$ = new DeactivateInst($2);}
 	;
 
 
-LOOP: TOKEN_WHILE EXPRESSION TOKEN_DOSPUNT SECUENCIA_INSTRUC TOKEN_END { $$ = new loopInst($2,$4);}
+LOOP: TOKEN_WHILE EXPRESSION TOKEN_DOSPUNT SECUENCIA_INSTRUC TOKEN_END { $$ = new LoopInst($2,$4);}
 	;
 
-INCORPALCANCE: CREATE EXECUTE { $$ = new incorpAlcance($1,$2);}
+INCORPALCANCE: CREATE EXECUTE { $$ = new IncorpAlcance($1,$2);}
 	;
 
-LISTA_IDS: ID {$$ = new listaIDs(string($1));}
-	| LISTA_IDS TOKEN_COMA ID {$$ = new listaIDs($1,string($3));}
+LISTA_IDS: ID {$$ = new ListaIDs(string($1));}
+	| LISTA_IDS TOKEN_COMA ID {$$ = new ListaIDs($1,string($3));}
 	;
 
 EXPRESSION: TOKEN_PARABRE EXPRESSION TOKEN_PARCIERRA {$$ = $2;}

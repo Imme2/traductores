@@ -5,19 +5,19 @@ using namespace std;
 
 // Una simple clase que hace una lista de Ids en forma de arbol
 
-class listaIDs {
+class ListaIDs {
 public:
 
-	listaIDs *left;
+	ListaIDs *left;
 	string right;
 
 	//Caso recursivo
 
-	listaIDs(listaIDs *l, string r): left(l), right(r){}
+	ListaIDs(ListaIDs *l, string r): left(l), right(r){}
 
 	//Caso base
 
-	listaIDs(string r): right(r){
+	ListaIDs(string r): right(r){
 		left = NULL;
 	}
 
@@ -34,12 +34,12 @@ public:
 	}
 };
 
-// clase virtual declaracion para futuras entregas.
+// clase virtual Declaracion para futuras entregas.
 
-class declaracion{
+class Declaracion{
 public:
 
-	virtual ~declaracion(){}
+	virtual ~Declaracion(){}
 
 	virtual void toString(int){}
 
@@ -47,15 +47,15 @@ public:
 
 //Secuencia de declaraciones para futuras entregas.
 
-class secuenciaDeclaraciones: public declaracion{
+class SecuenciaDeclaraciones: public declaracion{
 public:
 
-	declaracion *right;
-	declaracion *left;
+	Declaracion *right;
+	Declaracion *left;
 
-	secuenciaDeclaraciones(declaracion* l,declaracion *r): right(r), left(l){} 
+	SecuenciaDeclaraciones(declaracion* l,Declaracion *r): right(r), left(l){} 
 
-	secuenciaDeclaraciones(declaracion *r): right(r){
+	SecuenciaDeclaraciones(Declaracion *r): right(r){
 		left = NULL;
 	}
 
@@ -65,36 +65,51 @@ public:
 
 };
 
-// clase virtual instruccion, padre de la mayoria de las otras clases
 
-class instruccion{
+class almacenamiento: public declaracion{
+
+	Expression* exp; //verificar que tipo = tipo del robot
+
+	almacenamiento(Expression* e):exp(e){}
+
+	Tipo getType(){
+		return exp.getType();
+	};
+};
+
+class 
+
+
+// clase virtual Instruccion, padre de la mayoria de las otras clases
+
+class Instruccion{
 public:
 
-	virtual ~instruccion(){}
+	virtual ~Instruccion(){}
 
 	virtual void toString(int){}
 
 };
 
-//Secuencia de instrucciones, toma ventaja de la estructura de arbol nuevamente para 
+//Secuencia de Instrucciones, toma ventaja de la estructura de arbol nuevamente para 
 // hacer una lista.
 
-class secuenciaInstrucciones: public instruccion{
+class SecuenciaInstrucciones: public Instruccion{
 public:
 
-	instruccion *right;
-	instruccion *left;
+	Instruccion *right;
+	Instruccion *left;
 
-	//Se usa de nuevo el polimorfismo para hacer una lista de instrucciones en forma
+	//Se usa de nuevo el polimorfismo para hacer una lista de Instrucciones en forma
 	// de arbol
 
-	secuenciaInstrucciones(instruccion* l,instruccion *r): right(r), left(l){} 
+	SecuenciaInstrucciones(Instruccion* l,Instruccion *r): right(r), left(l){} 
 
-	secuenciaInstrucciones(instruccion *r): right(r){
+	SecuenciaInstrucciones(Instruccion *r): right(r){
 		left = NULL;
 	}
 
-	//funcion que imprime la version del arbol de la secuencia de instrucciones,
+	//funcion que imprime la version del arbol de la secuencia de Instrucciones,
 	// lleva un argumento que nos dice cuantas tabulaciones debemos usar para
 	// estar al nivel correcto en la salida estandar
 
@@ -114,16 +129,16 @@ public:
 
 };
 
-// A continuacion las definiciones de clases de varias instrucciones
-// las unicas diferencias radican en lo necesario para cada instruccion
+// A continuacion las definiciones de clases de varias Instrucciones
+// las unicas diferencias radican en lo necesario para cada Instruccion
 // se sigue usando el toString(i) para imprimir con i siendo el numero
 // de tabulaciones (o la profundidad) del paso en que se encuentra.
 
-class advanceInst: public instruccion{
+class AdvanceInst: public Instruccion{
 public:
 
-	listaIDs *ids;
-	advanceInst(listaIDs *listid): ids(listid){}
+	ListaIDs *ids;
+	AdvanceInst(ListaIDs *listid): ids(listid){}
 
 	void toString(int i){
 		for (int j = 0; j < i;j++){
@@ -140,11 +155,11 @@ public:
 
 };
 
-class activateInst: public instruccion{
+class ActivateInst: public Instruccion{
 public:
 
-	listaIDs *ids;
-	activateInst(listaIDs *listid): ids(listid){}
+	ListaIDs *ids;
+	ActivateInst(ListaIDs *listid): ids(listid){}
 
 	void toString(int i){
 		for (int j = 0; j < i;j++){
@@ -161,11 +176,11 @@ public:
 
 };
 
-class deactivateInst: public instruccion{
+class DeactivateInst: public Instruccion{
 public:
 
-	listaIDs *ids;
-	deactivateInst(listaIDs *listid): ids(listid){}
+	ListaIDs *ids;
+	DeactivateInst(ListaIDs *listid): ids(listid){}
 
 	void toString(int i){
 		for (int j = 0; j < i;j++){
@@ -184,13 +199,13 @@ public:
 
 
 
-class condicional: public instruccion{
+class Condicional: public Instruccion{
 public:
-	instruccion* success;
-	instruccion* failure;
+	Instruccion* success;
+	Instruccion* failure;
 	Expression* guardia;
 
-	condicional(Expression *g,instruccion* s,instruccion* f): success(s),guardia(g){
+	Condicional(Expression *g,Instruccion* s,Instruccion* f): success(s),guardia(g){
 		if (f == NULL){
 			failure = NULL;
 		}
@@ -231,13 +246,13 @@ public:
 
 };
 
-class loopInst: public instruccion{
+class LoopInst: public Instruccion{
 public:
 
-	instruccion *success;
+	Instruccion *success;
 	Expression *guardia;
 
-	loopInst(Expression* g, instruccion* s): success(s),guardia(g){}
+	LoopInst(Expression* g, Instruccion* s): success(s),guardia(g){}
 
 	void toString(int i){
 		for (int j = 0; j < i;j++){
@@ -263,31 +278,16 @@ public:
 
 
 
-// Funcion principal del programa, que comienza el arbol
 
-class arbolSintactico{
+//Casi igual a la Instruccion ArbolSintactico, pero se diferencia por claridad
+
+class IncorpAlcance: public Instruccion{
 public:
 
-	declaracion *left;
-	instruccion *right;
+	Declaracion *left;
+	Instruccion *right;
 
-	arbolSintactico(declaracion *l, instruccion *r): left(l),right(r){};
-
-	void toString(int i){
-		right->toString(i);
-	}
-
-};
-
-//Casi igual a la instruccion arbolSintactico, pero se diferencia por claridad
-
-class incorpAlcance: public instruccion{
-public:
-
-	declaracion *left;
-	instruccion *right;
-
-	incorpAlcance(declaracion *l, instruccion *r): left(l),right(r){};
+	IncorpAlcance(Declaracion *l, Instruccion *r): left(l),right(r){};
 
 	void toString(int i){
 		for (int j = 0; j < i;j++){
@@ -295,6 +295,23 @@ public:
 		}
 		cout << "INCORPALCANCE:";
 		right->toString(i+1);
+	}
+
+};
+
+
+// Funcion principal del programa, que comienza el arbol
+
+class ArbolSintactico{
+public:
+
+	Declaracion *left;
+	Instruccion *right;
+
+	ArbolSintactico(Declaracion *l, Instruccion *r): left(l),right(r){};
+
+	void toString(int i){
+		right->toString(i);
 	}
 
 };
