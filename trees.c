@@ -45,17 +45,17 @@ public:
 
 };
 
-//Secuencia de declaraciones para futuras entregas.
+//Secuencia de Declaraciones para futuras entregas.
 
-class SecuenciaDeclaraciones: public declaracion{
+class SecuenciaDeclaraciones: public Declaracion{
 public:
 
 	Declaracion *right;
 	Declaracion *left;
 
-	SecuenciaDeclaraciones(declaracion* l,Declaracion *r): right(r), left(l){} 
+	SecuenciaDeclaraciones(Declaracion* l,Declaracion* r): right(r), left(l){} 
 
-	SecuenciaDeclaraciones(Declaracion *r): right(r){
+	SecuenciaDeclaraciones(Declaracion* r): right(r){
 		left = NULL;
 	}
 
@@ -65,19 +65,47 @@ public:
 
 };
 
+class InstruccionRobot{
+	virtual ~InstruccionRobot(){}
 
-class almacenamiento: public declaracion{
+	virtual void toString(int){}
+};
+
+class Almacenamiento: public InstruccionRobot{
+public:
 
 	Expression* exp; //verificar que tipo = tipo del robot
 
-	almacenamiento(Expression* e):exp(e){}
+	Almacenamiento(Expression* e):exp(e){}
 
 	Tipo getType(){
 		return exp.getType();
 	};
 };
 
-class 
+class Coleccion: public InstruccionRobot{
+public:
+
+	string identificador;
+	bool tieneId;
+
+	Coleccion(string id):identificador(id){
+		tieneId = true;
+	}
+
+	Coleccion(){
+		tieneId = false;
+	}
+};
+
+class Soltado: public InstruccionRobot{
+public:
+	Expression* exp;
+
+	Soltado(Expression* e): exp(e){}
+};
+
+class
 
 
 // clase virtual Instruccion, padre de la mayoria de las otras clases
