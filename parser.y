@@ -143,7 +143,7 @@ INSTRUCCION: ADVANCE {$$ = $1;}
 	| CONDICIONAL { $$ = $1;}
 	| LOOP { $$ = $1;}
 	| INCORPALCANCE { $$ = $1;}
-	| error {}
+	| error {$$ = NULL;}
 	;
 
 CONDICIONAL: TOKEN_IF EXPRESSION TOKEN_DOSPUNT  SECUENCIA_INSTRUC ELSE TOKEN_END { $$ = new condicional($2,$4,$5);}

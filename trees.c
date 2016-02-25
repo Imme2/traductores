@@ -265,7 +265,7 @@ public:
 
 // Funcion principal del programa, que comienza el arbol
 
-class arbolSintactico: public instruccion{
+class arbolSintactico{
 public:
 
 	declaracion *left;
