@@ -1,6 +1,8 @@
 #include <string>
-#include "expresion.c"
+#include "expresion.c" //ERRORTIPO se define aqui como -2
 #include <iostream>
+#include <map>
+
 using namespace std;
 
 // Una simple clase que hace una lista de Ids en forma de arbol
@@ -21,6 +23,11 @@ public:
 		left = NULL;
 	}
 
+	void estanDeclarados(map< string, int >& ListVar){
+		if (left == NULL){
+			return ListVar
+		}
+	}
 
 	//Toma ventaja de la estructura de arbol para imprimir
 	void toString(){
@@ -63,9 +70,9 @@ public:
 class Almacenamiento: public InstruccionRobot{
 public:
 
-	Expression* exp; //verificar que tipo = tipo del robot
+	Expresion* exp; //verificar que tipo = tipo del robot
 
-	Almacenamiento(Expression* e):exp(e){}
+	Almacenamiento(Expresion* e):exp(e){}
 
 	Tipo CalcularTipo(){
 		return exp.CalcularTipo();
@@ -89,18 +96,18 @@ public:
 
 class Soltado: public InstruccionRobot{
 public:
-	Expression* exp;
+	Expresion* exp;
 
-	Soltado(Expression* e): exp(e){}
+	Soltado(Expresion* e): exp(e){}
 };
 
 class Movimiento: public InstruccionRobot{
 public:
 
 	int direccion;
-	Expression* exp;
+	Expresion* exp;
 
-	Movimiento(int d, Expression* e): exp(e){
+	Movimiento(int d, Expresion* e): exp(e){
 		direccion = d;
 	}
 };
@@ -129,16 +136,16 @@ public:
 
 
 class Comportamiento{
-
+public:
 	int tipoCondicion; 	// 0 al 3
-						// 0 => Expression
+						// 0 => Expresion
 						// 1 => activacion
 						// 2 => desactivacion
 						// 3 => default
-	Expression* exp;
+	Expresion* exp;
 	SecuenciaRoboInstruccion secRoboInst;
-	
-	Comportamiento(int t,Expression* e, SecuenciaRoboInstruccion* secinst): exp(e), secRoboInst(sec){
+
+	Comportamiento(int t,Expresion* e, SecuenciaRoboInstruccion* secinst): exp(e), secRoboInst(sec){
 		tipoCondicion = t;
 	}
 };
@@ -195,7 +202,12 @@ public:
 class DeclaracionRobot: public Declaracion{
 public:
 
-	int tipo;
+	int tipo; 	// tipo == 0 -> es un booleano
+				// tipo == 1 -> es un numero
+				// tipo == 2 -> es un caracter
+
+
+
 	ListaIDs* ids;
 	SecuenciaComportamiento* comportamiento;
 
@@ -330,9 +342,9 @@ class Condicional: public Instruccion{
 public:
 	Instruccion* success;
 	Instruccion* failure;
-	Expression* guardia;
+	Expresion* guardia;
 
-	Condicional(Expression *g,Instruccion* s,Instruccion* f): success(s),guardia(g){
+	Condicional(Expresion *g,Instruccion* s,Instruccion* f): success(s),guardia(g){
 		if (f == NULL){
 			failure = NULL;
 		}
@@ -377,9 +389,9 @@ class LoopInst: public Instruccion{
 public:
 
 	Instruccion *success;
-	Expression *guardia;
+	Expresion *guardia;
 
-	LoopInst(Expression* g, Instruccion* s): success(s),guardia(g){}
+	LoopInst(Expresion* g, Instruccion* s): success(s),guardia(g){}
 
 	void toString(int i){
 		for (int j = 0; j < i;j++){
