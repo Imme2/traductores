@@ -2,7 +2,7 @@
 #define instrucciones_h
 
 #include <iostream>
-#include 
+#include <string>
 
 using namespace std;
 

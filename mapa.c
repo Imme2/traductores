@@ -32,25 +32,17 @@ class MapaDeTipos{
 			return false;
 		}
 		else{
+			listMapas[nivel - 1].clear();
 			nivel--;
 			return true;
 		}
 	}
 
 	bool estaDeclarado(string s){
-		if (listMapas[nivel - 1].find(s) != listMapas[i].end()){
+		if (listMapas[nivel - 1].find(s) != listMapas[nivel - 1].end()){
 			return true; 
 		}
 		return false;
-	}
-
-	bool estaDeclaradoEnNivel(string s){
-		if (listMapas[nivel - 1].find(s) != listMapas[nivel - 1].end()){
-			return true;
-		}
-		else{
-			return false
-		}
 	}
 
 	int obtenerTipo(string s){

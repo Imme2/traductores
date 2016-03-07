@@ -11,7 +11,7 @@
 
 using namespace std;
 
-
+ 
 //Clase expresion, diferentes constructores para usar el polimorfismo efectivamente
 
 class Expresion{
@@ -76,7 +76,7 @@ public:
 
 
 	// Funcion que calcula el tipo de una expresion
-	int CalcularTipo(){
+	int CalcularTipo(MapaDeTipos& mapa,int t){
 		int aux,aux2;
 		if (tipo == ERRORTIPO){
 			return tipo;
@@ -85,10 +85,20 @@ public:
 			return tipo;
 		}
 		if (tipo == TIPOID){
-			// NECESITAMOS UN MAPA AQUI;
+			if (id == "me"){
+				return t;
+			}
+			else if (aux = mapa.obtenerTipo(id) != -1){
+				return aux;
+			}
+			else if (aux == -1){
+				cout << "Error evaluando expresion." << endl;
+				cout << "Razon: Variable " << id << " no declarada." << endl;
+				return ERRORTIPO;
+			}
 		}
 		if (operador == "NEGACION"){
-			if (left->CalcularTipo() == TIPOBOOL){
+			if (left->CalcularTipo(mapa,t) == TIPOBOOL){
 				return TIPOBOOL;
 			}
 			else{
@@ -96,7 +106,7 @@ public:
 			}
 		}
 		if (operador == "RESTA" and unary){
-			if (left->CalcularTipo() == TIPOINT){
+			if (left->CalcularTipo(mapa,t) == TIPOINT){
 				return TIPOINT;
 			}
 			else{
@@ -104,7 +114,7 @@ public:
 			}
 		}
 		if (operador == "MENOR" or operador == "MAYOR" or operador == "MENORIGUAL" or operador == "MAYORIGUAL"){
-			if (left->CalcularTipo() == TIPOINT and right->CalcularTipo() == TIPOINT){
+			if (left->CalcularTipo(mapa,t) == TIPOINT and right->CalcularTipo(mapa,t) == TIPOINT){
 				return TIPOBOOL;
 			}
 			else{
@@ -112,7 +122,7 @@ public:
 			}
 		}
 		if (operador == "IGUAL" or operador == "DESIGUAL"){
-			if (left->CalcularTipo() == right->CalcularTipo()){
+			if (left->CalcularTipo(mapa,t) == right->CalcularTipo(mapa,t)){
 				return TIPOBOOL;
 			}
 			else{
@@ -120,7 +130,7 @@ public:
 			}
 		}
 		if (operador == "CONJUNCION" or operador == "DISYUNCION"){
-			if (left->CalcularTipo() == TIPOBOOL and right->CalcularTipo() == TIPOBOOL){
+			if (left->CalcularTipo(mapa,t) == TIPOBOOL and right->CalcularTipo(mapa,t) == TIPOBOOL){
 				return TIPOBOOL;
 			}
 			else{
@@ -128,14 +138,13 @@ public:
 			}
 		}
 		if (operador == "SUMA" or (operador == "RESTA" and !unary) or operador == "MULTIPLICACION" or operador == "DIVISION" or operador == "MODULO"){
-			if (left->CalcularTipo() == TIPOINT and right->CalcularTipo() == TIPOINT){
+			if (left->CalcularTipo(mapa,t) == TIPOINT and right->CalcularTipo(mapa,t) == TIPOINT){
 				return TIPOINT;
 			}
 			else{
 				return ERRORTIPO;
 			}
 		}
-		cout << "CTHULU HAS ADDED YOU ON FACEBOOK" << endl
 		return ERRORTIPO; // por si acaso cthulu ataca el codigo y hace que salga de ifs.
 	}
 
