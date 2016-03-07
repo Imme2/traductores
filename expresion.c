@@ -74,6 +74,8 @@ public:
 		unary = true;
 	}
 
+
+	// Funcion que calcula el tipo de una expresion
 	int CalcularTipo(){
 		int aux,aux2;
 		if (tipo == ERRORTIPO){
@@ -86,7 +88,7 @@ public:
 			// NECESITAMOS UN MAPA AQUI;
 		}
 		if (operador == "NEGACION"){
-			if (l->CalcularTipo() == TIPOBOOL){
+			if (left->CalcularTipo() == TIPOBOOL){
 				return TIPOBOOL;
 			}
 			else{
@@ -94,7 +96,7 @@ public:
 			}
 		}
 		if (operador == "RESTA" and unary){
-			if (l->CalcularTipo() == TIPOINT){
+			if (left->CalcularTipo() == TIPOINT){
 				return TIPOINT;
 			}
 			else{
@@ -102,7 +104,7 @@ public:
 			}
 		}
 		if (operador == "MENOR" or operador == "MAYOR" or operador == "MENORIGUAL" or operador == "MAYORIGUAL"){
-			if (l->CalcularTipo() == TIPOINT and r->CalcularTipo() == TIPOINT){
+			if (left->CalcularTipo() == TIPOINT and right->CalcularTipo() == TIPOINT){
 				return TIPOBOOL;
 			}
 			else{
@@ -110,7 +112,7 @@ public:
 			}
 		}
 		if (operador == "IGUAL" or operador == "DESIGUAL"){
-			if (l->CalcularTipo() == r->CalcularTipo()){ // ----- CHEQUEAR SI CARACTER SE PUEDE
+			if (left->CalcularTipo() == right->CalcularTipo()){
 				return TIPOBOOL;
 			}
 			else{
@@ -118,7 +120,7 @@ public:
 			}
 		}
 		if (operador == "CONJUNCION" or operador == "DISYUNCION"){
-			if (l->CalcularTipo() == TIPOBOOL and r->CalcularTipo() == TIPOBOOL){
+			if (left->CalcularTipo() == TIPOBOOL and right->CalcularTipo() == TIPOBOOL){
 				return TIPOBOOL;
 			}
 			else{
@@ -126,7 +128,7 @@ public:
 			}
 		}
 		if (operador == "SUMA" or (operador == "RESTA" and !unary) or operador == "MULTIPLICACION" or operador == "DIVISION" or operador == "MODULO"){
-			if (l->CalcularTipo() == TIPOINT and r->CalcularTipo() == TIPOINT){
+			if (left->CalcularTipo() == TIPOINT and right->CalcularTipo() == TIPOINT){
 				return TIPOINT;
 			}
 			else{
@@ -135,6 +137,26 @@ public:
 		}
 		cout << "CTHULU HAS ADDED YOU ON FACEBOOK" << endl
 		return ERRORTIPO; // por si acaso cthulu ataca el codigo y hace que salga de ifs.
+	}
+
+	//Funcion que recursivamente dice si una expresion compleja contiene el identificador "me"
+	bool contieneMe(){
+		if (tipo == 3){
+			if (id == "me"){
+				return true;
+			}
+		}
+		else if {tipo == -1}{
+			if (unary){
+				return left->contieneMe();
+			}
+			else{
+				return left->contieneMe() or right->contieneMe();
+			}
+		}
+		else{
+			return false;
+		}
 	}
 
 	// Gran funcion que imprime el arbol de expresiones
