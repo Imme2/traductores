@@ -5,7 +5,9 @@
 
 #include <cstdio>
 #include <iostream>
-#include "trees.c"
+#include "declaraciones.c"
+#include "instrucciones.c"
+#include "expresion.c"
 
 using namespace std;
 
@@ -39,7 +41,7 @@ void yyerror(char const*);
 %type <inst> EXECUTE SECUENCIA_INSTRUC CONDICIONAL INSTRUCCION INCORPALCANCE DEACTIVATE ACTIVATE ADVANCE ELSE LOOP
 %type <decl> CREATE SECUENCIA_DECLAR DECLARATION 
 %type <exp>  EXPRESSION
-%type <value> TIPO CODITION DIRECTION
+%type <value> TIPO CONDITION DIRECTION
 %type <instRobot> SECUENCIA_ROBOTINSTR ROBOTINSTR STORE COLLECT DROP MOVE READ SEND
 %type <comp> COMPORTAMIENTO
 %type <secComp> SECUENCIA_COMPORT
@@ -113,13 +115,13 @@ STORE: TOKEN_STORE EXPRESSION 	{$$ = new Almacenamiento($2);}
 	;
 
 COLLECT: TOKEN_COLLECT 			{$$ = new Coleccion();}
-	| TOKEN_COLLECT TOKEN_AS ID {$$ = new Coleccion(string($1));}
+	| TOKEN_COLLECT TOKEN_AS ID {$$ = new Coleccion(string($3));}
 	;
 
 DROP: TOKEN_DROP EXPRESSION 	{$$ = new Soltado($2);}
 	;
 
-MOVE: DIRECTION EXPRESSION 		{$$ = new Condicional($2,$4,$5);}
+MOVE: DIRECTION EXPRESSION 		{$$ = new Movimiento($1,$2);}
 	;
 
 READ: TOKEN_READ 				{$$ = new Leer();}

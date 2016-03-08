@@ -1,3 +1,6 @@
+#ifndef declaraciones_h
+#define declaraciones_h
+
 #include <string>
 #include <iostream>
 #include <map>
@@ -267,20 +270,20 @@ public:
 	SecuenciaComportamiento *right;
 	Comportamiento *left;
 
-	SecuenciaComportamiento(Comportamiento* l,SecuenciaComportamiento* r): left(l),right(r){} 
+	SecuenciaComportamiento(SecuenciaComportamiento* l,Comportamiento* r): left(l),right(r){} 
 
-	SecuenciaComportamiento(Comportamiento* l): left(l){
-		right = NULL;
+	SecuenciaComportamiento(Comportamiento* r): right(r){
+		left = NULL;
 	}
 
 	vector<int> obtenerComportamientos(){
-		SecuenciaComportamiento *aux = right;
+		SecuenciaComportamiento *aux = left;
 		vector<int> tiposdeComp;
 		tiposdeComp.push_back(left->tipoCondicion);
 
-		while (aux != NULL){
-			tiposdeComp.push_back(aux->left->tipoCondicion);
-			aux = aux->right;
+		while(aux != NULL){
+			tiposdeComp.push_back(aux->right->tipoCondicion);
+			aux = aux->left;
 		}
 
 		return tiposdeComp;
@@ -306,6 +309,8 @@ public:
 
 	virtual bool verificar(MapaDeTipos&){}
 
+	virtual bool declararRobots(MapaDeTipos&){}
+
 	virtual void toString(int){}
 
 };
@@ -318,10 +323,10 @@ public:
 	Declaracion *right;
 	Declaracion *left;
 
-	SecuenciaDeclaraciones(Declaracion* l,Declaracion* r): right(r), left(l){} 
+	SecuenciaDeclaraciones(Declaracion* l,Declaracion* r): left(l),right(r){} 
 
-	SecuenciaDeclaraciones(Declaracion* l): left(l){
-		right = NULL;
+	SecuenciaDeclaraciones(Declaracion* r): right(r){
+		left = NULL;
 	}
 
 	bool verificar(MapaDeTipos& mapa){
@@ -330,6 +335,25 @@ public:
 		}
 		else{
 			return left->verificar(mapa) and right->verificar(mapa);
+		}
+	}
+
+	bool declararRobots(MapaDeTipos& mapa){
+		Declaracion* aux = left;
+
+		if (right->declararRobots(mapa)){
+			while(aux != NULL){
+				if (aux->right->declararRobots(mapa){
+					aux = aux->left;
+				}
+				else{
+					return false;
+				}
+			}
+			return true;
+		}
+		else{
+			return false;
 		}
 	}
 
@@ -352,6 +376,23 @@ public:
 	DeclaracionRobot(int t,ListaIDs* l,SecuenciaComportamiento* comps): ids(l), comportamiento(comps){
 		tipo = t;
 	}
+
+	bool declararRobots(MapaDeTipos& mapa){
+		vector<string> aux = ids->obtenerIds();
+		for (int i = 0 ; i < aux.size(); i++){
+			if (!mapa.estaDeclarado(aux[i])){
+				mapa.agregar(aux[i],tipo);			// Agregamos todos al mapa si no estan en el.
+			}
+			else{
+				cout << "Error al declarar robot " << aux[i] << endl;
+				cout << "Razon: El robot ya fue declarado" << endl;	//Si estan en el, solo
+				return false										// Reportamos el error y salimos.
+			}
+		}
+
+		return true;
+	}
+
 
 	bool verificar(MapaDeTipos& mapa){
 		vector<string> aux = ids->obtenerIds();
@@ -415,27 +456,4 @@ public:
 
 
 
-// Funcion principal del programa, que comienza el arbol
-
-class ArbolSintactico{
-public:
-
-	Declaracion *left;
-	Instruccion *right;
-
-	ArbolSintactico(Declaracion *l, Instruccion *r): left(l),right(r){};
-
-	bool verificar(){
-		MapaDeTipos PrincMap = MapaDeTipos();
-		if (left->verificar(PrincMap)){ // Populamos el mapa
-			left->declararRobots(PrincMap);
-			return right->verificar(PrincMap); // Verificamos los tipos.
-		}
-		return false;
-	}
-
-	void toString(int i){
-		right->toString(i);
-	}
-
-};
+#endif
