@@ -1,9 +1,15 @@
+#ifndef mapadetipos_h
+#define mapadetipos_h
+
+#include <vector>
 #include <map>
+#include <string>
+#include <iostream>
 
 using namespace std;
 
 class MapaDeTipos{
-
+public:
 	vector< map<string, int> > listMapas;
 	int nivel;
 	int currsize;
@@ -15,8 +21,9 @@ class MapaDeTipos{
 
 	~MapaDeTipos(){
 		for (int i = 0; i < listMapas.size(); i++){
-			listMapas[i].
+			listMapas[i].clear();
 		}
+		listMapas.clear();
 	}
 
 	void nuevoNivel(){
@@ -27,7 +34,7 @@ class MapaDeTipos{
 		}
 	}
 
-	bool bajarNivel(){
+	bool subirNivel(){
 		if (nivel == 1){
 			return false;
 		}
@@ -45,6 +52,15 @@ class MapaDeTipos{
 		return false;
 	}
 
+	bool existe(string s){
+		for (int i = nivel-1; i >= 0; i--){
+			if (listMapas[i].find(s) != listMapas[i].end()){
+				return true; 
+			}
+		}
+		return false;
+	}
+
 	int obtenerTipo(string s){
 		for (int i = nivel - 1; i >= 0;i--){
 			if (listMapas[i].find(s) != listMapas[i].end()){
@@ -56,7 +72,7 @@ class MapaDeTipos{
 
 
 	void agregar(string s,int i){
-		listMapas[nivel][s] = i;
+		listMapas[nivel-1][s] = i;
 	}
 
 };
@@ -180,3 +196,5 @@ soy el mapa.cpp
 															
 															
 */
+
+#endif

@@ -8,6 +8,8 @@
 #include "declaraciones.c"
 #include "instrucciones.c"
 #include "expresion.c"
+#include "arbolSintactico.c"
+#include "listaids.c"
 
 using namespace std;
 
@@ -29,8 +31,7 @@ void yyerror(char const*);
 	Declaracion *decl;
 	ListaIDs *idl;
 	InstruccionRobot *instRobot;
-	Comportamiento * comp;
-	SecuenciaComportamiento * secComp;
+	Comport * comp;
 }
 
 
@@ -43,8 +44,7 @@ void yyerror(char const*);
 %type <exp>  EXPRESSION
 %type <value> TIPO CONDITION DIRECTION
 %type <instRobot> SECUENCIA_ROBOTINSTR ROBOTINSTR STORE COLLECT DROP MOVE READ SEND
-%type <comp> COMPORTAMIENTO
-%type <secComp> SECUENCIA_COMPORT
+%type <comp> COMPORTAMIENTO SECUENCIA_COMPORT
 
 
 %token <value> NUM
@@ -91,7 +91,7 @@ SECUENCIA_COMPORT: SECUENCIA_COMPORT COMPORTAMIENTO {$$ = new SecuenciaComportam
 	;
 
 COMPORTAMIENTO: TOKEN_ON CONDITION TOKEN_DOSPUNT SECUENCIA_ROBOTINSTR TOKEN_END 	{$$ = new Comportamiento($2,NULL,$4);}
-	| TOKEN_ON EXPRESSION TOKEN_DOSPUNT SECUENCIA_ROBOTINSTR TOKEN_END 				{$$ = new Comportamiento(0,$2,$4)}
+	| TOKEN_ON EXPRESSION TOKEN_DOSPUNT SECUENCIA_ROBOTINSTR TOKEN_END 				{$$ = new Comportamiento(0,$2,$4);}
 	;
 
 CONDITION: TOKEN_ACTIVATION {$$ = 1;}
@@ -99,7 +99,7 @@ CONDITION: TOKEN_ACTIVATION {$$ = 1;}
 	| TOKEN_DEFAULT 		{$$ = 3;}
 	;
 
-SECUENCIA_ROBOTINSTR: SECUENCIA_ROBOTINSTR ROBOTINSTR 	{ $$ = new SecuenciaRoboInstruccion($1,$2;}
+SECUENCIA_ROBOTINSTR: SECUENCIA_ROBOTINSTR ROBOTINSTR 	{ $$ = new SecuenciaRoboInstruccion($1,$2);}
 	| ROBOTINSTR 										{ $$ = new SecuenciaRoboInstruccion($1);} 
 	;
 

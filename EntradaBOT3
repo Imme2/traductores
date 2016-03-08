@@ -9,6 +9,21 @@ create
 			store 35.
 		end
 	end
+	bool bot hola
+		on activation:
+			collect.
+		end
+	end
+	bool bot hola1
+		on activation:
+			collect.
+		end
+	end
+	bool bot hola2
+		on activation:
+			collect.
+		end
+	end	
 execute
 	activate contador.
 	$- Asignar al contador

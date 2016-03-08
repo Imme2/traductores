@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <iostream>
 #include <vector>
-#include "trees.c"
+#include "arbolSintactico.c"
 #include <stdlib.h>
 using namespace std;
 
@@ -50,7 +50,12 @@ int main(int argc, char *argv[]){
 
 	//Se chequea el numero de errores y se imprime lo debido
 	if (listo == 0 and nroErrores == 0){
-		raiz->toString(0);
+		if (raiz->verificar()){
+			raiz->toString(0);
+		}
+		else{
+			printf("YAY\n");
+		}
 	}
 	else{
 		printf("Error al realizar el analisis sintactico\n"); 

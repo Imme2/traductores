@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include "mapa.c"
 #define ERRORTIPO -2
 #define TIPOBOOL 0
 #define TIPOINT 1
@@ -76,7 +77,7 @@ public:
 
 
 	// Funcion que calcula el tipo de una expresion
-	int CalcularTipo(MapaDeTipos& mapa,int t){
+	int calcularTipo(MapaDeTipos& mapa,int t){
 		int aux,aux2;
 		if (tipo == ERRORTIPO){
 			return tipo;
@@ -88,7 +89,7 @@ public:
 			if (id == "me"){
 				return t;
 			}
-			else if (aux = mapa.obtenerTipo(id) != -1){
+			else if ((aux = mapa.obtenerTipo(id)) != -1){
 				return aux;
 			}
 			else if (aux == -1){
@@ -98,7 +99,7 @@ public:
 			}
 		}
 		if (operador == "NEGACION"){
-			if (left->CalcularTipo(mapa,t) == TIPOBOOL){
+			if (left->calcularTipo(mapa,t) == TIPOBOOL){
 				return TIPOBOOL;
 			}
 			else{
@@ -106,7 +107,7 @@ public:
 			}
 		}
 		if (operador == "RESTA" and unary){
-			if (left->CalcularTipo(mapa,t) == TIPOINT){
+			if (left->calcularTipo(mapa,t) == TIPOINT){
 				return TIPOINT;
 			}
 			else{
@@ -114,7 +115,7 @@ public:
 			}
 		}
 		if (operador == "MENOR" or operador == "MAYOR" or operador == "MENORIGUAL" or operador == "MAYORIGUAL"){
-			if (left->CalcularTipo(mapa,t) == TIPOINT and right->CalcularTipo(mapa,t) == TIPOINT){
+			if (left->calcularTipo(mapa,t) == TIPOINT and right->calcularTipo(mapa,t) == TIPOINT){
 				return TIPOBOOL;
 			}
 			else{
@@ -122,7 +123,11 @@ public:
 			}
 		}
 		if (operador == "IGUAL" or operador == "DESIGUAL"){
-			if (left->CalcularTipo(mapa,t) == right->CalcularTipo(mapa,t)){
+			aux = left->calcularTipo(mapa,t);
+			if (aux == ERRORTIPO){
+				return ERRORTIPO;
+			}
+			if (aux == right->calcularTipo(mapa,t)){
 				return TIPOBOOL;
 			}
 			else{
@@ -130,7 +135,7 @@ public:
 			}
 		}
 		if (operador == "CONJUNCION" or operador == "DISYUNCION"){
-			if (left->CalcularTipo(mapa,t) == TIPOBOOL and right->CalcularTipo(mapa,t) == TIPOBOOL){
+			if (left->calcularTipo(mapa,t) == TIPOBOOL and right->calcularTipo(mapa,t) == TIPOBOOL){
 				return TIPOBOOL;
 			}
 			else{
@@ -138,7 +143,7 @@ public:
 			}
 		}
 		if (operador == "SUMA" or (operador == "RESTA" and !unary) or operador == "MULTIPLICACION" or operador == "DIVISION" or operador == "MODULO"){
-			if (left->CalcularTipo(mapa,t) == TIPOINT and right->CalcularTipo(mapa,t) == TIPOINT){
+			if (left->calcularTipo(mapa,t) == TIPOINT and right->calcularTipo(mapa,t) == TIPOINT){
 				return TIPOINT;
 			}
 			else{
@@ -155,7 +160,7 @@ public:
 				return true;
 			}
 		}
-		else if {tipo == -1}{
+		else if (tipo == -1){
 			if (unary){
 				return left->contieneMe();
 			}

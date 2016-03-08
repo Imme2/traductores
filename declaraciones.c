@@ -4,6 +4,11 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include <vector>
+#include "mapa.c"
+#include "expresion.c"
+#include "listaids.c"
+
 #define ERRORTIPO -2
 #define TIPOBOOL 0
 #define TIPOINT 1
@@ -16,6 +21,8 @@ using namespace std;
 
 
 class InstruccionRobot{
+public:
+
 	virtual ~InstruccionRobot(){}
 
 	virtual bool verificar(MapaDeTipos&,int){}
@@ -23,14 +30,14 @@ class InstruccionRobot{
 	virtual void toString(int){}
 };
 
-class SecuenciaRoboInstruccion: InstruccionRobot{
+class SecuenciaRoboInstruccion: public InstruccionRobot{
 public:
 	InstruccionRobot *right;
 	InstruccionRobot *left;
 
-	SecuenciaDeclaraciones(InstruccionRobot* l,InstruccionRobot* r): left(l),right(r){} 
+	SecuenciaRoboInstruccion(InstruccionRobot *l,InstruccionRobot *r): left(l),right(r){} 
 
-	SecuenciaDeclaraciones(InstruccionRobot* l): left(l){
+	SecuenciaRoboInstruccion(InstruccionRobot *l): left(l){
 		right = NULL;
 	}
 
@@ -59,12 +66,12 @@ public:
 	Almacenamiento(Expresion* e):expr(e){}
 
 	bool verificar(MapaDeTipos& mapa, int tipo){
-		int aux = expr->CalcularTipo(mapa,tipo);
+		int aux = expr->calcularTipo(mapa,tipo);
 		if (aux == tipo){
-			return true
+			return true;
 		}
 		else if (aux == ERRORTIPO){
-			return false
+			return false;
 		}
 		else{
 			cout << "Error en instruccion Store." << endl;
@@ -79,7 +86,7 @@ public:
 				cout << " Caracter ";
 			}
 
-			cout << "y se esperaba un tipo"
+			cout << "y se esperaba un tipo";
 
 			if (tipo == TIPOBOOL){
 				cout << " Booleano ";
@@ -90,8 +97,8 @@ public:
 			if (tipo == TIPOCHAR){
 				cout << " Caracter ";
 			}			
-			cout << Endl;
-			return false
+			cout << endl;
+			return false;
 		}
 	}
 };
@@ -117,7 +124,7 @@ public:
 				cout << "Error en instruccion collect." << endl;
 				cout << "Razon: La variable " << identificador << " ya fue declarada" << endl; 
 
-				return false
+				return false;
 			}
 			else{
 				// En el caso de que la variable no este declarada solo la declaramos
@@ -140,8 +147,8 @@ public:
 	Soltado(Expresion* e): expr(e){}
 
 	bool verificar(MapaDeTipos& mapa, int tipo){
-		if (expr->CalcularTipo(mapa,tipo) == ERRORTIPO){ //Si encontramos un error de tipo
-			return false // solo fallamos pues el responsable del mensaje es la expresion
+		if (expr->calcularTipo(mapa,tipo) == ERRORTIPO){ //Si encontramos un error de tipo
+			return false; // solo fallamos pues el responsable del mensaje es la expresion
 		}
 		else{
 			return true;
@@ -160,9 +167,9 @@ public:
 	}
 
 	bool verificar(MapaDeTipos& mapa, int tipo){
-		int aux = expr->CalcularTipo(mapa,tipo)
+		int aux = expr->calcularTipo(mapa,tipo);
 		if (aux == TIPOINT){
-			return true // En este caso todo va bien
+			return true; // En este caso todo va bien
 		}
 		else if (aux == ERRORTIPO){
 			return false; // En un error del tipo, el warning es responsabilidad de la expresion
@@ -207,7 +214,7 @@ public:
 				cout << "Error en instruccion collect." << endl;
 				cout << "Razon: La variable " << identificador << " ya fue declarada" << endl; 
 
-				return false
+				return false;
 			}
 			else{
 				// En el caso de que la variable no este declarada solo la declaramos
@@ -236,8 +243,15 @@ public:
 	}
 };
 
+class Comport{
+public:
+	virtual ~Comport(){}
 
-class Comportamiento{
+	virtual bool verificar(MapaDeTipos&,int){}
+};
+
+
+class Comportamiento: public Comport{
 public:
 	int tipoCondicion; 	// 0 al 3
 						// 0 => Expresion
@@ -247,43 +261,51 @@ public:
 	Expresion* expr;
 	SecuenciaRoboInstruccion* secRoboInst;
 
-	Comportamiento(int t,Expresion* e, SecuenciaRoboInstruccion* secinst): expr(e), secRoboInst(sec){
+	Comportamiento(int t,Expresion* e, InstruccionRobot* secinst): expr(e){
+		secRoboInst = (SecuenciaRoboInstruccion*)secinst;
 		tipoCondicion = t;
 	}
 
 	bool verificar(MapaDeTipos& mapa, int tipo){
-		if (tipo == 0){
-			if (expr->getTipo(mapa,tipo) != 0){
+		if (tipoCondicion == 0){
+			if (expr->calcularTipo(mapa,tipo) != 0){
 				cout << "Error en condicion de comportamiento del robot." << endl;
 				cout << "Razon: Tipo de expresion no es booleano." << endl;
 				return false;
 			}
-			return secRoboInst->verificar(mapa,tipo);
 		}
+		mapa.nuevoNivel();
+		if (secRoboInst->verificar(mapa,tipo)){
+			mapa.subirNivel();
+			return true;
+		}
+		mapa.subirNivel();
+		return false;
+
 	}
 
 };
 
-class SecuenciaComportamiento{
+class SecuenciaComportamiento: public Comport{
 public:
 
-	SecuenciaComportamiento *right;
-	Comportamiento *left;
+	Comport *left;
+	Comport *right;
 
-	SecuenciaComportamiento(SecuenciaComportamiento* l,Comportamiento* r): left(l),right(r){} 
+	SecuenciaComportamiento(Comport* l,Comport* r): left(l),right(r){} 
 
-	SecuenciaComportamiento(Comportamiento* r): right(r){
+	SecuenciaComportamiento(Comport* r): right(r){
 		left = NULL;
 	}
 
 	vector<int> obtenerComportamientos(){
-		SecuenciaComportamiento *aux = left;
+		SecuenciaComportamiento *aux = (SecuenciaComportamiento*)left;
 		vector<int> tiposdeComp;
-		tiposdeComp.push_back(left->tipoCondicion);
+		tiposdeComp.push_back(((Comportamiento*)right)->tipoCondicion);
 
 		while(aux != NULL){
-			tiposdeComp.push_back(aux->right->tipoCondicion);
-			aux = aux->left;
+			tiposdeComp.push_back(((Comportamiento*)aux->right)->tipoCondicion);
+			aux = (SecuenciaComportamiento*)aux->left;
 		}
 
 		return tiposdeComp;
@@ -291,8 +313,8 @@ public:
 	}
 
 	bool verificar(MapaDeTipos& mapa, int tipo){
-		if (right == NULL){
-			return left->verificar(mapa,tipo);
+		if (left == NULL){
+			return right->verificar(mapa,tipo);
 		}
 		else{
 			return left->verificar(mapa,tipo) and right->verificar(mapa,tipo);
@@ -330,8 +352,9 @@ public:
 	}
 
 	bool verificar(MapaDeTipos& mapa){
-		if (right == NULL){
-			return left->verificar(mapa);
+
+		if (left == NULL){
+			return right->verificar(mapa);
 		}
 		else{
 			return left->verificar(mapa) and right->verificar(mapa);
@@ -339,12 +362,12 @@ public:
 	}
 
 	bool declararRobots(MapaDeTipos& mapa){
-		Declaracion* aux = left;
+		SecuenciaDeclaraciones* aux = (SecuenciaDeclaraciones*)left;
 
 		if (right->declararRobots(mapa)){
 			while(aux != NULL){
-				if (aux->right->declararRobots(mapa){
-					aux = aux->left;
+				if (aux->right->declararRobots(mapa)){
+					aux = (SecuenciaDeclaraciones*)aux->left;
 				}
 				else{
 					return false;
@@ -371,9 +394,9 @@ public:
 				// tipo == 2 -> es un caracter
 
 	ListaIDs* ids;
-	SecuenciaComportamiento* comportamiento;
+	Comport* comportamiento;
 
-	DeclaracionRobot(int t,ListaIDs* l,SecuenciaComportamiento* comps): ids(l), comportamiento(comps){
+	DeclaracionRobot(int t,ListaIDs* l,Comport* comps): ids(l), comportamiento(comps){
 		tipo = t;
 	}
 
@@ -386,7 +409,7 @@ public:
 			else{
 				cout << "Error al declarar robot " << aux[i] << endl;
 				cout << "Razon: El robot ya fue declarado" << endl;	//Si estan en el, solo
-				return false										// Reportamos el error y salimos.
+				return false;										// Reportamos el error y salimos.
 			}
 		}
 
@@ -396,8 +419,8 @@ public:
 
 	bool verificar(MapaDeTipos& mapa){
 		vector<string> aux = ids->obtenerIds();
-		vector<int> comps = comportamiento->obtenerComportamientos();
-
+		vector<int> comps = ((SecuenciaComportamiento*)comportamiento) ->obtenerComportamientos();
+		
 		for (int i = 0; i < aux.size(); i++){
 			if (mapa.estaDeclarado(aux[i])){
 				cout << "Error declarando " << aux[i] << endl;
@@ -406,15 +429,14 @@ public:
 			}
 		}
 
-
 		bool act = false,deact = false;
-
 		for (int i = 0; i < comps.size(); i++){
 			if (comps[i] == 1){
 				if (act){
-					cout << "Error en comportamientos de "
-					for (int i = 0; i < aux.size();i++){
-						cout << aux[i] << " ";
+					cout << "Error en comportamientos de ";
+					cout << aux[0];
+					for (int i = 1; i < aux.size();i++){
+						cout << " " << aux[i];
 					}
 					cout << endl;
 					cout << "Razon: mas de un comportamiento de activacion" << endl;
@@ -426,20 +448,24 @@ public:
 			}
 			if (comps[i] == 2){
 				if (deact){
-					cout << "Error en comportamientos de "
-					cout << aux[0]
+					cout << "Error en comportamientos de ";
+					cout << aux[0];
 					for (int i = 1; i < aux.size();i++){
-						cout << aux[i] << " ";
+						cout << " " << aux[i];
 					}
-					cout << << endl;
+					cout << "." << endl;
 					cout << "Razon: mas de un comportamiento de desactivacion." << endl;
 					return false;
 				}
+				else{
+					deact = true;
+				}
 			}
 			if (comps[i] == 3 and i != comps.size() - 1){
-				cout << "Error en comportamientos de "
-				for (int i = 0; i < aux.size();i++){
-					cout << aux[i] << " ";
+				cout << "Error en comportamientos de ";
+				cout << aux[0];
+				for (int i = 1; i < aux.size();i++){
+					cout << " " << aux[i];
 				}
 				cout << endl;
 				cout << "Razon: Comportamiento \"default\" debe ser el ultimo."  << endl;
@@ -447,8 +473,6 @@ public:
 			}
 
 		}
-
-
 		return comportamiento->verificar(mapa,tipo);
 	}
 };

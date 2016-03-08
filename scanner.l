@@ -1,8 +1,11 @@
 %{
 
 
-
-#include "trees.c"
+#include "declaraciones.c"
+#include "instrucciones.c"
+#include "expresion.c"
+#include "arbolSintactico.c"
+#include "listaids.c"
 #include "parser.tab.h"
 #include <string.h>
 

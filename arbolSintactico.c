@@ -3,7 +3,7 @@
 
 #include "declaraciones.c"
 #include "instrucciones.c"
-
+#include <iostream>
 using namespace std;
 
 class ArbolSintactico{
@@ -16,6 +16,7 @@ public:
 
 	bool verificar(){
 		MapaDeTipos PrincMap = MapaDeTipos();
+
 		if (left->verificar(PrincMap)){ // Verificamos las declaraciones 
 			if (left->declararRobots(PrincMap)){ // Poblamos el mapa
 				return right->verificar(PrincMap); // Verificamos los tipos en las instrucciones.

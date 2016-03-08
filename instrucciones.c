@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 #include "expresion.c"
+#include "declaraciones.c"
+#include "mapa.c"
 
 using namespace std;
 
@@ -13,6 +15,8 @@ class Instruccion{
 public:
 
 	virtual ~Instruccion(){}
+
+	virtual bool verificar(MapaDeTipos&){}
 
 	virtual void toString(int){}
 
@@ -35,6 +39,24 @@ public:
 	SecuenciaInstrucciones(Instruccion *r): right(r){
 		left = NULL;
 	}
+
+	bool verificar(MapaDeTipos& mapa){
+		SecuenciaInstrucciones *aux = (SecuenciaInstrucciones*) left;
+
+		if (right->verificar(mapa)){
+			while (aux != NULL){
+				if (aux->right->verificar(mapa)){
+					aux = (SecuenciaInstrucciones*) aux->left;
+				}
+				else{
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
 
 	//funcion que imprime la version del arbol de la secuencia de Instrucciones,
 	// lleva un argumento que nos dice cuantas tabulaciones debemos usar para
@@ -67,6 +89,26 @@ public:
 	ListaIDs *ids;
 	AdvanceInst(ListaIDs *listid): ids(listid){}
 
+	//Para esta instruccion solo debemos verificar que en los ids no este "me"
+	// y que todos esten declarados.
+	bool verificar(MapaDeTipos& mapa){
+		vector<string> aux = ids->obtenerIds();
+
+		for (int i = 0 ; i < aux.size();i++){
+			if (aux[i] == "me"){
+				cout << "Error en instruccion Advance." << endl;
+				cout << "Razon: el identificador \"me\" no puede ser usado fuera de la declaracion de un robot." << endl;
+				return false;
+			}
+			else if(!mapa.existe(aux[i])){
+				cout << "Error en instruccion Advance." << endl;
+				cout << "Razon: el identificador " << aux[i] << " no ha sido declarado." << endl;
+				return false;		
+			}
+		}
+		return true;
+	}
+
 	void toString(int i){
 		for (int j = 0; j < i;j++){
 			cout <<"	";
@@ -86,6 +128,27 @@ public:
 
 	ListaIDs *ids;
 	ActivateInst(ListaIDs *listid): ids(listid){}
+
+
+	//Para esta instruccion solo debemos verificar que en los ids no este "me"
+	// y que todos esten declarados.
+	bool verificar(MapaDeTipos& mapa){
+		vector<string> aux = ids->obtenerIds();
+
+		for (int i = 0 ; i < aux.size();i++){
+			if (aux[i] == "me"){
+				cout << "Error en instruccion Activate." << endl;
+				cout << "Razon: el identificador \"me\" no puede ser usado fuera de la declaracion de un robot." << endl;
+				return false;
+			}
+			else if (!mapa.existe(aux[i])){
+				cout << "Error en instruccion Activate." << endl;
+				cout << "Razon: el identificador " << aux[i] << " no ha sido declarado." << endl;
+				return false;		
+			}
+		}
+		return true;
+	}
 
 	void toString(int i){
 		for (int j = 0; j < i;j++){
@@ -107,6 +170,26 @@ public:
 	ListaIDs *ids;
 	
 	DeactivateInst(ListaIDs *listid): ids(listid){}
+
+	//Para esta instruccion solo debemos verificar que en los ids no este "me"
+	// y que todos esten declarados.
+	bool verificar(MapaDeTipos& mapa){
+		vector<string> aux = ids->obtenerIds();
+
+		for (int i = 0 ; i < aux.size();i++){
+			if (aux[i] == "me"){
+				cout << "Error en instruccion Deactivate." << endl;
+				cout << "Razon: el identificador \"me\" no puede ser usado fuera de la declaracion de un robot." << endl;
+				return false;
+			}
+			else if (!mapa.existe(aux[i])){
+				cout << "Error en instruccion Deactivate." << endl;
+				cout << "Razon: el identificador " << aux[i] << " no ha sido declarado." << endl;
+				return false;		
+			}
+		}
+		return true;
+	}
 
 	void toString(int i){
 		for (int j = 0; j < i;j++){
@@ -138,6 +221,48 @@ public:
 		else{
 			failure = f;
 		}
+	}
+
+
+	//Debemos verificar que la guardia sea booleana (sin contener "me"s) y que tanto las
+	// instrucciones de success como de failure sean validas.
+	bool verificar(MapaDeTipos& mapa){
+		if (guardia->contieneMe()){			// Verificamos que la guardia no contenga me's
+			cout << "Error en condicional." << endl;
+			cout << "Razon: La guardia contiene el identificador \"me\" que no puede ser usado en este contexto." << endl;
+			return false;
+		}
+		int aux = guardia->calcularTipo(mapa,-2);//El argumento tipo no es necesario pues no estamos en
+												// una declaracion, asi que solo se coloca -2 (como error de tipo).
+		if (aux != 0 and aux != -2){
+			cout << "Error en loop." << endl;
+			cout << "Razon: La guardia es de tipo ";
+
+			if (aux == TIPOINT){
+				cout << "Entero";
+			}
+			if (aux == TIPOCHAR){
+				cout << "Caracter";
+			}
+
+			cout << " cuando se esperaba un booleano." << endl;
+			return false;
+		}
+		if (aux == -2){
+			return false; // El error en este caso lo reporta la expresion
+		}		
+
+		if (!(success->verificar(mapa))){
+			return false;
+		}
+
+		if (failure != NULL){
+			if (!(failure->verificar(mapa))){
+				return false;
+			}
+		}
+		return true;
+
 	}
 
 	void toString(int i){
@@ -180,6 +305,43 @@ public:
 
 	LoopInst(Expresion* g, Instruccion* s): success(s),guardia(g){}
 
+	//Debemos verificar que la guardia sea booleana (sin contener "me"s) y que tanto las
+	// instrucciones de success como de failure sean validas.
+	bool verificar(MapaDeTipos& mapa){
+		if (guardia->contieneMe()){			// Verificamos que la guardia no contenga me's
+			cout << "Error en instruccion while." << endl;
+			cout << "Razon: La guardia contiene el identificador \"me\" que no puede ser usado en este contexto." << endl;
+			return false;
+		}
+		int aux = guardia->calcularTipo(mapa,-2);//El argumento tipo no es necesario pues no estamos en
+												// una declaracion, asi que solo se coloca -2 (como error de tipo).
+		if (aux != 0 and aux != -2){
+			cout << "Error en instruccion while." << endl;
+			cout << "Razon: La guardia es de tipo ";
+
+			if (aux == TIPOINT){
+				cout << "Entero";
+			}
+			if (aux == TIPOCHAR){
+				cout << "Caracter";
+			}
+
+			cout << " cuando se esperaba un booleano." << endl;
+			return false;
+		}
+		if (aux == -2){
+			return false; // El error en este caso lo reporta la expresion
+		}
+
+		if (!(success->verificar(mapa))){
+			return false;
+		}
+
+		return true;
+
+	}
+
+
 	void toString(int i){
 		for (int j = 0; j < i;j++){
 			cout <<"	";
@@ -215,7 +377,18 @@ public:
 
 	IncorpAlcance(Declaracion *l, Instruccion *r): left(l),right(r){};
 
-	bool verificar()
+	bool verificar(MapaDeTipos& mapa){
+		mapa.nuevoNivel();
+		if (left->verificar(mapa)){ // Verificamos las declaraciones 
+			if (left->declararRobots(mapa)){ // Poblamos el mapa
+				if (right->verificar(mapa));{ // Verificamos los tipos en las instrucciones.
+					mapa.subirNivel();
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	void toString(int i){
 		for (int j = 0; j < i;j++){
@@ -226,3 +399,5 @@ public:
 	}
 
 };
+
+#endif
