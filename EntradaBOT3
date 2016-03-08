@@ -31,4 +31,5 @@ execute
 	if hola = hola1 /\ hola2:
 		advance contador.
 	end
+	
 end

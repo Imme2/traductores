@@ -20,9 +20,10 @@ extern int rowError[];
 extern int nroErrores;
 extern FILE* yyin;
 
-//Firma de la funcion para poder usarla en el main
+//Firma de las funcioness para poder usarla en el main
 
 void printErrores();
+bool analisisLexico(char *);
 
 // Funcion principal, chequea el numero de argumentos, y si es correcto
 // intenta abrir el archivo y realizar el analisis sintactico
@@ -38,7 +39,9 @@ int main(int argc, char *argv[]){
 	}
 
 
-
+	if (!analisisLexico(argv[1])){
+		exit(0); //Se ecnontraron errores lexicos, no se seguira el programa
+	}
 	// Se cambia la entrada del lexer para ser el archivo dado.
 	if ((yyin = fopen(argv[1],"r")) == NULL){
 		printf("El archivo %s no se puede abrir\n",argv[1]);
@@ -49,19 +52,13 @@ int main(int argc, char *argv[]){
 	listo = yyparse();
 
 	//Se chequea el numero de errores y se imprime lo debido
-	if (listo == 0 and nroErrores == 0){
+	if (listo == 0){
 		if (raiz->verificar()){
 			raiz->toString(0);
-		}
-		else{
-			printf("YAY\n");
 		}
 	}
 	else{
 		printf("Error al realizar el analisis sintactico\n"); 
-	}
-	if(nroErrores != 0){
-		printErrores();
 	}
 
 	return 0;
@@ -77,3 +74,25 @@ void printErrores(){
 		free(errores[i]); 	// Se usan apuntadores a caracteres
 	}						// ya que flex solo trabaja en C
 }							// y por lo tanto se deben liberar
+
+bool analisisLexico(char * nombArchivo){
+	if ((yyin = fopen(nombArchivo,"r")) == NULL){
+		printf("El archivo %s no se puede abrir\n",nombArchivo);
+		exit(0);
+	}
+
+	while(yylex() != 0){
+		;
+	}
+
+	if (nroErrores != 0){
+		printErrores();
+		return false;
+	}
+
+	fclose(yyin);
+
+	return true;
+
+
+}
