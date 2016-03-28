@@ -34,18 +34,20 @@ public:
 	Expresion *right;
 	Expresion *left;
 
+	int lineNo;
 	//Recibe dos expresiones y un operador, crea una expresion compuesta
 
-	Expresion(string op, Expresion *l, Expresion *r): operador(op),left(l),right(r){
+	Expresion(string op, Expresion *l, Expresion *r, int line): operador(op),left(l),right(r){
 		unary = false;
 		tipo = -1;
+		lineNo = line;
 	}
 
 	//A continuacion 3 constructores que hacen los tipos basicos
 	// para simplificar problemas por caracteres como \n y \t
 	// se usa un string para representar a un caracter
 
-	Expresion(string a,int t){
+	Expresion(string a,int t, int line){
 		unary = false;
 		tipo = t;
 		if (t == 2){
@@ -54,25 +56,30 @@ public:
 		if (t == 3){
 			id = string(a);
 		}
+		lineNo = line;
+
 	}
 
-	Expresion(bool v, int t){
+	Expresion(bool v, int t,int line){
 		unary = false;
 		bval = v;
 		tipo = t;
+		lineNo = line;
 	}
 
-	Expresion(int v, int t){
+	Expresion(int v, int t,int line){
 		unary = false;
 		tipo = t;
 		val = v;
+		lineNo = line;
 	}
 
 	// Constructor para las operaciones unarias
 
-	Expresion(string op, Expresion* l):operador(op),left(l){
+	Expresion(string op, Expresion* l, int line):operador(op),left(l){
 		tipo = -1;
 		unary = true;
+		lineNo = line;
 	}
 
 
@@ -93,7 +100,7 @@ public:
 				return aux;
 			}
 			else if (aux == -1){
-				cout << "Error evaluando expresion." << endl;
+				cout << "Error evaluando expresion. Linea " << lineNo << "." << endl;
 				cout << "Razon: Variable " << id << " no declarada." << endl;
 				return ERRORTIPO;
 			}

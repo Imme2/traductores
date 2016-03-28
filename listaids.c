@@ -16,14 +16,18 @@ public:
 
 	ListaIDs *left;
 	string right;
+	int lineNo;
 
 	//Caso recursivo
 
-	ListaIDs(ListaIDs *l, string r): left(l), right(r){}
+	ListaIDs(ListaIDs *l, string r, int line): left(l), right(r){
+		lineNo = line;
+	}
 
 	//Caso base
 
-	ListaIDs(string r): right(r){
+	ListaIDs(string r, int line): right(r){
+		lineNo = line;
 		left = NULL;
 	}
 

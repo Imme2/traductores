@@ -8,6 +8,12 @@ create
 		on default:
 			store 35.
 		end
+		on activation:
+			store 32.
+		end
+		on true:
+			store 43.
+		end
 	end
 	bool bot hola
 		on activation:
@@ -19,11 +25,6 @@ create
 			collect.
 		end
 	end
-	bool bot hola2
-		on activation:
-			collect.
-		end
-	end	
 execute
 	activate contador.
 	$- Asignar al contador

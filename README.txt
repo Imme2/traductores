@@ -1,11 +1,9 @@
 Instrucciones para compilar:
 (asumiendo que se tiene flex y g++)
 
-1) flex scanner.ll
+Se incluye un Makefile para correr
 
-2) g++ Lexbot.c lex.yy.c -o LexBot
-
-De alli se podra correr usando ./LexBot <NombreArchivo>
+De alli se podra correr usando ./ContBot <NombreArchivo>
 
 versiones de los programas:
 

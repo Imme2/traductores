@@ -29,7 +29,6 @@ int colNo = 1;
 						yylloc.last_column = colNo + yyleng - 1;\
 						colNo += yyleng;
 
-
 %}
 
 
@@ -125,6 +124,8 @@ cualquiera .
 
 
 int yywrap(){
+	lineNo = 1;
+	colNo = 1;
 	return 1;
 }
  

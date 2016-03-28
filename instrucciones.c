@@ -30,14 +30,18 @@ public:
 
 	Instruccion *right;
 	Instruccion *left;
+	int lineNo;
 
 	//Se usa de nuevo el polimorfismo para hacer una lista de Instrucciones en forma
 	// de arbol
 
-	SecuenciaInstrucciones(Instruccion* l,Instruccion *r): right(r), left(l){} 
+	SecuenciaInstrucciones(Instruccion* l,Instruccion *r, int line): right(r), left(l){
+		lineNo = line;
+	} 
 
-	SecuenciaInstrucciones(Instruccion *r): right(r){
+	SecuenciaInstrucciones(Instruccion *r, int line): right(r){
 		left = NULL;
+		lineNo = line;
 	}
 
 	bool verificar(MapaDeTipos& mapa){
@@ -87,7 +91,12 @@ class AdvanceInst: public Instruccion{
 public:
 
 	ListaIDs *ids;
-	AdvanceInst(ListaIDs *listid): ids(listid){}
+	int lineNo;
+	AdvanceInst(ListaIDs *listid, int line): ids(listid){
+		lineNo = line;
+	}
+
+
 
 	//Para esta instruccion solo debemos verificar que en los ids no este "me"
 	// y que todos esten declarados.
@@ -96,12 +105,12 @@ public:
 
 		for (int i = 0 ; i < aux.size();i++){
 			if (aux[i] == "me"){
-				cout << "Error en instruccion Advance." << endl;
+				cout << "Error en instruccion Advance. Linea " << lineNo << "." << endl;
 				cout << "Razon: el identificador \"me\" no puede ser usado fuera de la declaracion de un robot." << endl;
 				return false;
 			}
 			else if(!mapa.existe(aux[i])){
-				cout << "Error en instruccion Advance." << endl;
+				cout << "Error en instruccion Advance. Linea " << lineNo << "." << endl;
 				cout << "Razon: el identificador " << aux[i] << " no ha sido declarado." << endl;
 				return false;		
 			}
@@ -127,7 +136,10 @@ class ActivateInst: public Instruccion{
 public:
 
 	ListaIDs *ids;
-	ActivateInst(ListaIDs *listid): ids(listid){}
+	int lineNo;
+	ActivateInst(ListaIDs *listid,int line): ids(listid){
+		lineNo = line;
+	}
 
 
 	//Para esta instruccion solo debemos verificar que en los ids no este "me"
@@ -137,12 +149,12 @@ public:
 
 		for (int i = 0 ; i < aux.size();i++){
 			if (aux[i] == "me"){
-				cout << "Error en instruccion Activate." << endl;
+				cout << "Error en instruccion Activate. Linea " << lineNo << "." << endl;
 				cout << "Razon: el identificador \"me\" no puede ser usado fuera de la declaracion de un robot." << endl;
 				return false;
 			}
 			else if (!mapa.existe(aux[i])){
-				cout << "Error en instruccion Activate." << endl;
+				cout << "Error en instruccion Activate. Linea " << lineNo << "." << endl;
 				cout << "Razon: el identificador " << aux[i] << " no ha sido declarado." << endl;
 				return false;		
 			}
@@ -168,8 +180,10 @@ class DeactivateInst: public Instruccion{
 public:
 
 	ListaIDs *ids;
-	
-	DeactivateInst(ListaIDs *listid): ids(listid){}
+	int lineNo;	
+	DeactivateInst(ListaIDs *listid,int line): ids(listid){
+		lineNo = line;
+	}
 
 	//Para esta instruccion solo debemos verificar que en los ids no este "me"
 	// y que todos esten declarados.
@@ -178,12 +192,12 @@ public:
 
 		for (int i = 0 ; i < aux.size();i++){
 			if (aux[i] == "me"){
-				cout << "Error en instruccion Deactivate." << endl;
+				cout << "Error en instruccion Deactivate. Linea " << lineNo << "." << endl;
 				cout << "Razon: el identificador \"me\" no puede ser usado fuera de la declaracion de un robot." << endl;
 				return false;
 			}
 			else if (!mapa.existe(aux[i])){
-				cout << "Error en instruccion Deactivate." << endl;
+				cout << "Error en instruccion Deactivate. Linea " << lineNo << "." << endl;
 				cout << "Razon: el identificador " << aux[i] << " no ha sido declarado." << endl;
 				return false;		
 			}
@@ -213,14 +227,15 @@ public:
 	Instruccion* success;
 	Instruccion* failure;
 	Expresion* guardia;
-
-	Condicional(Expresion *g,Instruccion* s,Instruccion* f): success(s),guardia(g){
+	int lineNo;
+	Condicional(Expresion *g,Instruccion* s,Instruccion* f,int line): success(s),guardia(g){
 		if (f == NULL){
 			failure = NULL;
 		}
 		else{
 			failure = f;
 		}
+		lineNo = line;
 	}
 
 
@@ -228,14 +243,14 @@ public:
 	// instrucciones de success como de failure sean validas.
 	bool verificar(MapaDeTipos& mapa){
 		if (guardia->contieneMe()){			// Verificamos que la guardia no contenga me's
-			cout << "Error en condicional." << endl;
+			cout << "Error en condicional. Linea " << lineNo << "." << endl;
 			cout << "Razon: La guardia contiene el identificador \"me\" que no puede ser usado en este contexto." << endl;
 			return false;
 		}
 		int aux = guardia->calcularTipo(mapa,-2);//El argumento tipo no es necesario pues no estamos en
 												// una declaracion, asi que solo se coloca -2 (como error de tipo).
 		if (aux != 0 and aux != -2){
-			cout << "Error en loop." << endl;
+			cout << "Error en condicional. Linea " << lineNo << "." << endl;
 			cout << "Razon: La guardia es de tipo ";
 
 			if (aux == TIPOINT){
@@ -302,21 +317,23 @@ public:
 
 	Instruccion *success;
 	Expresion *guardia;
-
-	LoopInst(Expresion* g, Instruccion* s): success(s),guardia(g){}
+	int lineNo;
+	LoopInst(Expresion* g, Instruccion* s,int line): success(s),guardia(g){
+		lineNo = line;
+	}
 
 	//Debemos verificar que la guardia sea booleana (sin contener "me"s) y que tanto las
 	// instrucciones de success como de failure sean validas.
 	bool verificar(MapaDeTipos& mapa){
 		if (guardia->contieneMe()){			// Verificamos que la guardia no contenga me's
-			cout << "Error en instruccion while." << endl;
+			cout << "Error en instruccion while. Linea " << lineNo <<"." << endl;
 			cout << "Razon: La guardia contiene el identificador \"me\" que no puede ser usado en este contexto." << endl;
 			return false;
 		}
 		int aux = guardia->calcularTipo(mapa,-2);//El argumento tipo no es necesario pues no estamos en
 												// una declaracion, asi que solo se coloca -2 (como error de tipo).
 		if (aux != 0 and aux != -2){
-			cout << "Error en instruccion while." << endl;
+			cout << "Error en instruccion while. Linea " << lineNo <<"." << endl;
 			cout << "Razon: La guardia es de tipo ";
 
 			if (aux == TIPOINT){
@@ -374,8 +391,10 @@ public:
 
 	Declaracion *left;
 	Instruccion *right;
-
-	IncorpAlcance(Declaracion *l, Instruccion *r): left(l),right(r){};
+	int lineNo;
+	IncorpAlcance(Declaracion *l, Instruccion *r,int line): left(l),right(r){
+		lineNo = line;
+	};
 
 	bool verificar(MapaDeTipos& mapa){
 		mapa.nuevoNivel();
