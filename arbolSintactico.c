@@ -19,14 +19,11 @@ public:
 	};
 
 	bool evaluar(){
-		EspacioMovimientos Matriz = EspacioMovimientos();
+		Espacio Matriz = Espacio();
 
 		if (left->evaluar(MapaRobots)){
 			return right->evaluar(MapaRobots,Matriz);
-
-			obtener
 		}
-
 	}
 
 

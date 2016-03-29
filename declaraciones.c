@@ -360,6 +360,8 @@ public:
 
 	virtual bool verificar(MapaDeTipos&){}
 
+	virtual bool evaluar(MapaRobots&){}
+
 	virtual bool declararRobots(MapaDeTipos&){}
 
 	virtual void toString(int){}

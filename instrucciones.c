@@ -44,6 +44,10 @@ public:
 		lineNo = line;
 	}
 
+	bool evaluar(MapaRobots ){
+
+	}
+
 	bool verificar(MapaDeTipos& mapa){
 		SecuenciaInstrucciones *aux = (SecuenciaInstrucciones*) left;
 
