@@ -102,6 +102,16 @@ public:
 		lineNo = line;
 	}
 
+	bool ejecutar(Espacio& space, MapaRobots& mapa){
+		vector<string> aux = ids->obtenerIds();
+		for (int i = 0 ; i < aux.size();i++){
+			if (!(mapa.obtenerRobot(aux[i]).avanzar(space,mapa))){
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 
 	//Para esta instruccion solo debemos verificar que en los ids no este "me"
@@ -145,6 +155,16 @@ public:
 	int lineNo;
 	ActivateInst(ListaIDs *listid,int line): ids(listid){
 		lineNo = line;
+	}
+
+	bool ejecutar(Espacio& space, MapaRobots& mapa){
+		vector<string> aux = ids->obtenerIds();
+		for (int i = 0 ; i < aux.size();i++){
+			if (!(mapa.obtenerRobot(aux[i]).activar(space,mapa))){
+				return false;
+			}
+		}
+		return true;
 	}
 
 
@@ -192,8 +212,14 @@ public:
 	}
 
 
-	bool ejecutar(MapaRobots&){
-		
+	bool ejecutar(Espacio& space, MapaRobots& mapa){
+		vector<string> aux = ids->obtenerIds();
+		for (int i = 0 ; i < aux.size();i++){
+			if (!(mapa.obtenerRobot(aux[i]).desactivar(space,mapa))){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	//Para esta instruccion solo debemos verificar que en los ids no este "me"

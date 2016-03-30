@@ -475,7 +475,7 @@ public:
 	bool ejecutar(MapaRobots& mapa){
 		vector<string> aux = ids->obtenerIds();
 		for (int i = 0 ; i < aux.size(); i++){
-			mapa.agregar(aux[i],Robot(tipo,comportamiento));
+			mapa.agregar(aux[i],Robot(tipo,comportamiento,aux[i]));
 		}
 		return true; // No hay errores dinamicos que puedan pasar aqui.
 	}
