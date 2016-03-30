@@ -46,8 +46,21 @@ public:
 		lineNo = line;
 	}
 
-	bool evaluar(MapaRobots ){
+	bool ejecutar(Espacio& space, MapaRobots& mapa){
+		if (left == NULL){
+			if (right->ejecutar(space,mapa)){
+				return true;
+			}
+		}
+		else{
+			if (left->ejecutar(space,mapa)){
+				if (right->ejecutar(space,mapa){
+					return true;
+				}
+			}
 
+		}
+		return false;
 	}
 
 	bool verificar(MapaDeTipos& mapa){
