@@ -16,6 +16,8 @@ public:
 
 	virtual ~Instruccion(){}
 
+	virtual bool ejecutar(Espacio&, MapaRobots&){}
+
 	virtual bool verificar(MapaDeTipos&){}
 
 	virtual void toString(int){}
@@ -189,6 +191,11 @@ public:
 		lineNo = line;
 	}
 
+
+	bool ejecutar(MapaRobots&){
+		
+	}
+
 	//Para esta instruccion solo debemos verificar que en los ids no este "me"
 	// y que todos esten declarados.
 	bool verificar(MapaDeTipos& mapa){
@@ -243,8 +250,21 @@ public:
 	}
 
 
-	bool ejecutar()
-
+	bool ejecutar(Espacio& space, MapaRobots& mapa){
+		if(guardia->evaluar(mapa)){
+			if (!success->ejecutar(space,mapa)){
+				return false;
+			}
+		}
+		else{
+			if (failure != NULL){
+				if (!failure->ejecutar(space,mapa)){
+					return false;
+				}
+			}
+		}
+		return true
+	}
 
 	//Debemos verificar que la guardia sea booleana (sin contener "me"s) y que tanto las
 	// instrucciones de success como de failure sean validas.
@@ -369,9 +389,12 @@ public:
 	// Ejecucion del while, bastante sencilla de implementar.
 
 	bool ejecutar(Espacio& space, MapaRobots& mapa){
-		while(guardia->evaluar(MapaRobots& mapa)){
-			success->ejecutar(Espacio& space,MapaRobots& mapa);
+		while(guardia->evaluar(mapa)){
+			if (!success->ejecutar(space,mapa)){
+				return false;
+			}
 		}
+		return true
 	}
 
 	void toString(int i){
@@ -410,6 +433,18 @@ public:
 	IncorpAlcance(Declaracion *l, Instruccion *r,int line): left(l),right(r){
 		lineNo = line;
 	};
+
+	bool ejecutar(Espacio& space, MapaRobots& mapa){
+		mapa.nuevoNivel();
+		if (left->ejecutar(MapaRobots)){
+			if (right->ejecutar(Matriz,MapaRobots)){
+				mapa.subirNivel();
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	bool verificar(MapaDeTipos& mapa){
 		mapa.nuevoNivel();

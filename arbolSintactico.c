@@ -20,9 +20,8 @@ public:
 
 	bool ejecutar(){
 		Espacio Matriz = Espacio();
-
 		if (left->ejecutar(MapaRobots)){
-			return right->ejecutar(MapaRobots,Matriz);
+			return right->ejecutar(Matriz,MapaRobots);
 		}
 	}
 

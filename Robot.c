@@ -37,12 +37,15 @@ class Robot{
 		return valor;
 	}
 
-	
+	bool estaActivo(){
+		return (activado == 1); // Se ve mas bonito esto que castear a booleano :D.
+	}
+
+	bool deactivar(){
+		
+	}
 
 };
-
-
-
 
 
 

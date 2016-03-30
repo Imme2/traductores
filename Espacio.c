@@ -18,7 +18,7 @@ class Espacio{
 	}
 
 	int obtenerTipo(int x, int y){
-		return Matriz[x][y].obtenerTipo;
+		return Matriz[x][y].obtenerTipo();
 	}
 
 	int obtener
