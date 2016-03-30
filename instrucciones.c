@@ -243,6 +243,9 @@ public:
 	}
 
 
+	bool ejecutar()
+
+
 	//Debemos verificar que la guardia sea booleana (sin contener "me"s) y que tanto las
 	// instrucciones de success como de failure sean validas.
 	bool verificar(MapaDeTipos& mapa){
@@ -362,6 +365,14 @@ public:
 
 	}
 
+
+	// Ejecucion del while, bastante sencilla de implementar.
+
+	bool ejecutar(Espacio& space, MapaRobots& mapa){
+		while(guardia->evaluar(MapaRobots& mapa)){
+			success->ejecutar(Espacio& space,MapaRobots& mapa);
+		}
+	}
 
 	void toString(int i){
 		for (int j = 0; j < i;j++){

@@ -8,6 +8,8 @@
 #include "mapa.c"
 #include "expresion.c"
 #include "listaids.c"
+#include "MapaRobots.c"
+#include "Robot.c"
 
 #define ERRORTIPO -2
 #define TIPOBOOL 0
@@ -360,7 +362,7 @@ public:
 
 	virtual bool verificar(MapaDeTipos&){}
 
-	virtual bool evaluar(MapaRobots&){}
+	virtual bool ejecutar(MapaRobots&){}
 
 	virtual bool declararRobots(MapaDeTipos&){}
 
@@ -395,6 +397,21 @@ public:
 			return left->verificar(mapa) and right->verificar(mapa);
 		}
 	}
+
+	// Ejecucion: Declaracion de los robots en el mapa
+
+	bool ejecutar(MapaRobots& mapa){
+		if (left == NULL){
+			((DeclaracionRobot *)right)->ejecutar(mapa);
+		}
+		else{
+			left->ejecutar(mapa);
+			right->ejecutar(mapa);
+		}
+
+		return true; // No hay errores dinamicos que puedan pasar aqui
+	}
+
 
 	bool declararRobots(MapaDeTipos& mapa){
 		SecuenciaDeclaraciones* aux = (SecuenciaDeclaraciones*)left;
@@ -454,6 +471,14 @@ public:
 		return true;
 	}
 
+
+	bool ejecutar(MapaRobots& mapa){
+		vector<string> aux = ids->obtenerIds();
+		for (int i = 0 ; i < aux.size(); i++){
+			mapa.agregar(aux[i],Robot(tipo,comportamiento));
+		}
+		return true; // No hay errores dinamicos que puedan pasar aqui.
+	}
 
 	bool verificar(MapaDeTipos& mapa){
 		vector<string> aux = ids->obtenerIds();

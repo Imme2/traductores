@@ -18,11 +18,11 @@ public:
 		lineNo = line;
 	};
 
-	bool evaluar(){
+	bool ejecutar(){
 		Espacio Matriz = Espacio();
 
-		if (left->evaluar(MapaRobots)){
-			return right->evaluar(MapaRobots,Matriz);
+		if (left->ejecutar(MapaRobots)){
+			return right->ejecutar(MapaRobots,Matriz);
 		}
 	}
 

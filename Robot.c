@@ -8,6 +8,11 @@
 
 using namespace std;
 
+union valores{
+	int num;
+	bool booleano;
+	char caracter;
+};
 
 // Necesita una funcion que ejecute los comportamientos.
 
@@ -16,6 +21,8 @@ class Robot{
 	int activado;
 	int posx;
 	int posy;
+	valores valor;		
+
 	SecuenciaComportamientos* comp;
 
 	Robot(int t,Comport* c){
@@ -25,6 +32,12 @@ class Robot{
 		tipo = t;
 		activado = 0;
 	}
+
+	valores obtenerValor(int t){
+		return valor;
+	}
+
+	
 
 };
 
