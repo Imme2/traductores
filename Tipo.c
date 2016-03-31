@@ -16,6 +16,11 @@ public:
 	Valores valor;
 	int tipo;
 
+	Tipo(){
+		tipo = -2;
+		valor.num = 0;
+	}
+
 	Tipo(bool a){
 		tipo = TIPOBOOL;
 		valor.booleano = a;
@@ -38,7 +43,18 @@ public:
 	Valores obtenerValor(){
 		return valor;
 	}
+
+	bool operator<(const Tipo& other) const {
+		if ((int)valor.num < (int)other.valor.num){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
 };
+
 
 
 #endif

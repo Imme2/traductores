@@ -22,7 +22,9 @@
 
 using namespace std;
 
-
+class Robot;
+class MapaRobots;
+class Espacio;
 
 class InstruccionRobot{
 public:
@@ -53,7 +55,7 @@ public:
 
 	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,Valores>& tablasimb){
 		if (left == NULL){
-			right->ejecutar(bot,mapa,space,tablasimb)
+			right->ejecutar(bot,mapa,space,tablasimb);
 		}
 		else{
 			left->ejecutar(bot,mapa,space,tablasimb);
@@ -153,7 +155,7 @@ public:
 	}
 
 	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,Valores>& tablasimb){
-		if (space.existePos(bot->posx,bot->posy){
+		if (space.existePos(bot->posx,bot->posy)){
 			if (space.obtenerTipo(bot->posx,bot->posy) == bot->tipo){
 				if (tieneId){
 					tablasimb[identificador] = space.obtenerValor(bot->posx,bot->posy);
@@ -161,7 +163,7 @@ public:
 				else{
 					bot->valor = space.obtenerValor(bot->posx,bot->posy);
 				}
-				space.borrarValor(box->posx,bot->posy);
+				space.borrarValor(bot->posx,bot->posy);
 				return true;
 			}
 			else{
@@ -173,6 +175,7 @@ public:
 			cout << "Error en linea " << lineNo << ": Coleccion en posicion vacia de la matriz." << endl;
 			exit(0);
 		}
+		return true;
 	}
 
 
@@ -209,7 +212,7 @@ public:
 	}
 
 	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,Valores>& tablasimb){
-		space.insertarValor(bot->x,bot->y,expr->evaluar(bot,mapa,space,tablasimb));
+		space.insertarValor(bot->posx,bot->posy,expr->evaluar(bot,mapa,space,tablasimb),bot->tipo);
 		return true;
 	}
 
@@ -240,7 +243,7 @@ public:
 
 	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,Valores>& tablasimb){
 		int aux;
-		aux = expr->evaluar(bot,mapa,space,tablasimb);
+		aux = expr->evaluar(bot,mapa,space,tablasimb).num;
 		if (aux < 0){
 			cout << "Error: Intento de movimiento negativo en linea " << lineNo << "." << endl;
 			exit(0);
@@ -310,38 +313,38 @@ public:
 		if (bot->tipo == TIPOBOOL){
 			if (aux == "True" or aux == "1" or aux == "Verdadero" or aux == "true"){
 				if (tieneId){
-					tablasimb[identificador] = true;
+					tablasimb[identificador].booleano = true;
 				}
 				else{
-					bot->valor = true;
+					bot->valor.booleano = true;
 				}
 			}
 			else{ 			// Cualquier cosa que no sea true la consideramos como false.
 				if (tieneId){
-					tablasimb[identificador] = false;
+					tablasimb[identificador].booleano = false;
 				}
 				else{
-					bot->valor = false;
+					bot->valor.booleano = false;
 				}
 			}
 		}
 		if (bot->tipo == TIPOINT){
-			long int aux2 = strtol(aux);
+			long int aux2 = strtol(aux.c_str(),NULL,10);
 			if (aux2 == 0 and aux != "0"){
 				cout << "Error: " << aux << " no es un entero valido" << endl;
 				exit(0);
 			}
-			else if (aux2 > (1<<31 - 1) or aux2 < -(1<<31)){
+			else if (aux2 > (1<<31 - 1) or aux2 < -1<<31){
 				cout << "Error: " << aux2 << " es un entero demasiado grande para representar" << endl;
 				cout << "Nota: Esto es C++, no te puedo dar ints infinitos" << endl;
 				exit(0);
 			}
 			else{
 				if (tieneId){
-					tablasimb[identificador] = aux2;
+					tablasimb[identificador].num = aux2;
 				}
 				else{
-					bot->valor = aux2;
+					bot->valor.num = aux2;
 				}
 			}
 		}
@@ -352,10 +355,10 @@ public:
 			}
 			else{
 				if (tieneId){
-					tablasimb[identificador] = aux;
+					tablasimb[identificador].caracter = aux[0];
 				}
 				else{
-					bot->valor = aux;
+					bot->valor.caracter = aux[0];
 				}
 			}
 		}
@@ -397,7 +400,20 @@ public:
 	}
 
 	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,Valores>& tablasimb){
-		cout << bot->obtenerValor() << endl;
+		if (bot->tipo == TIPOINT){
+			cout << bot->valor.num << endl;
+		}
+		else if (bot->tipo == TIPOCHAR){
+			cout << bot->valor.caracter<< endl;
+		}
+		else if (bot->tipo == TIPOBOOL){
+			cout << bot->valor.num << endl;
+		}
+		else{
+			cout << "Error: bot " << bot->nombre << " no tiene tipo." << endl;
+			exit(0);
+		}
+		return true;
 	}
 
 	bool verificar(MapaDeTipos& mapa, int tipo){
@@ -406,6 +422,7 @@ public:
 	}
 };
 
+/*
 class Comport{
 public:
 	virtual ~Comport(){}
@@ -420,7 +437,7 @@ public:
 
 
 };
-
+*/
 
 class Comportamiento: public Comport{
 public:
@@ -440,7 +457,7 @@ public:
 	}
 
 	bool activar(Robot* bot,MapaRobots& mapa, Espacio& space){
-		map<id,Valores> aux;
+		map<string,Valores> aux;
 		if (tipoCondicion == 1){
 			return secRoboInst->ejecutar(bot,mapa,space,aux);
 		}
@@ -448,6 +465,7 @@ public:
 	}
 
 	bool desactivar(Robot* bot,MapaRobots& mapa, Espacio& space){
+		map<string,Valores> aux;		
 		if (tipoCondicion == 2){
 			return secRoboInst->ejecutar(bot,mapa,space,aux);
 		}
@@ -455,13 +473,13 @@ public:
 	}
 
 	bool avanzar(Robot* bot,MapaRobots& mapa, Espacio& space){
-		map<id,Valores> aux;
+		map<string,Valores> aux;
 		if (tipoCondicion == 3){
 			secRoboInst->ejecutar(bot,mapa,space,aux);
-			return true 
+			return true;
 		}
 		else if (tipoCondicion == 0){
-			if (Expresion->evaluar(bot,mapa,space)){
+			if (expr->evaluar(bot,mapa,space,aux).booleano){
 				secRoboInst->ejecutar(bot,mapa,space,aux);
 				return true;
 			}
@@ -541,7 +559,7 @@ public:
 		}
 		else{
 			if (!left->avanzar(bot,mapa,space)){
-				return right->avanzar(bot,mapa,space
+				return right->avanzar(bot,mapa,space);
 			}
 		}
 		return true;
@@ -572,8 +590,7 @@ public:
 	}
 };
 
-// clase virtual Declaracion para futuras entregas.
-
+// clase virtual Declaracion
 class Declaracion{
 public:
 
@@ -589,7 +606,7 @@ public:
 
 };
 
-//Secuencia de Declaraciones para futuras entregas.
+//Secuencia de Declaraciones 
 
 class SecuenciaDeclaraciones: public Declaracion{
 public:
@@ -621,7 +638,7 @@ public:
 
 	bool ejecutar(MapaRobots& mapa){
 		if (left == NULL){
-			((DeclaracionRobot *)right)->ejecutar(mapa);
+			right->ejecutar(mapa);
 		}
 		else{
 			left->ejecutar(mapa);
@@ -694,7 +711,7 @@ public:
 	bool ejecutar(MapaRobots& mapa){
 		vector<string> aux = ids->obtenerIds();
 		for (int i = 0 ; i < aux.size(); i++){
-			mapa.agregar(aux[i],Robot(tipo,(SecuenciaComportamiento*)comportamiento,aux[i]));
+			mapa.agregar(aux[i],new Robot(tipo,(SecuenciaComportamiento*)comportamiento,aux[i]));
 		}
 		return true; // No hay errores dinamicos que puedan pasar aqui.
 	}
@@ -755,7 +772,7 @@ public:
 					return false;
 				}
 				else{
-					def = true
+					def = true;
 				}
 			}
 			else if (comps[i] == 0 and def){

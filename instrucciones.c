@@ -58,7 +58,7 @@ public:
 		}
 		else{
 			if (left->ejecutar(space,mapa)){
-				if (right->ejecutar(space,mapa){
+				if (right->ejecutar(space,mapa)){
 					return true;
 				}
 			}
@@ -122,7 +122,7 @@ public:
 	bool ejecutar(Espacio& space, MapaRobots& mapa){
 		vector<string> aux = ids->obtenerIds();
 		for (int i = 0 ; i < aux.size();i++){
-			if (!(mapa.obtenerRobot(aux[i]).avanzar(space,mapa))){
+			if (!(mapa.obtenerRobot(aux[i])->avanzar(space,mapa))){
 				return false;
 			}
 		}
@@ -177,7 +177,7 @@ public:
 	bool ejecutar(Espacio& space, MapaRobots& mapa){
 		vector<string> aux = ids->obtenerIds();
 		for (int i = 0 ; i < aux.size();i++){
-			if (!(mapa.obtenerRobot(aux[i]).activar(space,mapa))){
+			if (!(mapa.obtenerRobot(aux[i])->activar(space,mapa))){
 				return false;
 			}
 		}
@@ -232,7 +232,7 @@ public:
 	bool ejecutar(Espacio& space, MapaRobots& mapa){
 		vector<string> aux = ids->obtenerIds();
 		for (int i = 0 ; i < aux.size();i++){
-			if (!(mapa.obtenerRobot(aux[i]).desactivar(space,mapa))){
+			if (!(mapa.obtenerRobot(aux[i])->desactivar(space,mapa))){
 				return false;
 			}
 		}
@@ -294,7 +294,9 @@ public:
 
 
 	bool ejecutar(Espacio& space, MapaRobots& mapa){
-		if(guardia->evaluar(mapa)){
+		Espacio aux;
+		map<string,Valores> aux2;
+		if(guardia->evaluar(NULL,mapa,aux,aux2).booleano){
 			if (!success->ejecutar(space,mapa)){
 				return false;
 			}
@@ -306,7 +308,7 @@ public:
 				}
 			}
 		}
-		return true
+		return true;
 	}
 
 	//Debemos verificar que la guardia sea booleana (sin contener "me"s) y que tanto las
@@ -432,12 +434,14 @@ public:
 	// Ejecucion del while, bastante sencilla de implementar.
 
 	bool ejecutar(Espacio& space, MapaRobots& mapa){
-		while(guardia->evaluar(mapa)){
+		Espacio aux;
+		map<string,Valores> aux2;
+		while(guardia->evaluar(NULL,mapa,aux,aux2).booleano){
 			if (!success->ejecutar(space,mapa)){
 				return false;
 			}
 		}
-		return true
+		return true;
 	}
 
 	void toString(int i){
@@ -479,8 +483,8 @@ public:
 
 	bool ejecutar(Espacio& space, MapaRobots& mapa){
 		mapa.nuevoNivel();
-		if (left->ejecutar(MapaRobots)){
-			if (right->ejecutar(Matriz,MapaRobots)){
+		if (left->ejecutar(mapa)){
+			if (right->ejecutar(space,mapa)){
 				mapa.subirNivel();
 				return true;
 			}

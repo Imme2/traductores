@@ -1,15 +1,14 @@
 #ifndef arbolsint_h
 #define arbolsint_h
 
-
+#include "valores.c"
 #include "MapaRobots.c"
-#include "Espacio.c"
+#include "mapa.c"
 #include "Robot.c"
+#include "Espacio.c"
 #include "declaraciones.c"
 #include "instrucciones.c"
 #include <iostream>
-#include "valores.c"
-#include "Robot.c"
 
 using namespace std;
 
@@ -27,8 +26,9 @@ public:
 
 	bool ejecutar(){
 		Espacio Matriz = Espacio();
-		if (left->ejecutar(MapaRobots)){
-			return right->ejecutar(Matriz,MapaRobots);
+		MapaRobots mapa = MapaRobots();
+		if (left->ejecutar(mapa)){
+			return right->ejecutar(Matriz,mapa);
 		}
 	}
 

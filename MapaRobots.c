@@ -1,7 +1,6 @@
 #ifndef maparobots_h
 #define maparobots_h
 
-#include "Robot.c"
 #include <string>
 #include <map>
 #include <vector>
@@ -9,11 +8,11 @@
 
 using namespace std;
 
-
+class Robot;
 
 class MapaRobots{
 public:
-	vector< map<string, Robot> > listMapas;
+	vector< map<string, Robot*> > listMapas;
 	int nivel;
 	int currsize;
 	MapaRobots(){
@@ -58,51 +57,14 @@ public:
 	Robot* obtenerRobot(string s){
 		for (int i = nivel-1; i >= 0; i--){
 			if (listMapas[i].find(s) != listMapas[i].end()){
-				return &listMapas[i][s]; 
+				return listMapas[i][s]; 
 			}
 		}
 		return NULL;
 	}
 
-	int obtenerTipo(string s){
-		for (int i = nivel - 1; i >= 0;i--){
-			if (listMapas[i].find(s) != listMapas[i].end()){
-				return listMapas[i][s].obtenerTipo();
-			}
-		}
-		return -1;
-	}
 
-
-	// Las proximas dos funciones sirven para obtener todos los robots usados en niveles anteriores a los
-	// que nos encontramos
-
-	int obtenerTipoNivAnt(string s){
-		for (int i = nivel - 2; i >= 0;i--){
-			if (listMapas[i].find(s) != listMapas[i].end()){
-				return listMapas[i][s].obtenerTipo();
-			}
-		}
-		return -1;		
-	}
-
-	Valores obtenerValorNivAnt(string s){
-		for (int i = nivel-2; i >= 0; i--){
-			if (listMapas[i].find(s) != listMapas[i].end()){
-				return listMapas[i][s].obtenerValor(); 
-			}
-		}
-	}
-
-	Valores obtenerValor(string s){
-		for (int i = nivel-1; i >= 0; i--){
-			if (listMapas[i].find(s) != listMapas[i].end()){
-				return listMapas[i][s].obtenerValor(); 
-			}
-		}
-	}
-
-	void agregar(string s,Robot r){
+	void agregar(string s,Robot *r){
 		if (!estaDeclarado(s)){
 			listMapas[nivel-1][s] = r;
 		}

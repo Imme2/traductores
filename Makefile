@@ -1,4 +1,4 @@
-all: ContBot
+all: ContBot MapaRobots.c Robot.c Robot.h declaraciones.c Tipo.c listaids.c mapa.c Espacio.c valores.c
 
 ContBot: flex.o parser.o arbolSintactico.o
 	g++ -o ContBot ContBot.c lex.yy.c parser.tab.c

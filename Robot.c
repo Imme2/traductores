@@ -1,18 +1,18 @@
 #ifndef robot_h
 #define robot_h
 
+#include "Robot.h"
 #include <vector>
 #include <map>
 #include <string>
 #include <iostream>
 #include <stdlib.h>
-#include "valores.c"
-#include "declaraciones.c"
-#include "Robot.h"
 
 using namespace std;
 
 // Necesita una funcion que ejecute los comportamientos.
+
+
 
 class Robot{
 public:
@@ -20,15 +20,15 @@ public:
 	int activado;
 	int posx;
 	int posy;
-	Valores valor;		
+	Valores valor;
 	string nombre;
-	SecuenciaComportamiento* comp;
+	Comport* comp;
 
 	Robot(int t,Comport* c, string s){
 		nombre = s;
 		posx = 0;
 		posy = 0;
-		comp = (SecuenciaComportamiento*)c;
+		comp = c;
 		tipo = t;
 		activado = 0;
 	}
@@ -44,7 +44,7 @@ public:
 	bool desactivar(Espacio& space, MapaRobots& mapa){
 		if (activado){
 			activado = 0;
-			comp->desactivar(this,space,mapa);
+			comp->desactivar(this,mapa,space);
 		}
 		else{
 
@@ -54,7 +54,7 @@ public:
 	bool activar(Espacio& space, MapaRobots& mapa){
 		if (!activado){
 			activado = 1;
-			comp->activar(this,space,mapa);
+			comp->activar(this,mapa,space);
 		}
 		else{
 			cout << "El robot " << nombre << " se intento activar cuando ya estaba activo." << endl;
@@ -64,7 +64,7 @@ public:
 
 	bool avanzar(Espacio& space, MapaRobots& mapa){
 		if (activado){
-			comp->avanzar(this,space,mapa);
+			comp->avanzar(this,mapa,space);
 		}
 		else{
 			cout << "Error: El robot " << nombre << " se intento avanzar sin estar activo." << endl;

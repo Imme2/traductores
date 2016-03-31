@@ -88,7 +88,7 @@ public:
 
 
 	Valores evaluar(Robot* bot, MapaRobots& mapa, Espacio& space, map<string,Valores> tablasimb){
-		;
+		if (tipo == 0 or tipo == 1 or tipo == 2);
 	}
 
 	// Funcion que calcula el tipo de una expresion

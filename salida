@@ -1,0 +1,2 @@
+flex scanner.l
+g++ -o arbolSintactico.o -c arbolSintactico.c
