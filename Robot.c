@@ -47,7 +47,8 @@ public:
 			comp->desactivar(this,mapa,space);
 		}
 		else{
-
+			cout << "El robot " << nombre << " se intento desactivar cuando no estaba activo." << endl;
+			exit(0);
 		}
 	}
 

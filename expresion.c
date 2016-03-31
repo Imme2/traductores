@@ -88,7 +88,89 @@ public:
 
 
 	Valores evaluar(Robot* bot, MapaRobots& mapa, Espacio& space, map<string,Valores> tablasimb){
-		if (tipo == 0 or tipo == 1 or tipo == 2);
+		Valores aux;
+		if (tipo == 0){
+			aux.booleano = bval;
+			return aux;
+		}
+		if (tipo == 1){
+			aux.num = val;
+			return aux;
+		}
+		if (tipo == 2){
+			aux.caracter = caracter[0];
+			return aux;
+		}
+		if (tipo == 3){
+			if (id == "me"){
+				return bot->valor;
+			}
+			else{
+				return tablasimb[id];
+			}
+		}
+		if (operador == "NEGACION"){
+			aux.booleano = !left->evaluar(bot,mapa,space,tablasimb).booleano;  
+		}
+		if (operador == "RESTA"){
+			if (unary){
+				aux.num = -left->evaluar(bot,mapa,space,tablasimb).num;
+			}
+			else{
+				aux.num = left->evaluar(bot,mapa,space,tablasimb).num - right->evaluar(bot,mapa,space,tablasimb).num;
+			}
+		}
+		if (operador == "MENOR"){
+			aux.booleano = left->evaluar(bot,mapa,space,tablasimb).num < right->evaluar(bot,mapa,space,tablasimb).num;
+		}
+		if (operador == "MAYOR"){
+			aux.booleano = left->evaluar(bot,mapa,space,tablasimb).num > right->evaluar(bot,mapa,space,tablasimb).num;
+		}
+		if (operador == "MAYORIGUAL"){
+			aux.booleano = left->evaluar(bot,mapa,space,tablasimb).num >= right->evaluar(bot,mapa,space,tablasimb).num;
+		}
+		if (operador == "MENORIGUAL"){
+			aux.booleano = left->evaluar(bot,mapa,space,tablasimb).num <= right->evaluar(bot,mapa,space,tablasimb).num;			
+		}
+		if (operador == "IGUAL"){
+			aux.booleano = left->evaluar(bot,mapa,space,tablasimb).num == right->evaluar(bot,mapa,space,tablasimb).num or
+							left->evaluar(bot,mapa,space,tablasimb).booleano == right->evaluar(bot,mapa,space,tablasimb).booleano or
+							 left->evaluar(bot,mapa,space,tablasimb).caracter == right->evaluar(bot,mapa,space,tablasimb).caracter;
+		}
+		if (operador == "DESIGUAL"){
+			aux.booleano = left->evaluar(bot,mapa,space,tablasimb).num != right->evaluar(bot,mapa,space,tablasimb).num and
+							left->evaluar(bot,mapa,space,tablasimb).booleano != right->evaluar(bot,mapa,space,tablasimb).booleano and
+							 left->evaluar(bot,mapa,space,tablasimb).caracter != right->evaluar(bot,mapa,space,tablasimb).caracter;
+		}
+		if (operador == "CONJUNCION"){
+			aux.booleano = left->evaluar(bot,mapa,space,tablasimb).booleano and right->evaluar(bot,mapa,space,tablasimb).booleano; 
+		}
+		if (operador == "DISYUNCION"){
+			aux.booleano = left->evaluar(bot,mapa,space,tablasimb).booleano or right->evaluar(bot,mapa,space,tablasimb).booleano; 
+		}
+		if (operador == "SUMA"){
+			aux.num  = left->evaluar(bot,mapa,space,tablasimb).num + right->evaluar(bot,mapa,space,tablasimb).num;
+		}
+		if (operador == "MULTIPLICACION"){
+			aux.num  = left->evaluar(bot,mapa,space,tablasimb).num * right->evaluar(bot,mapa,space,tablasimb).num;
+		}
+		if (operador == "DIVISION"){
+			if (right->evaluar(bot,mapa,space,tablasimb).num == 0){
+				cout << "Error: division entre 0" << endl;
+				cout << "Linea " << lineNo << endl;
+				exit(0);
+			}
+			aux.num  = left->evaluar(bot,mapa,space,tablasimb).num / right->evaluar(bot,mapa,space,tablasimb).num;
+		}
+		if (operador == "MODULO"){
+			if (right->evaluar(bot,mapa,space,tablasimb).num == 0){
+				cout << "Error: Modulo entre 0" << endl;
+				cout << "Linea " << lineNo << endl;
+				exit(0);
+			}
+			aux.num  = left->evaluar(bot,mapa,space,tablasimb).num % right->evaluar(bot,mapa,space,tablasimb).num;
+		}
+		return aux;
 	}
 
 	// Funcion que calcula el tipo de una expresion
