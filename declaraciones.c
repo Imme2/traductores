@@ -264,6 +264,10 @@ public:
 		lineNo = line;
 	}
 
+	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,valores> tablasimb){
+		cout << bot->obtenerValor() << endl;
+	}
+
 	bool verificar(MapaDeTipos& mapa, int tipo){
 		//Esto no genera ningun error estatico.
 		return true;
@@ -304,28 +308,28 @@ public:
 	}
 
 	bool activar(Robot* bot,MapaRobots& mapa, Espacio& space){
+		map<id,valores> aux;
 		if (tipoCondicion == 1){
-			return secRoboInst->ejecutar(bot,mapa,space);
+			return secRoboInst->ejecutar(bot,mapa,space,aux);
 		}
 		return true;
 	}
 
-	bool activar(Robot* bot,MapaRobots& mapa, Espacio& space){
-		if (tipoCondicion == 1){
-			return secRoboInst->ejecutar(bot,mapa,space);
+	bool desactivar(Robot* bot,MapaRobots& mapa, Espacio& space){
+		if (tipoCondicion == 2){
+			return secRoboInst->ejecutar(bot,mapa,space,aux);
 		}
 		return true;
 	}
 
 	bool avanzar(Robot* bot,MapaRobots& mapa, Espacio& space){
+		map<id,valores> aux;
 		if (tipoCondicion == 3){
-			map<id,valores> aux;
-			secRoboInst->ejecutar(bot,mapa,space);
+			secRoboInst->ejecutar(bot,mapa,space,aux);
 			return true 
 		}
 		else if (tipoCondicion == 0){
-			if (Expresion->evaluar()){
-				map<id,valores> aux;
+			if (Expresion->evaluar(bot,mapa,space)){
 				secRoboInst->ejecutar(bot,mapa,space,aux);
 				return true;
 			}

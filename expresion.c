@@ -83,10 +83,9 @@ public:
 	}
 
 
-	valores evaluar(){
-		valores val;
+	valores evaluar(Robot* bot, MapaRobots& mapa, Espacio& space){
+		//VARIOS ifs van aqui;	
 	}
-
 
 	// Funcion que calcula el tipo de una expresion
 	int calcularTipo(MapaDeTipos& mapa,int t){
