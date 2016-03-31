@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -17,6 +18,7 @@ union valores{
 // Necesita una funcion que ejecute los comportamientos.
 
 class Robot{
+public:
 	int tipo;
 	int activado;
 	int posx;
@@ -43,15 +45,34 @@ class Robot{
 	}
 
 	bool desactivar(Espacio& space, MapaRobots& mapa){
-		; // Aqui hay que poner que haga lo de desactivar.
+		if (activado){
+			activado = 0;
+			comp->desactivar(this,space,mapa);
+		}
+		else{
+			
+		}
 	}
 
 	bool activar(Espacio& space, MapaRobots& mapa){
-		;
+		if (!activado){
+			activado = 1;
+			comp->activar(this,space,mapa);
+		}
+		else{
+			cout << "El robot " << nombre << " se intento activar cuando ya estaba activo." << endl;
+			exit(0);
+		}
 	}
 
 	bool avanzar(Espacio& space, MapaRobots& mapa){
-		;
+		if (activado){
+			comp->avanzar(this,space,mapa);
+		}
+		else{
+			cout << "Error: El robot " << nombre << " se intento avanzar sin estar activo." << endl;
+			exit(0);
+		}
 	}
 
 };

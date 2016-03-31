@@ -83,7 +83,7 @@ public:
 	}
 
 
-	valores evaluar(Robot* bot, MapaRobots& mapa, Espacio& space){
+	valores evaluar(Robot* bot, MapaRobots& mapa, Espacio& space, map<string,valores> tablasimb){
 		//VARIOS ifs van aqui;	
 	}
 

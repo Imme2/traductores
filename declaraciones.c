@@ -29,6 +29,8 @@ public:
 
 	virtual bool verificar(MapaDeTipos&,int){}
 
+	virtual bool ejecutar(Robot*,MapaRobots&, Espacio&, map<string,valores>&){}
+
 	virtual void toString(int){}
 };
 
@@ -42,15 +44,27 @@ public:
 		lineNo = line;
 	} 
 
-	SecuenciaRoboInstruccion(InstruccionRobot *l,int line): left(l){
+	SecuenciaRoboInstruccion(InstruccionRobot *right,int line): right(l){
 		lineNo = line;
-		right = NULL;
+		left = NULL;
+	}
+
+	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,valores> tablasimb){
+		if (left == NULL){
+			right->ejecutar(bot,mapa,space,tablasimb)
+		}
+		else{
+			left->ejecutar(bot,mapa,space,tablasimb);
+			right->ejecutar(bot,mapa,space,tablasimb);
+		}
+
+
+		return true; // Cualquier error en este punto saldra del programa.
 	}
 
 	bool verificar(MapaDeTipos& mapa, int tipo){
-
-		if (right == NULL){
-			return left->verificar(mapa,tipo);
+		if (left == NULL){
+			return right->verificar(mapa,tipo);
 		}
 		else{
 			return left->verificar(mapa,tipo) and right->verificar(mapa,tipo);
@@ -75,6 +89,10 @@ public:
 	}
 
 	// Necesitamos verificar que el tipo de la expresion es el mismo que el robot
+
+	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,valores> tablasimb){
+		bot->valor = expr->evaluar(bot,mapa,space,tablasimb);
+	}
 
 	bool verificar(MapaDeTipos& mapa, int tipo){
 		int aux = expr->calcularTipo(mapa,tipo);

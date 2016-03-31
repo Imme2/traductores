@@ -79,6 +79,27 @@ public:
 		return -1;
 	}
 
+
+	// Las proximas dos funciones sirven para obtener todos los robots usados en niveles anteriores a los
+	// que nos encontramos
+
+	int obtenerTipoNivAnt(string s){
+		for (int i = nivel - 2; i >= 0;i--){
+			if (listMapas[i].find(s) != listMapas[i].end()){
+				return listMapas[i][s].obtenerTipo();
+			}
+		}
+		return -1;		
+	}
+
+	valores obtenerValorNivAnt(string s){
+		for (int i = nivel-2; i >= 0; i--){
+			if (listMapas[i].find(s) != listMapas[i].end()){
+				return listMapas[i][s].obtenerValor(); 
+			}
+		}
+	}
+
 	valores obtenerValor(string s){
 		for (int i = nivel-1; i >= 0; i--){
 			if (listMapas[i].find(s) != listMapas[i].end()){
