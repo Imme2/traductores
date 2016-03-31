@@ -131,6 +131,8 @@ public:
 		tieneId = false;
 	}
 
+
+
 	bool verificar(MapaDeTipos& mapa, int tipo){
 		if (tieneId){								// En caso de tener un id solo debemos verificar 
 			if (mapa.estaDeclarado(identificador)){ // Que la variable no este declarada
@@ -308,6 +310,29 @@ public:
 		return true;
 	}
 
+	bool activar(Robot* bot,MapaRobots& mapa, Espacio& space){
+		if (tipoCondicion == 1){
+			return secRoboInst->ejecutar(bot,mapa,space);
+		}
+		return true;
+	}
+
+	bool avanzar(Robot* bot,MapaRobots& mapa, Espacio& space){
+		if (tipoCondicion == 3){
+			map<id,valores> aux;
+			secRoboInst->ejecutar(bot,mapa,space);
+			return true 
+		}
+		else if (tipoCondicion == 0){
+			if (Expresion->evaluar()){
+				map<id,valores> aux;
+				secRoboInst->ejecutar(bot,mapa,space,aux);
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	bool verificar(MapaDeTipos& mapa, int tipo){
 		if (tipoCondicion == 0){
@@ -345,6 +370,8 @@ public:
 		lineNo = line;
 	}
 
+	// Funciones de activar y desactivar, solo buscan al comportamiento deseado y lo llaman
+
 	bool activar(Robot* bot,MapaRobots& mapa, Espacio& space){
 		if (left == NULL){
 			return right->activar(bot,mapa,space);
@@ -357,17 +384,6 @@ public:
 		return true;
 	}
 
-	bool avanzar(Robot* bot,MapaRobots& mapa, Espacio& space){
-		if (left == NULL){
-			return right->avanzar(bot,mapa,space);
-		}
-		else{
-			if (!left->avanzar(bot,mapa,space)){
-				return right->avanzar(bot,mapa,space);
-			}
-		}
-		return true;
-	}
 
 	bool desactivar(Robot* bot,MapaRobots& mapa, Espacio& space){
 		if (left == NULL){
@@ -380,6 +396,21 @@ public:
 		}
 		return true;
 	}
+
+	// Funcion de avanzar, busca al primer comportamiento por profundidad.
+
+	bool avanzar(Robot* bot,MapaRobots& mapa, Espacio& space){
+		if (left == NULL){
+			return right->avanzar(bot,mapa,space);
+		}
+		else{
+			if (!left->avanzar(bot,mapa,space)){
+				return right->avanzar(bot,mapa,space
+			}
+		}
+		return true;
+	}
+
 
 	vector<int> obtenerComportamientos(){
 		SecuenciaComportamiento *aux = (SecuenciaComportamiento*)left;

@@ -83,6 +83,11 @@ public:
 	}
 
 
+	valores evaluar(){
+		valores val;
+	}
+
+
 	// Funcion que calcula el tipo de una expresion
 	int calcularTipo(MapaDeTipos& mapa,int t){
 		int aux,aux2;

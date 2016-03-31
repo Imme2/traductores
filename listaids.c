@@ -34,11 +34,12 @@ public:
 	vector<string> obtenerIds(){
 		ListaIDs *aux = left;
 		vector<string> ids;
-		ids.push_back(right);
+		ids.insert(ids.begin(),right);
 		while(aux != NULL){
-			ids.push_back(aux->right);
+			ids.insert(ids.begin(),aux->right);
 			aux = aux->left;
 		}
+
 		return ids;
 	}
 
