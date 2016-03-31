@@ -272,7 +272,15 @@ class Comport{
 public:
 	virtual ~Comport(){}
 
+	virtual bool activar(Robot*,MapaRobots&,Espacio&){}
+	
+	virtual bool desactivar(Robot*,MapaRobots&,Espacio&){}
+
+	virtual bool avanzar(Robot*,MapaRobots&,Espacio&){}
+
 	virtual bool verificar(MapaDeTipos&,int){}
+
+
 };
 
 
@@ -292,6 +300,14 @@ public:
 		tipoCondicion = t;
 		lineNo = line;
 	}
+
+	bool activar(Robot* bot,MapaRobots& mapa, Espacio& space){
+		if (tipoCondicion == 1){
+			return secRoboInst->ejecutar(bot,mapa,space);
+		}
+		return true;
+	}
+
 
 	bool verificar(MapaDeTipos& mapa, int tipo){
 		if (tipoCondicion == 0){
@@ -329,13 +345,49 @@ public:
 		lineNo = line;
 	}
 
+	bool activar(Robot* bot,MapaRobots& mapa, Espacio& space){
+		if (left == NULL){
+			return right->activar(bot,mapa,space);
+		}
+		else{
+			if (left->activar(bot,mapa,space)){
+				return right->activar(bot,mapa,space);
+			}
+		}
+		return true;
+	}
+
+	bool avanzar(Robot* bot,MapaRobots& mapa, Espacio& space){
+		if (left == NULL){
+			return right->avanzar(bot,mapa,space);
+		}
+		else{
+			if (!left->avanzar(bot,mapa,space)){
+				return right->avanzar(bot,mapa,space);
+			}
+		}
+		return true;
+	}
+
+	bool desactivar(Robot* bot,MapaRobots& mapa, Espacio& space){
+		if (left == NULL){
+			return right->desactivar(bot,mapa,space);
+		}
+		else{
+			if (left->desactivar(bot,mapa,space)){
+				return right->desactivar(bot,mapa,space);
+			}
+		}
+		return true;
+	}
+
 	vector<int> obtenerComportamientos(){
 		SecuenciaComportamiento *aux = (SecuenciaComportamiento*)left;
 		vector<int> tiposdeComp;
 		tiposdeComp.push_back(((Comportamiento*)right)->tipoCondicion);
 
 		while(aux != NULL){
-			tiposdeComp.push_back(((Comportamiento*)aux->right)->tipoCondicion);
+			tiposdeComp.insert(tiposdeComp.begin(),((Comportamiento*)aux->right)->tipoCondicion);
 			aux = (SecuenciaComportamiento*)aux->left;
 		}
 
@@ -475,7 +527,7 @@ public:
 	bool ejecutar(MapaRobots& mapa){
 		vector<string> aux = ids->obtenerIds();
 		for (int i = 0 ; i < aux.size(); i++){
-			mapa.agregar(aux[i],Robot(tipo,comportamiento,aux[i]));
+			mapa.agregar(aux[i],Robot(tipo,(SecuenciaComportamiento*)comportamiento,aux[i]));
 		}
 		return true; // No hay errores dinamicos que puedan pasar aqui.
 	}
@@ -492,7 +544,7 @@ public:
 			}
 		}
 
-		bool act = false,deact = false;
+		bool act = false,deact = false, def = false;
 		for (int i = 0; i < comps.size(); i++){
 			if (comps[i] == 1){
 				if (act){
@@ -525,22 +577,34 @@ public:
 				}
 			}
 			else if (comps[i] == 3 and i != (comps.size() - 1)){
+				if (def){
+					cout << "Error en comportamientos de ";
+					cout << aux[0];
+					for (int i = 1; i < aux.size();i++){
+						cout << " " << aux[i];
+					}
+						cout << " en Linea " << lineNo << "." <<endl;
+					cout << "Razon: Solo puede haber un comportamiento \"default\"."  << endl;
+					return false;
+				}
+				else{
+					def = true
+				}
+			}
+			else if (comps[i] == 0 and def){
 				cout << "Error en comportamientos de ";
 				cout << aux[0];
 				for (int i = 1; i < aux.size();i++){
 					cout << " " << aux[i];
 				}
 					cout << " en Linea " << lineNo << "." <<endl;
-				cout << "Razon: Comportamiento \"default\" debe ser el ultimo."  << endl;
+				cout << "Razon: Comportamiento \"default\" debe estar despues de todos los de las expresiones."  << endl;
 				return false;
 			}
-
 		}
 		return comportamiento->verificar(mapa,tipo);
 	}
 };
-
-
 
 
 #endif

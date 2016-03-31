@@ -124,6 +124,7 @@ cualquiera .
 
 
 int yywrap(){
+	insideComment = 0;
 	lineNo = 1;
 	colNo = 1;
 	return 1;
