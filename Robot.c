@@ -6,14 +6,11 @@
 #include <string>
 #include <iostream>
 #include <stdlib.h>
+#include "valores.c"
+#include "declaraciones.c"
+#include "Robot.h"
 
 using namespace std;
-
-union valores{
-	int num;
-	bool booleano;
-	char caracter;
-};
 
 // Necesita una funcion que ejecute los comportamientos.
 
@@ -23,20 +20,20 @@ public:
 	int activado;
 	int posx;
 	int posy;
-	valores valor;		
-	string nombre; // Solo para errores. (Nota: se puede apostar que los voy a usar para algo mas)
-	SecuenciaComportamientos* comp;
+	Valores valor;		
+	string nombre;
+	SecuenciaComportamiento* comp;
 
 	Robot(int t,Comport* c, string s){
 		nombre = s;
 		posx = 0;
 		posy = 0;
-		comp = (SecuenciaComportamientos*)c;
+		comp = (SecuenciaComportamiento*)c;
 		tipo = t;
 		activado = 0;
 	}
 
-	valores obtenerValor(int t){
+	Valores obtenerValor(int t){
 		return valor;
 	}
 
@@ -50,7 +47,7 @@ public:
 			comp->desactivar(this,space,mapa);
 		}
 		else{
-			
+
 		}
 	}
 

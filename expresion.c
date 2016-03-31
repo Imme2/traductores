@@ -4,6 +4,10 @@
 #include <string>
 #include <iostream>
 #include "mapa.c"
+#include "valores.c"
+#include "Espacio.c"
+#include "Robot.c"
+#include "MapaRobots.c"
 #define ERRORTIPO -2
 #define TIPOBOOL 0
 #define TIPOINT 1
@@ -83,8 +87,8 @@ public:
 	}
 
 
-	valores evaluar(Robot* bot, MapaRobots& mapa, Espacio& space, map<string,valores> tablasimb){
-		//VARIOS ifs van aqui;	
+	Valores evaluar(Robot* bot, MapaRobots& mapa, Espacio& space, map<string,Valores> tablasimb){
+		;
 	}
 
 	// Funcion que calcula el tipo de una expresion

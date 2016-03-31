@@ -6,6 +6,10 @@
 #include "expresion.c"
 #include "declaraciones.c"
 #include "mapa.c"
+#include "valores.c"
+#include "Espacio.c"
+#include "Robot.c"
+#include "MapaRobots.c"
 
 using namespace std;
 

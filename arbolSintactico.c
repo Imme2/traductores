@@ -1,9 +1,16 @@
 #ifndef arbolsint_h
 #define arbolsint_h
 
+
+#include "MapaRobots.c"
+#include "Espacio.c"
+#include "Robot.c"
 #include "declaraciones.c"
 #include "instrucciones.c"
 #include <iostream>
+#include "valores.c"
+#include "Robot.c"
+
 using namespace std;
 
 class ArbolSintactico{

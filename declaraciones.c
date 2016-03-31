@@ -10,6 +10,8 @@
 #include "listaids.c"
 #include "MapaRobots.c"
 #include "Robot.c"
+#include "valores.c"
+#include "Espacio.c"
 
 #define ERRORTIPO -2
 #define TIPOBOOL 0
@@ -29,7 +31,7 @@ public:
 
 	virtual bool verificar(MapaDeTipos&,int){}
 
-	virtual bool ejecutar(Robot*,MapaRobots&, Espacio&, map<string,valores>&){}
+	virtual bool ejecutar(Robot*,MapaRobots&, Espacio&, map<string,Valores>&){}
 
 	virtual void toString(int){}
 };
@@ -44,12 +46,12 @@ public:
 		lineNo = line;
 	} 
 
-	SecuenciaRoboInstruccion(InstruccionRobot *right,int line): right(l){
+	SecuenciaRoboInstruccion(InstruccionRobot *r,int line): right(r){
 		lineNo = line;
 		left = NULL;
 	}
 
-	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,valores> tablasimb){
+	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,Valores>& tablasimb){
 		if (left == NULL){
 			right->ejecutar(bot,mapa,space,tablasimb)
 		}
@@ -90,8 +92,9 @@ public:
 
 	// Necesitamos verificar que el tipo de la expresion es el mismo que el robot
 
-	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,valores> tablasimb){
+	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,Valores> tablasimb){
 		bot->valor = expr->evaluar(bot,mapa,space,tablasimb);
+		return true;
 	}
 
 	bool verificar(MapaDeTipos& mapa, int tipo){
@@ -149,6 +152,28 @@ public:
 		tieneId = false;
 	}
 
+	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,Valores>& tablasimb){
+		if (space.existePos(bot->posx,bot->posy){
+			if (space.obtenerTipo(bot->posx,bot->posy) == bot->tipo){
+				if (tieneId){
+					tablasimb[identificador] = space.obtenerValor(bot->posx,bot->posy);
+				}
+				else{
+					bot->valor = space.obtenerValor(bot->posx,bot->posy);
+				}
+				space.borrarValor(box->posx,bot->posy);
+				return true;
+			}
+			else{
+				cout << "Error en linea " << lineNo << ": Coleccion de valor que no es del mismo tipo que el robot." << endl;
+				exit(0);
+			}
+		}
+		else{
+			cout << "Error en linea " << lineNo << ": Coleccion en posicion vacia de la matriz." << endl;
+			exit(0);
+		}
+	}
 
 
 	bool verificar(MapaDeTipos& mapa, int tipo){
@@ -183,6 +208,11 @@ public:
 		lineNo = line;
 	}
 
+	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,Valores>& tablasimb){
+		space.insertarValor(bot->x,bot->y,expr->evaluar(bot,mapa,space,tablasimb));
+		return true;
+	}
+
 	bool verificar(MapaDeTipos& mapa, int tipo){
 		if (expr->calcularTipo(mapa,tipo) == ERRORTIPO){ //Si encontramos un error de tipo
 			return false; // solo fallamos pues el responsable del mensaje es la expresion
@@ -196,13 +226,38 @@ public:
 class Movimiento: public InstruccionRobot{
 public:
 
-	int direccion;
+	int direccion; 	//Up = 0
+				   	//Down =  1
+					//Left =  2
+					//Right = 3
 	Expresion* expr;
 	int lineNo;
 
 	Movimiento(int d, Expresion* e,int line): expr(e){
 		direccion = d;
 		lineNo = line;
+	}
+
+	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,Valores>& tablasimb){
+		int aux;
+		aux = expr->evaluar(bot,mapa,space,tablasimb);
+		if (aux < 0){
+			cout << "Error: Intento de movimiento negativo en linea " << lineNo << "." << endl;
+			exit(0);
+		}
+		if (direccion == 0){
+			bot->posy += aux;
+		}
+		else if (direccion == 1){
+			bot->posy -= aux;
+		}
+		else if (direccion == 2){
+			bot->posx -= aux;
+		}
+		else if (direccion == 3){
+			bot->posx += aux;
+		}
+		return true;
 	}
 
 	bool verificar(MapaDeTipos& mapa, int tipo){
@@ -248,6 +303,65 @@ public:
 		tieneId = false;
 	}
 
+
+	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,Valores>& tablasimb){
+		string aux;
+		cin >> aux;
+		if (bot->tipo == TIPOBOOL){
+			if (aux == "True" or aux == "1" or aux == "Verdadero" or aux == "true"){
+				if (tieneId){
+					tablasimb[identificador] = true;
+				}
+				else{
+					bot->valor = true;
+				}
+			}
+			else{ 			// Cualquier cosa que no sea true la consideramos como false.
+				if (tieneId){
+					tablasimb[identificador] = false;
+				}
+				else{
+					bot->valor = false;
+				}
+			}
+		}
+		if (bot->tipo == TIPOINT){
+			long int aux2 = strtol(aux);
+			if (aux2 == 0 and aux != "0"){
+				cout << "Error: " << aux << " no es un entero valido" << endl;
+				exit(0);
+			}
+			else if (aux2 > (1<<31 - 1) or aux2 < -(1<<31)){
+				cout << "Error: " << aux2 << " es un entero demasiado grande para representar" << endl;
+				cout << "Nota: Esto es C++, no te puedo dar ints infinitos" << endl;
+				exit(0);
+			}
+			else{
+				if (tieneId){
+					tablasimb[identificador] = aux2;
+				}
+				else{
+					bot->valor = aux2;
+				}
+			}
+		}
+		if (bot->tipo == TIPOCHAR){
+			if (aux.size() != 1){
+				cout << "Error: " << aux << " no es un solo caracter." << endl;
+				exit(0);
+			}
+			else{
+				if (tieneId){
+					tablasimb[identificador] = aux;
+				}
+				else{
+					bot->valor = aux;
+				}
+			}
+		}
+		return true;
+	}
+
 	bool verificar(MapaDeTipos& mapa, int tipo){
 		if (tieneId){								// En caso de tener un id solo debemos verificar 
 			if (mapa.estaDeclarado(identificador)){ // Que la variable no este declarada
@@ -282,7 +396,7 @@ public:
 		lineNo = line;
 	}
 
-	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,valores> tablasimb){
+	bool ejecutar(Robot* bot,MapaRobots& mapa, Espacio& space, map<string,Valores>& tablasimb){
 		cout << bot->obtenerValor() << endl;
 	}
 
@@ -326,7 +440,7 @@ public:
 	}
 
 	bool activar(Robot* bot,MapaRobots& mapa, Espacio& space){
-		map<id,valores> aux;
+		map<id,Valores> aux;
 		if (tipoCondicion == 1){
 			return secRoboInst->ejecutar(bot,mapa,space,aux);
 		}
@@ -341,7 +455,7 @@ public:
 	}
 
 	bool avanzar(Robot* bot,MapaRobots& mapa, Espacio& space){
-		map<id,valores> aux;
+		map<id,Valores> aux;
 		if (tipoCondicion == 3){
 			secRoboInst->ejecutar(bot,mapa,space,aux);
 			return true 

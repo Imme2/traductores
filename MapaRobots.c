@@ -1,3 +1,6 @@
+#ifndef maparobots_h
+#define maparobots_h
+
 #include "Robot.c"
 #include <string>
 #include <map>
@@ -6,15 +9,6 @@
 
 using namespace std;
 
-/* Esto esta declarado en robot.c
-
-union valores{
-	int num;
-	bool booleano;
-	char caracter;
-};
-
-*/
 
 
 class MapaRobots{
@@ -92,7 +86,7 @@ public:
 		return -1;		
 	}
 
-	valores obtenerValorNivAnt(string s){
+	Valores obtenerValorNivAnt(string s){
 		for (int i = nivel-2; i >= 0; i--){
 			if (listMapas[i].find(s) != listMapas[i].end()){
 				return listMapas[i][s].obtenerValor(); 
@@ -100,7 +94,7 @@ public:
 		}
 	}
 
-	valores obtenerValor(string s){
+	Valores obtenerValor(string s){
 		for (int i = nivel-1; i >= 0; i--){
 			if (listMapas[i].find(s) != listMapas[i].end()){
 				return listMapas[i][s].obtenerValor(); 
@@ -115,4 +109,6 @@ public:
 	}
 
 
-}
+};
+
+#endif

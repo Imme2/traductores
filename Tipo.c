@@ -1,15 +1,19 @@
 #ifndef tipo_h
 #define tipo_h
 
-union valores{
-	int num;
-	bool booleano;
-	char caracter;
-};
+#include "valores.c"
 
+#define ERRORTIPO -2
+#define TIPOBOOL 0
+#define TIPOINT 1
+#define TIPOCHAR 2
+#define TIPOID 3
+
+using namespace std;
 
 class Tipo{
-	valores valor;
+public:
+	Valores valor;
 	int tipo;
 
 	Tipo(bool a){
@@ -31,7 +35,7 @@ class Tipo{
 		return tipo;
 	}
 
-	valores obtenerValor(){
+	Valores obtenerValor(){
 		return valor;
 	}
 };
